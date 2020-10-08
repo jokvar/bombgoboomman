@@ -10,14 +10,13 @@ namespace SignalRChat.Hubs
     {
         public async Task SendMessage(string user, string message)
         {
-            message += "a"; 
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
 
         public async Task SendMap()
         {
-            char[] map = "nig".ToCharArray(); 
-            await Clients.All.SendAsync("UpdateMap", map);
+            Clients.Client("asd").SendAsync("ur gay");
+            await Clients.All.SendAsync("UpdateMap", "as");
         }
     }
 }
