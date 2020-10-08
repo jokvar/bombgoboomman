@@ -15,7 +15,6 @@ namespace SignalRChat.Hubs
 
         public async Task SendMap()
         {
-            Clients.Client("asd").SendAsync("ur gay");
             await Clients.All.SendAsync("UpdateMap", "as");
         }
     }
