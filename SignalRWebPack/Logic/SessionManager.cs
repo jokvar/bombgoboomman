@@ -6,15 +6,15 @@ using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Logic
 {
-    public class SessionManager //possibly static
+    public static class SessionManager //possibly static
     {
-        public Session GetSession() //creates and stores new session and returns it
+        public static Session GetSession()
         {
             Session sess = new Session();
             return sess;
         }
 
-        public Session GetSession(string roomCode) //existing by its room code id
+        public static Session GetSession(string roomCode)
         {
             Session sess = new Session();
             return sess;
