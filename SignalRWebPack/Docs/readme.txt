@@ -1,8 +1,8 @@
 ﻿-----
 1. client loads page (with menu)
-2. 
+2. client makes connection
 3. 
-4. server invokes client.DrawMenu(object that details menu shape, images, style)
+4. 
 5. client involes server.CreateSession(mapname) //vvia buttonpress on canvas "create room", having SOMEHOW selected a room
 6. server generates room_code, creates a Player, saves it and also saves it as HOST. Server invokes client.DrawSession(map, gameobjects, players, etc, room_code) 
 7. client starts forever drawing the map and all related information. when new players join they are also sent. The ui looks pretty much like what it will look like during gameplay
