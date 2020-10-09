@@ -20,20 +20,5 @@ namespace SignalRWebPack.Logic
             return sess;
         }
 
-        public string GenerateRoomCode()
-        {
-            return "6969";
-        }
-
-        public void RegisterPlayer(string id)
-        {
-
-        }
-
-        public void RegisterHost(string id) //figure out the logic here but have Host be a refference to the first Player
-        {
-
-        }
-
     }
 }

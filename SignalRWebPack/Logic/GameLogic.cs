@@ -11,6 +11,8 @@ namespace SignalRWebPack
     {
         public static Session session = SessionManager.GetSession();
         public List<Player> players = session.Players;
+        public Map map = session.Map;
+        public List<Bomb> bombs;
         private int playerIndex = 0;
         public int mapDimensions = 15;
 
@@ -54,6 +56,26 @@ namespace SignalRWebPack
                 case "left":
                     players[requestIndex].x--;
                     break;
+            }
+        }
+
+        public void PlaceBomb(string id)
+        {
+            int requestIndex = session.MatchId(id);
+            int x = players[requestIndex].x;
+            int y = players[requestIndex].y;
+            Bomb bomb = new Bomb(x, y);
+            bombs.Add(bomb);
+        }
+
+        public void CheckBombTimers()
+        {
+            for (int i = 0; i < bombs.Count; i++)
+            {
+                if(bombs[i].explodesAt <= DateTime.Now)
+                {
+                    ExplodeOrSomething();
+                }
             }
         }
 

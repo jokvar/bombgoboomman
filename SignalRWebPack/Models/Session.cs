@@ -48,6 +48,12 @@ namespace SignalRWebPack.Models
             return (Players.Count >= 4);
         }
 
+        public int MatchId(string id)
+        {
+            return Players.IndexOf(Players.Where(p => p.id == id).First());
+            // -1 if not found
+        }
+
         public void SetMap(string mapName) => Map = new Map(mapName);
     }
 }

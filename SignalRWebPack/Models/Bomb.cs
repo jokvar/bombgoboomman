@@ -9,6 +9,17 @@ namespace SignalRWebPack.Models
     {
         public int tickDuration { get; set; }
         public DateTime plantedAt { get; set; }
+        public DateTime explodesAt { get; set; }
         public string preExplodeTexture { get; set; }
+
+        public Bomb(int x, int y)
+        {
+            tickDuration = 3; //seconds
+            plantedAt = DateTime.Now;
+            explodesAt = plantedAt.AddSeconds(tickDuration);
+            preExplodeTexture = "black.jpeg";
+            this.x = x;
+            this.y = y;
+        }
     }
 }
