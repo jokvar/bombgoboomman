@@ -13,5 +13,10 @@ namespace SignalRWebPack.Models
         public string thumbnail { get; set; }
         public Tile[] tiles { get; set; }
 
+        public Map(string mapName)
+        {
+            //soemthing like the following:
+            //return database.Where(Map => Map.name == mapName).First();
+        }
     }
 }
