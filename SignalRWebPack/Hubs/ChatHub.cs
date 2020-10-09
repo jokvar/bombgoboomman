@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Hubs
 {
@@ -9,6 +10,26 @@ namespace SignalRWebPack.Hubs
         {
             var x = Context.ConnectionId;
             await Clients.All.SendAsync("messageReceived", username, message);
+        }
+
+        public async Task CreateSession()
+        {
+
+        }
+
+        public async Task JoinSession(string roomCode)
+        {
+
+        }
+
+        public async Task SendInput(object data)
+        {
+            
+        }
+
+        public void Test()
+        {
+            
         }
     }
 }

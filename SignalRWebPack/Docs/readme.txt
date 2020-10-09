@@ -1,7 +1,7 @@
 ﻿-----
-1. client loads page
-2. client makes connection
-3. client invokes server.RegisterPlayer()
+1. client loads page (with menu)
+2. 
+3. 
 4. server invokes client.DrawMenu(object that details menu shape, images, style)
 5. client involes server.CreateSession(mapname) //vvia buttonpress on canvas "create room", having SOMEHOW selected a room
 6. server generates room_code, creates a Player, saves it and also saves it as HOST. Server invokes client.DrawSession(map, gameobjects, players, etc, room_code) 
@@ -18,10 +18,6 @@
 10. server keeps periodically invoking client.DrawSession(map, gameobjects, players, etc)
 
 //server
-server.RegisterPlayer() {
-	server knows a new person has just connected to the game. server will form and send the client a response with all data needed to draw the ui.
-}
-
 server.CreateSession(mapname) {
 	server knows a client wants to create a new session. server received an identifier for the selected map. server generates a room code, creates a Player and also stores it seperately as Host in the session (for reasons currently unknown, the host is important (its not, the host could DC and the game would continue p much fine))
 }
@@ -37,10 +33,6 @@ server.SendInput(inputObjectOrSomething) {
 }
 
 //client
-client.DrawMenu(object that details menu shape, images, style) {
-	client is sent information on how the menu should look, and draws the menu. the menu should have some room code god i hope (google input field in canvas?), and two buttons, create room and join room. god save us all. it can also just be html elements thats fine actually fuck the canvas
-}
-
 client.DrawSession(map, gameobjects, players, etc, room_code) {
 	client starts constantly redrawing the map. or maybe whenever server updates idk. cause javascript inputs are invoked on new threads, and the server response should, too, be a seperate thread by default i imagine? so the client, after having received this, starts a script that will continue forever, or like maybe until the next time it received this idk doesnt matter. i guess its fine for the client to only draw after receiving? but that might be too slow too, fuck. weeeeew.
 }
@@ -49,3 +41,6 @@ client.StartPlaying() {
 	having received this, the client starts sending inputs to the server. this is the official start of the session.
 }
 
+
+//notes
+we are ignoring disconnects and keepalives in general. fuck it
