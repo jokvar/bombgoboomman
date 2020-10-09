@@ -20,7 +20,7 @@ namespace SignalRWebPack.Models
         public int x { get; set; }
         public int y { get; set; }
 
-        public Player(string name, string id)
+        public Player(string name, string id, int x, int y)
         {
             lives = 3;
             this.name = name;
@@ -32,8 +32,8 @@ namespace SignalRWebPack.Models
             invulnerableSince = null;
             invulnerabilityDuration = 3; //seconds
             bombCount = 1;
-            x = 0;
-            y = 0;
+            this.x = x;
+            this.y = y;
         }
     }
 }

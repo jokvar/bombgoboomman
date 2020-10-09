@@ -12,13 +12,21 @@ namespace SignalRWebPack
         public static Session session = SessionManager.GetSession();
         public List<Player> players = session.Players;
         private int playerIndex = 0;
+        public int mapDimensions = 15;
 
         public void SpawnPlayers()
         {
-            for (int i = 0; i < players.Count; i++)
-            {
+            players[0].x = 1;
+            players[0].y = 1;
 
-            }
+            players[1].x = mapDimensions - 1;
+            players[1].y = 1;
+
+            players[2].x = 1;
+            players[2].y = mapDimensions - 1;
+
+            players[3].x = mapDimensions - 1;
+            players[3].y = mapDimensions - 1;
         }
 
         public static void GameLoop()
@@ -48,6 +56,8 @@ namespace SignalRWebPack
                     break;
             }
         }
+
+
 
         public void EnableDrawing(Session session)
         {
