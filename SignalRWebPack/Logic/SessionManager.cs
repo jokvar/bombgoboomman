@@ -6,34 +6,21 @@ using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Logic
 {
-    public class SessionManager //possibly static
+    public static class SessionManager //possibly static
     {
-        public Session GetSession()
+        public static Session GetSession()
         {
             Session sess = new Session();
             return sess;
         }
 
-        public Session GetSession(string roomCode)
+        public static Session GetSession(string roomCode)
         {
             Session sess = new Session();
             return sess;
         }
 
-        public string GenerateRoomCode()
-        {
-            return "6969";
-        }
-
-        public void RegisterPlayer(string id)
-        {
-
-        }
-
-        public void RegisterHost(string id)
-        {
-
-        }
+        
 
     }
 }
