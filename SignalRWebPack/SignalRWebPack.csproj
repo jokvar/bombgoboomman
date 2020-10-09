@@ -4,4 +4,20 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Docs\readme.txt" />
+    <None Remove="src\models\GameMap.ts" />
+    <None Remove="src\models\GameObjects.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="Docs\readme.txt" />
+    <TypeScriptCompile Include="src\models\GameMap.ts" />
+    <TypeScriptCompile Include="src\models\GameObjects.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="src\chathub\" />
+  </ItemGroup>
+
 </Project>
