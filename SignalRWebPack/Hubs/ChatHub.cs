@@ -7,6 +7,7 @@ namespace SignalRWebPack.Hubs
     {
         public async Task NewMessage(long username, string message)
         {
+            var x = Context.ConnectionId;
             await Clients.All.SendAsync("messageReceived", username, message);
         }
     }
