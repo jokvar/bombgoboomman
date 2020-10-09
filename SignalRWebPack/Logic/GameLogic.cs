@@ -1,4 +1,5 @@
-﻿using SignalRWebPack.Models;
+﻿using SignalRWebPack.Logic;
+using SignalRWebPack.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,16 @@ namespace SignalRWebPack
 {
     public class GameLogic
     {
-        public List<Player> players = new List<Player>();
+        public static Session session = SessionManager.GetSession();
+        public List<Player> players = session.Players;
+        private int playerIndex = 0;
 
-        public void RegisterPlayer(string playerName, string playerID)
+        public void SpawnPlayers()
         {
-            Player player = new Player(playerName, playerID);
-            players.Add(player);
+            for (int i = 0; i < players.Count; i++)
+            {
+
+            }
         }
 
         public static void GameLoop()
@@ -24,20 +29,31 @@ namespace SignalRWebPack
             }
         }
 
-        public static void UpdatePlayerPos(PlayerAction action, string id)
+        public void UpdatePlayerPos(PlayerAction action, string id)
         {
+            int requestIndex = session.MatchId(id);
             switch (action.direction)
             {
                 case "up":
-
+                    players[requestIndex].y++;
                     break;
                 case "down":
-                    break;
-                case "left":
+                    players[requestIndex].y--;
                     break;
                 case "right":
+                    players[requestIndex].x++;
+                    break;
+                case "left":
+                    players[requestIndex].x--;
                     break;
             }
         }
+
+        public void EnableDrawing(Session session)
+        {
+
+        }
+
+
     }
 }
