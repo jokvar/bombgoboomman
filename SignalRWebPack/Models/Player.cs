@@ -14,8 +14,26 @@ namespace SignalRWebPack.Models
         public double speedMultiplier { get; set; }
         public string texture { get; set; }
         public bool ready { get; set; }
-        public DateTime invulnerableSince { get; set; }
+        public DateTime? invulnerableSince { get; set; }
         public int invulnerabilityDuration { get; set; }
         public int bombCount { get; set; }
+        public int x { get; set; }
+        public int y { get; set; }
+
+        public Player(string name, string id)
+        {
+            lives = 3;
+            this.name = name;
+            this.id = id;
+            invulnerable = false;
+            speedMultiplier = 1;
+            texture = "black.jpeg";
+            ready = false;
+            invulnerableSince = null;
+            invulnerabilityDuration = 3; //seconds
+            bombCount = 1;
+            x = 0;
+            y = 0;
+        }
     }
 }

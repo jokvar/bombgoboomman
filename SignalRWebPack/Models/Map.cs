@@ -11,5 +11,7 @@ namespace SignalRWebPack.Models
         public string author { get; set; }
         public DateTime creationDate { get; set; }
         public string thumbnail { get; set; }
+        public Tile[] tiles { get; set; }
+
     }
 }
