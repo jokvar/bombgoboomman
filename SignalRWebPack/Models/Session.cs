@@ -9,6 +9,7 @@ namespace SignalRWebPack.Models
     {
         public List<Player> Players { get; set; }
         public Player Host { get; set; }
+        public Map Map { get; set; }
         public string[] PlayerIDs
         {
             get
@@ -22,13 +23,17 @@ namespace SignalRWebPack.Models
         }
         public string roomCode { get; set; }
         public string id { get; set; }
+        public Session()
+        {
+
+        }
 
         public string GenerateRoomCode()
         {
             return "6969";
         }
 
-        public void RegisterPlayer(string id, bool isHost = false)
+        public bool RegisterPlayer(string id, bool isHost = false)
         {
             if (Players == null)
             {
@@ -40,12 +45,9 @@ namespace SignalRWebPack.Models
                 Host = host;
             }
             Players.Add(host);
+            return (Players.Count >= 4);
         }
 
-        public int MatchId(string id)
-        {
-            return Players.IndexOf(Players.Where(p => p.id == id).First());
-            // -1 if not found
-        }
+        public void SetMap(string mapName) => Map = new Map(mapName);
     }
 }
