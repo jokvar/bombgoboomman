@@ -24,11 +24,12 @@ namespace SignalRWebPack
             }
         }
 
-        public static void UpdatePlayerPos(PlayerAction action)
+        public static void UpdatePlayerPos(PlayerAction action, string id)
         {
-            switch (direction)
+            switch (action.direction)
             {
                 case "up":
+
                     break;
                 case "down":
                     break;

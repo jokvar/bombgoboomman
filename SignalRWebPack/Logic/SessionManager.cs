@@ -8,13 +8,13 @@ namespace SignalRWebPack.Logic
 {
     public class SessionManager //possibly static
     {
-        public Session GetSession()
+        public Session GetSession() //creates and stores new session and returns it
         {
             Session sess = new Session();
             return sess;
         }
 
-        public Session GetSession(string roomCode)
+        public Session GetSession(string roomCode) //existing by its room code id
         {
             Session sess = new Session();
             return sess;
@@ -30,7 +30,7 @@ namespace SignalRWebPack.Logic
 
         }
 
-        public void RegisterHost(string id)
+        public void RegisterHost(string id) //figure out the logic here but have Host be a refference to the first Player
         {
 
         }
