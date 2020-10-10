@@ -33,7 +33,7 @@ server.SendInput(inputObjectOrSomething) {
 }
 
 //client
-client.DrawSession(map, gameobjects, players, etc, room_code) {
+client.StoreDrawData(map, gameobjects, players, etc, room_code) {
 	client starts constantly redrawing the map. or maybe whenever server updates idk. cause javascript inputs are invoked on new threads, and the server response should, too, be a seperate thread by default i imagine? so the client, after having received this, starts a script that will continue forever, or like maybe until the next time it received this idk doesnt matter. i guess its fine for the client to only draw after receiving? but that might be too slow too, fuck. weeeeew.
 }
 
