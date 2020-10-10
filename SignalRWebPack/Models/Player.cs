@@ -16,10 +16,11 @@ namespace SignalRWebPack.Models
         public bool ready { get; set; }
         public DateTime? invulnerableSince { get; set; }
         public int invulnerabilityDuration { get; set; }
-        public int bombCount { get; set; }
+        public int maxBombs { get; set; }
+        public int activeBombCount { get; set; }
+        public int explosionSizeMultiplier { get; set; }
         public int x { get; set; }
         public int y { get; set; }
-        public bool bombPlaced { get; set; }
 
         public Player(string name, string id, int x, int y)
         {
@@ -32,10 +33,9 @@ namespace SignalRWebPack.Models
             ready = false;
             invulnerableSince = null;
             invulnerabilityDuration = 3; //seconds
-            bombCount = 1;
+            maxBombs = 1;
             this.x = x;
             this.y = y;
-            bombPlaced = false;
         }
     }
 }

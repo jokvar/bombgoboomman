@@ -11,8 +11,10 @@ namespace SignalRWebPack.Models
         public DateTime plantedAt { get; set; }
         public DateTime explodesAt { get; set; }
         public string preExplodeTexture { get; set; }
+        public Player placedBy { get; set; }
 
-        public Bomb(int x, int y)
+
+        public Bomb(int x, int y, Player placedBy)
         {
             tickDuration = 3; //seconds
             plantedAt = DateTime.Now;
@@ -20,6 +22,7 @@ namespace SignalRWebPack.Models
             preExplodeTexture = "black.jpeg";
             this.x = x;
             this.y = y;
+            this.placedBy = placedBy;
         }
     }
 }
