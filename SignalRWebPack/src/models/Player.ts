@@ -13,4 +13,18 @@
             this.y = y;
         }
     }
+    export class PlayerAction {
+        action: ActionEnum;
+        constructor(action: ActionEnum) {
+            this.action = action;
+        }
+        
+    }
+    enum ActionEnum {
+        Up,
+        Down,
+        Left,
+        Right,
+        PlaceBomb
+    }
 }

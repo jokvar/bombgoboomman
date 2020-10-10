@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using SignalRWebPack.Models;
 using SignalRWebPack.Logic;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SignalRWebPack.Hubs
 {
@@ -25,10 +27,8 @@ namespace SignalRWebPack.Hubs
             string roomCode = session.roomCode;
             session.RegisterPlayer(Context.ConnectionId, true);
             session.SetMap(mapName);
-            GameLogic.EnableDrawing(session);
+            //GameLogic.EnableDrawing(session);
         }
-
-
 
         public async Task JoinSession(string roomCode)
         {
@@ -37,14 +37,24 @@ namespace SignalRWebPack.Hubs
             {
                 //this method v should deal with the posibility of >4 players
                 //just discard the last one from the session lmao based
-                GameLogic.EnablePlaying(session);
+                //GameLogic.EnablePlaying(session);
             }
         }
 
-        public async Task SendInput(object data)
+        public async Task SendInput(PlayerAction input)
         {
             //this queue needs to be thread safe; the send input requests are async (duh)
-            GameLogic.AddToInputQueue(Context.ConnectionId, data);
+            //GameLogic.AddToInputQueue(Context.ConnectionId, input);
+        }
+
+        public async Task StoreDrawData(string[] playerIDs, Map map, List<Player> players, List<Bomb> bombs, List<Powerup> powerups, List<Explosion> explosions, List<Message> messages)
+        {
+            await Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+        }
+
+        public async Task StartPlaying(string[] playerIDs)
+        {
+            await Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StartPlaying");
         }
     }
 }
