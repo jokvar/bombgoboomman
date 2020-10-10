@@ -33,7 +33,7 @@ namespace SignalRWebPack
         {
             while (true)
             {
-
+                
             }
         }
 

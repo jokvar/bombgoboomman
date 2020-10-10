@@ -8,11 +8,11 @@ const username = new Date().getTime();
 
 const connection = new signalR.HubConnectionBuilder()
     .withUrl("/hub")
+    .configureLogging(signalR.LogLevel.Information)
     .build();
 
 connection.on("messageReceived", (username: string, message: string) => {
     let m = document.createElement("div");
-
     m.innerHTML =
         `<div class="message-author">${username}</div><div>${message}</div>`;
 
@@ -34,3 +34,13 @@ function send() {
     connection.send("newMessage", username, tbMessage.value)
         .then(() => tbMessage.value = "");
 }
+
+function dumpvar(test: string) {
+    prompt(test);
+}
+connection.on("test", (ligma: string) => dumpvar); //NEVEIKIANTIS PVZ
+connection.on("test2", (ligma: string) => { //VEIKIANTIS PVZ
+    console.log("test2");
+    dumpvar(ligma);
+});
+
