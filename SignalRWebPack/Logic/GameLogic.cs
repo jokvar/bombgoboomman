@@ -1,4 +1,5 @@
-﻿using SignalRWebPack.Logic;
+﻿using Microsoft.AspNetCore.Http.Features;
+using SignalRWebPack.Logic;
 using SignalRWebPack.Models;
 using System;
 using System.Collections.Generic;
@@ -39,10 +40,10 @@ namespace SignalRWebPack
             }
         }
 
-        public void UpdatePlayerPos(PlayerAction action, string id)
+        public void ProcessAction(PlayerAction playerAction, string id)
         {
             int requestIndex = session.MatchId(id);
-            switch (action.direction)
+            switch (playerAction.action)
             {
                 case "up":
                     players[requestIndex].y++;
@@ -56,12 +57,20 @@ namespace SignalRWebPack
                 case "left":
                     players[requestIndex].x--;
                     break;
+                case "placeBomb":
+                    if(players[requestIndex].activeBombCount < players[requestIndex].maxBombs)
+                    {
+                        players[requestIndex].bombPlaced = true;
+                        players[requestIndex].activeBombCount++;
+                        PlaceBomb(requestIndex);
+                    }
+                    break;
+
             }
         }
 
-        public void PlaceBomb(string id)
+        public void PlaceBomb(int requestIndex)
         {
-            int requestIndex = session.MatchId(id);
             int x = players[requestIndex].x;
             int y = players[requestIndex].y;
             Bomb bomb = new Bomb(x, y);
@@ -74,11 +83,15 @@ namespace SignalRWebPack
             {
                 if(bombs[i].explodesAt <= DateTime.Now)
                 {
-                    ExplodeOrSomething();
+                    BombExplosion();
                 }
             }
         }
 
+        public void BombExplosion()
+        {
+
+        }
 
 
         public void EnableDrawing(Session session)

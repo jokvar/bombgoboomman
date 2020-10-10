@@ -19,6 +19,7 @@ namespace SignalRWebPack.Models
         public int bombCount { get; set; }
         public int x { get; set; }
         public int y { get; set; }
+        public bool bombPlaced { get; set; }
 
         public Player(string name, string id, int x, int y)
         {
@@ -34,6 +35,7 @@ namespace SignalRWebPack.Models
             bombCount = 1;
             this.x = x;
             this.y = y;
+            bombPlaced = false;
         }
     }
 }
