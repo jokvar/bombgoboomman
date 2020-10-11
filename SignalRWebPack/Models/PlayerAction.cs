@@ -7,13 +7,11 @@ namespace SignalRWebPack.Models
 {
     public class PlayerAction
     {
-        public string direction { get; set; }
-        public bool bombPlaced { get; set; }
+        public ActionEnums action { get; set; }
 
-        public PlayerAction(string direction, bool bombPlaced)
+        public PlayerAction(ActionEnums action)
         {
-            this.direction = direction;
-            this.bombPlaced = bombPlaced;
+            this.action = action;
         }
     }
 }

@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Models
 {
-    public enum Powerup_type
+    public enum ActionEnums
     {
-        BombTickDuration,
-        PlayerSpeed,
-        ExplosionDamage,
-        ExplosionSize,
-        AdditionalBomb
+        Up,
+        Down,
+        Left,
+        Right,
+        PlaceBomb
     }
 }

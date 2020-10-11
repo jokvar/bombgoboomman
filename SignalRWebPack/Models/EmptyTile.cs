@@ -5,12 +5,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Models
 {
-    public enum Powerup_type
+    public class EmptyTile : Tile
     {
-        BombTickDuration,
-        PlayerSpeed,
-        ExplosionDamage,
-        ExplosionSize,
-        AdditionalBomb
     }
 }

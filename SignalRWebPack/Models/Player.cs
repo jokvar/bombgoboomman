@@ -14,9 +14,12 @@ namespace SignalRWebPack.Models
         public double speedMultiplier { get; set; }
         public string texture { get; set; }
         public bool ready { get; set; }
-        public DateTime? invulnerableSince { get; set; }
+        public DateTime invulnerableSince { get; set; }
         public int invulnerabilityDuration { get; set; }
-        public int bombCount { get; set; }
+        public int maxBombs { get; set; }
+        public int activeBombCount { get; set; }
+        public int explosionSizeMultiplier { get; set; }
+        public int bombTickDuration { get; set; }
         public int x { get; set; }
         public int y { get; set; }
 
@@ -29,9 +32,10 @@ namespace SignalRWebPack.Models
             speedMultiplier = 1;
             texture = "black.jpeg";
             ready = false;
-            invulnerableSince = null;
+            invulnerableSince = DateTime.Now;
             invulnerabilityDuration = 3; //seconds
-            bombCount = 1;
+            bombTickDuration = 5; //seconds
+            maxBombs = 1;
             this.x = x;
             this.y = y;
         }
