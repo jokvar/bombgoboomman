@@ -14,7 +14,7 @@ export namespace ChatHub {
                 .withUrl("/chathub")
                 .configureLogging(signalRlib.LogLevel.Information)
                 .build();
-            console.log(this.connection.connectionId);
+            console.log("hub constructor");
             this.connection.on("StoreDrawData",
                 (map: GameMap.Map, players: Array<Player.Player>,
                     bombs: Array<GameObjects.Bomb>, powerups: Array<GameObjects.Powerup>,

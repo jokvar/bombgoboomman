@@ -1,17 +1,19 @@
 ﻿export namespace GameMap {
     export class Map {
-        private tiles: Tile[];
-        private width: number;
-        private mapData: number[] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+        tiles: Array<Tile>;
+        width: number;
+        mapData: number[] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
             0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
             1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-        private index: number;
+        index: number;
 
         constructor() {
             this.index = 0;
-            this.mapData.forEach(function (value) {
+            this.width = 15;
+            this.tiles = new Array<Tile>(225);
+            this.mapData.forEach((value) => {
                 var x = this.index % 15;
                 var y = this.index / 15;
 
@@ -28,8 +30,11 @@
         }
 
         GetTile(x: number, y: number) {
-            let index = y * this.width;
-            index = index + x;
+            console.log(this.width);
+            let index = y * this.width + x;
+            console.log(x + " " + y);
+            console.log(index);
+            console.log(this.tiles[index]);
             return this.tiles[index];
         }
 

@@ -3,8 +3,6 @@ import { GameObjects } from "./models/GameObjects";
 import { Player } from "./models/Player";
 import { ChatHub } from "./chathub/ChatHub";
 export namespace Renderer {
-    var ctx = null;
-
     export class Renderer {
         tileW: number;
         tileH: number;
@@ -15,7 +13,7 @@ export namespace Renderer {
         framesLastSecond: number;
         firstDraw: boolean;
 
-        canvas: CanvasRenderingContext2D
+        public canvas: CanvasRenderingContext2D;
 
         map: GameMap.Map;
         players: Player.Player;
@@ -25,6 +23,7 @@ export namespace Renderer {
         messages: Array<ChatHub.Message>;
 
         constructor(canvas: CanvasRenderingContext2D) {
+            console.log("Renderer constructor");
             this.tileW = 40;
             this.tileH = 40;
             this.mapW = 15;
@@ -34,6 +33,7 @@ export namespace Renderer {
             this.framesLastSecond = 0;
             this.firstDraw = false;
             this.canvas = canvas;
+            this.map = new GameMap.Map();
         }
 
         StoreDrawData(
@@ -46,13 +46,13 @@ export namespace Renderer {
             if (this.firstDraw == false) {
                 this.map = new GameMap.Map();
             }
-            console.log("draw");
+            //console.log("draw");
         }
 
-        drawGame() {
+        drawGame = () => {
             console.log("DrawGame()");
-            if (this.canvas == null) { return; }
-            console.log("passed null");
+            //if (this.canvas == null) { return; }
+            //console.log("passed null");
             var sec = Math.floor(Date.now() / 1000);
 
             if (sec != this.currentSecond) {
@@ -64,12 +64,15 @@ export namespace Renderer {
 
             let y = 0;
             let x = 0;
-
+            console.log("fps count");
             //PAKEISTI VELIAU!!!!sauktukassauktukassauktukas
             while (y < this.mapH) {
                 y++;
                 while (x < this.mapW) {
                     x++;
+                    console.log(this.map);
+                    var tile = this.map.GetTile(0, 0);
+                    console.log(tile);
                     switch (this.map.GetTile(x, y).passable) {
                         case true:
                             this.canvas.fillStyle = "#e6ffe6";
@@ -83,7 +86,7 @@ export namespace Renderer {
 
             this.canvas.fillStyle = "#ff0000";
             this.canvas.fillText("FPS: " + this.framesLastSecond, 10, 20);
-
+            console.log("draw dobne");
             requestAnimationFrame(this.drawGame);
         }
 

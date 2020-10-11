@@ -39,7 +39,8 @@ namespace SignalRWebPack
 
         public void UpdatePlayerPos(PlayerAction action, string id)
         {
-            int requestIndex = session.MatchId(id);
+            //int requestIndex = session.MatchId(id);
+            int requestIndex = 0;
             switch (action.direction)
             {
                 case "up":
