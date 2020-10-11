@@ -5,19 +5,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRWebPack.Hubs;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.SignalR;
+using System.Threading;
 
 namespace SignalRWebPack
 {
-    public class GameLogic
+    public interface IGameLogic
     {
-        public static Session session = SessionManager.GetSession();
-        public List<Player> players = session.Players;
-        public Map gameMap = session.Map;
-        public List<Bomb> bombs = new List<Bomb>();
-        public List<Explosion> explosions = new List<Explosion>();
-        public List<Powerup> powerups = new List<Powerup>();
-        public int mapDimensions = 15;
+        Task GameLoop(CancellationToken cancellationToken);
+    }
+    public class GameLogic : IGameLogic
+    {
+        private readonly IHubContext<ChatHub> _hub;
 
+        private static Session session = SessionManager.GetSession();
+        private List<Player> players = session.Players;
+        private Map gameMap = session.Map;
+        private List<Bomb> bombs = new List<Bomb>();
+        private List<Explosion> explosions = new List<Explosion>();
+        private List<Powerup> powerups = new List<Powerup>();
+        private int mapDimensions = 15;
+
+        public GameLogic(IHubContext<ChatHub> _hub)
+        {
+            this._hub = _hub;
+        }
         public void SpawnPlayers()
         {
             players[0].x = 1;
@@ -33,14 +47,17 @@ namespace SignalRWebPack
             players[3].y = mapDimensions - 1;
         }
 
-        public void GameLoop()
+        public async Task GameLoop(CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                CheckBombTimers();
-                CheckExplosionTimers();
-                CheckInvulnerabilityPeriods();
-                CheckPowerupTimers();
+                await Task.Delay(5000);
+                await Broadcast("ligma lol");
+                //CheckBombTimers();
+                //CheckExplosionTimers();
+                //CheckInvulnerabilityPeriods();
+                //CheckPowerupTimers();
+                //client.StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages); ; 
             }
         }
 
@@ -473,11 +490,25 @@ namespace SignalRWebPack
             
         }
 
-        public void EnableDrawing(Session session)
+        public async void EnableDrawing()
         {
 
         }
 
+        public async Task StoreDrawData(string[] playerIDs, Map map, List<Player> players, List<Bomb> bombs, List<Powerup> powerups, List<Explosion> explosions, List<Message> messages)
+        {
+            await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+        }
+
+        public async Task StartPlaying(string[] playerIDs)
+        {
+            await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StartPlaying");
+        }
+
+        public async Task Broadcast(string message)
+        {
+            await _hub.Clients.All.SendAsync("messageReceived", message);
+        }
 
     }
 }

@@ -27,7 +27,6 @@ namespace SignalRWebPack.Hubs
             string roomCode = session.roomCode;
             session.RegisterPlayer(Context.ConnectionId, true);
             session.SetMap(mapName);
-            //GameLogic.EnableDrawing(session);
         }
 
         public async Task JoinSession(string roomCode)
@@ -45,16 +44,6 @@ namespace SignalRWebPack.Hubs
         {
             //this queue needs to be thread safe; the send input requests are async (duh)
             //GameLogic.AddToInputQueue(Context.ConnectionId, input);
-        }
-
-        public async Task StoreDrawData(string[] playerIDs, Map map, List<Player> players, List<Bomb> bombs, List<Powerup> powerups, List<Explosion> explosions, List<Message> messages)
-        {
-            await Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
-        }
-
-        public async Task StartPlaying(string[] playerIDs)
-        {
-            await Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StartPlaying");
         }
     }
 }
