@@ -16,24 +16,33 @@ export namespace Renderer {
         public canvas: CanvasRenderingContext2D;
 
         map: GameMap.Map;
-        players: Player.Player;
-        bomb: Array<GameObjects.Bomb>;
+        players: Array<Player.Player>;
+        bombs: Array<GameObjects.Bomb>;
         powerups: Array<GameObjects.Powerup>;
         explosions: Array<GameObjects.Explosion>;
         messages: Array<ChatHub.Message>;
 
+        //temp date, probably delete later?
+        playerOne: Player.Player;
+        playerTwo: Player.Player;
+
         constructor(canvas: CanvasRenderingContext2D) {
             console.log("Renderer constructor");
-            this.tileW = 40;
-            this.tileH = 40;
             this.mapW = 15;
             this.mapH = 15;
+            this.tileW = canvas.canvas.width / this.mapW;
+            this.tileH = canvas.canvas.height / this.mapH;
             this.currentSecond = 0;
             this.frameCount = 0;
             this.framesLastSecond = 0;
             this.firstDraw = false;
             this.canvas = canvas;
+
+            //temp data, probably delete later?
             this.map = new GameMap.Map();
+            this.playerOne = new Player.Player(3, "#ff0000", false, 1, 1);
+            this.playerTwo = new Player.Player(3, "#ff0000", false, 14, 14);
+            this.players = [this.playerOne, this.playerTwo];
         }
 
         StoreDrawData(
@@ -43,16 +52,32 @@ export namespace Renderer {
             powerups: Array<GameObjects.Powerup>,
             explosions: Array<GameObjects.Explosion>,
             messages: Array<ChatHub.Message>): void {
+
+            //init or update map
             if (this.firstDraw == false) {
                 this.map = new GameMap.Map();
+                this.firstDraw = true;
             }
-            //console.log("draw");
+            else {
+                for (let tile of map.tiles) {
+                    this.map.UpdateTile(tile);
+                }
+            }
+
+            this.players = players;
+            this.bombs = bombs;
+            this.powerups = powerups;
+            this.explosions = explosions;
+            this.messages = messages;
+        }
+
+        rand(max: number) {
+            return Math.floor(Math.random() * Math.floor(max));
         }
 
         drawGame = () => {
             console.log("DrawGame()");
-            //if (this.canvas == null) { return; }
-            //console.log("passed null");
+            if (this.canvas == null) { return; }
             var sec = Math.floor(Date.now() / 1000);
 
             if (sec != this.currentSecond) {
@@ -64,24 +89,21 @@ export namespace Renderer {
 
             let y = 0;
             let x = 0;
-            console.log("fps count");
-            //PAKEISTI VELIAU!!!!sauktukassauktukassauktukas
             while (y < this.mapH) {
-                y++;
+                x = 0;
                 while (x < this.mapW) {
-                    x++;
-                    console.log(this.map);
-                    var tile = this.map.GetTile(0, 0);
-                    console.log(tile);
-                    switch (this.map.GetTile(x, y).passable) {
-                        case true:
-                            this.canvas.fillStyle = "#e6ffe6";
-                            break;
-                        case false:
-                            this.canvas.fillStyle = "#000000";
-                    }
+                    this.canvas.fillStyle = this.map.GetTile(x, y).texture;
                     this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                    x++;
                 }
+                y++;
+            }
+            console.log(this.players);
+            for (let p of this.players) {
+                console.log(p);
+                this.canvas.fillStyle = this.map.GetTile(p.x, p.y).texture;
+                this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                console.log("googoo gaga");
             }
 
             this.canvas.fillStyle = "#ff0000";

@@ -1,11 +1,13 @@
-﻿export namespace GameMap {
+﻿import { Player } from "./Player";
+
+export namespace GameMap {
     export class Map {
         tiles: Array<Tile>;
         width: number;
         mapData: number[] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
             0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,
-            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
+            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
         index: number;
 
@@ -15,14 +17,18 @@
             this.tiles = new Array<Tile>(225);
             this.mapData.forEach((value) => {
                 var x = this.index % 15;
-                var y = this.index / 15;
+                var y = Math.floor(this.index / 15);
 
                 if (value == 0) {
-                    let tile = new EmptyTile(x, y, "test");
+                    let tile = new EmptyTile(x, y, "#ffffff");
                     this.tiles[this.index] = tile;
                 }
                 if (value == 1) {
-                    let tile = new Wall(x, y, "test");
+                    let tile = new Wall(x, y, "#000000");
+                    this.tiles[this.index] = tile;
+                }
+                if (value == 2) {
+                    let tile = new Box(x, y, "#ff661a");
                     this.tiles[this.index] = tile;
                 }
                 this.index++;
@@ -30,11 +36,10 @@
         }
 
         GetTile(x: number, y: number) {
-            console.log(this.width);
             let index = y * this.width + x;
-            console.log(x + " " + y);
-            console.log(index);
-            console.log(this.tiles[index]);
+            //console.log(x + " " + y);
+            //console.log(index);
+            //console.log(this.tiles[index]);
             return this.tiles[index];
         }
 
