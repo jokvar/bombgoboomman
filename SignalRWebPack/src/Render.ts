@@ -76,7 +76,6 @@ export namespace Renderer {
         }
 
         drawGame = () => {
-            console.log("DrawGame()");
             if (this.canvas == null) { return; }
             var sec = Math.floor(Date.now() / 1000);
 
@@ -100,11 +99,8 @@ export namespace Renderer {
             }
             console.log(this.players);
             for (let p of this.players) {
-                console.log(p);
-                console.log("oraoraora");
                 this.canvas.fillStyle = p.texture;
                 this.canvas.fillRect(p.x * this.tileW, p.y * this.tileH, this.tileW, this.tileH);
-                console.log("googoo gaga");
             }
 
             this.canvas.fillStyle = "#ff0000";
