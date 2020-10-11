@@ -40,8 +40,8 @@ export namespace Renderer {
 
             //temp data, probably delete later?
             this.map = new GameMap.Map();
-            this.playerOne = new Player.Player(3, "#ff0000", false, 1, 1);
-            this.playerTwo = new Player.Player(3, "#ff0000", false, 14, 14);
+            this.playerOne = new Player.Player(3, "#66ff99", false, 1, 1);
+            this.playerTwo = new Player.Player(3, "#66ff99", false, 13, 13);
             this.players = [this.playerOne, this.playerTwo];
         }
 
@@ -101,8 +101,9 @@ export namespace Renderer {
             console.log(this.players);
             for (let p of this.players) {
                 console.log(p);
-                this.canvas.fillStyle = this.map.GetTile(p.x, p.y).texture;
-                this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                console.log("oraoraora");
+                this.canvas.fillStyle = p.texture;
+                this.canvas.fillRect(p.x * this.tileW, p.y * this.tileH, this.tileW, this.tileH);
                 console.log("googoo gaga");
             }
 
