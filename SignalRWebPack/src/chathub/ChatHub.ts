@@ -13,15 +13,23 @@ export namespace ChatHub {
             this.connection = new signalRlib.HubConnectionBuilder()
                 .withUrl("/chathub")
                 .configureLogging(signalRlib.LogLevel.Information)
-                .build();    
+                .build();
+            console.log(this.connection.connectionId);
             this.connection.on("StoreDrawData",
                 (map: GameMap.Map, players: Array<Player.Player>,
                     bombs: Array<GameObjects.Bomb>, powerups: Array<GameObjects.Powerup>,
                     explosions: Array<GameObjects.Explosion>, messages: Array<Message>) => {
+                    console.log("StoreDrawData");
                     renderer.StoreDrawData(map, players, bombs, powerups, explosions, messages);
-                });
+            });
             this.connection.on("StartPlaying", () => {
+                console.log("StartPlaying");
                 this.start = true;
+            });
+            this.connection.on("messageReceived", (username: string, message: string) => {
+                console.log(username + ": " + message);
+                //not implemented yet
+                //renderer.newMessage(username, message);
             });
         }
     }

@@ -15,14 +15,16 @@ export namespace Renderer {
         framesLastSecond: number;
         firstDraw: boolean;
 
+        canvas: CanvasRenderingContext2D
+
         map: GameMap.Map;
         players: Player.Player;
         bomb: Array<GameObjects.Bomb>;
         powerups: Array<GameObjects.Powerup>;
         explosions: Array<GameObjects.Explosion>;
-        messages: Array<ChatHub.Message>);
+        messages: Array<ChatHub.Message>;
 
-        constructor() {
+        constructor(canvas: CanvasRenderingContext2D) {
             this.tileW = 40;
             this.tileH = 40;
             this.mapW = 15;
@@ -31,6 +33,7 @@ export namespace Renderer {
             this.frameCount = 0;
             this.framesLastSecond = 0;
             this.firstDraw = false;
+            this.canvas = canvas;
         }
 
         StoreDrawData(
@@ -47,8 +50,9 @@ export namespace Renderer {
         }
 
         drawGame() {
-            if (ctx == null) { return; }
-
+            console.log("DrawGame()");
+            if (this.canvas == null) { return; }
+            console.log("passed null");
             var sec = Math.floor(Date.now() / 1000);
 
             if (sec != this.currentSecond) {
@@ -68,17 +72,17 @@ export namespace Renderer {
                     x++;
                     switch (this.map.GetTile(x, y).passable) {
                         case true:
-                            ctx.fillStyle = "#e6ffe6";
+                            this.canvas.fillStyle = "#e6ffe6";
                             break;
                         case false:
-                            ctx.fillStyle = "#000000";
+                            this.canvas.fillStyle = "#000000";
                     }
-                    ctx.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                    this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
                 }
             }
 
-            ctx.fillStyle = "#ff0000";
-            ctx.fillText("FPS: " + this.framesLastSecond, 10, 20);
+            this.canvas.fillStyle = "#ff0000";
+            this.canvas.fillText("FPS: " + this.framesLastSecond, 10, 20);
 
             requestAnimationFrame(this.drawGame);
         }
