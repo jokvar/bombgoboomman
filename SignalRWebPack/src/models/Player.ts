@@ -20,7 +20,7 @@
         }
         
     }
-    enum ActionEnum {
+    export enum ActionEnum {
         Up,
         Down,
         Left,

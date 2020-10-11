@@ -4,21 +4,27 @@ using SignalRWebPack.Models;
 using SignalRWebPack.Logic;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace SignalRWebPack.Hubs
 {
     public class ChatHub : Hub
     {
-        public async Task NewMessage(long username, string message)
+        //private ISpecializedLogger logger;
+        //public ChatHub(ISpecializedLogger logger)
+        //{
+        //    this.logger = logger;
+        //}
+
+        public async Task NewMessage(string username, Message messageContainer)
         {
+            string message = messageContainer.content;
             if (message == "test")
             {
                 string ligma = "ligma";
-                //await Clients.Client(Context.ConnectionId).SendAsync("test", ligma);
                 await Clients.Client(Context.ConnectionId).SendAsync("test2", ligma);
-                //await Clients.All.SendAsync("test3", ligma);
             }
-            await Clients.All.SendAsync("messageReceived", username, message);
+            await Clients.All.SendAsync("messageReceived", username, new Message(message));
         }
 
         public async Task CreateSession(string mapName)
@@ -43,6 +49,7 @@ namespace SignalRWebPack.Hubs
         public async Task SendInput(PlayerAction input)
         {
             //this queue needs to be thread safe; the send input requests are async (duh)
+            var x = 0;
             //GameLogic.AddToInputQueue(Context.ConnectionId, input);
         }
     }

@@ -9,6 +9,7 @@ using SignalRWebPack.Hubs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace SignalRWebPack
 {
@@ -27,10 +28,12 @@ namespace SignalRWebPack
         private List<Explosion> explosions = new List<Explosion>();
         private List<Powerup> powerups = new List<Powerup>();
         private int mapDimensions = 15;
-
-        public GameLogic(IHubContext<ChatHub> _hub)
+        private readonly ILogger _logger;
+ 
+        public GameLogic(IHubContext<ChatHub> _hub, ILogger<GameLogic> logger)
         {
             this._hub = _hub;
+            this._logger = logger;
         }
         public void SpawnPlayers()
         {
@@ -52,7 +55,7 @@ namespace SignalRWebPack
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(5000);
-                await Broadcast("ligma lol");
+                await Broadcast(new Message("ligma lol"));
                 //CheckBombTimers();
                 //CheckExplosionTimers();
                 //CheckInvulnerabilityPeriods();
@@ -505,9 +508,9 @@ namespace SignalRWebPack
             await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StartPlaying");
         }
 
-        public async Task Broadcast(string message)
+        public async Task Broadcast(Message message)
         {
-            await _hub.Clients.All.SendAsync("messageReceived", message);
+            await _hub.Clients.All.SendAsync("messageReceived", "admin", message);
         }
 
     }

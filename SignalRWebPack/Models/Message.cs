@@ -7,7 +7,10 @@ namespace SignalRWebPack.Models
 {
     public class Message
     {
-        public string content { get; set; }
-        public int code { get; set; }
+        public string content;
+        public Message(string content)
+        {
+            this.content = content;
+        }
     }
 }
