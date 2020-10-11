@@ -39,7 +39,7 @@ namespace SignalRWebPack.Models
             {
                 Players = new List<Player>();
             }
-            Player host = new Player("wtf name here?", id);
+            Player host = new Player("wtf name here?", id, 0, 0);
             if (isHost)
             {
                 Host = host;

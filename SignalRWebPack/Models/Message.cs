@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Models
 {
-    //public class Host : Player
-    //{
-    //}
+    public class Message
+    {
+        public string content { get; set; }
+        public int code { get; set; }
+    }
 }

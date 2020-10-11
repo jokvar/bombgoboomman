@@ -19,6 +19,5 @@ namespace SignalRWebPack.Logic
             Session sess = new Session();
             return sess;
         }
-
     }
 }
