@@ -22,6 +22,10 @@ export namespace Renderer {
         explosions: Array<GameObjects.Explosion>;
         messages: Array<ChatHub.Message>;
 
+        //temp date, probably delete later?
+        playerOne: Player.Player;
+        playerTwo: Player.Player;
+
         constructor(canvas: CanvasRenderingContext2D) {
             console.log("Renderer constructor");
             this.mapW = 15;
@@ -33,7 +37,12 @@ export namespace Renderer {
             this.framesLastSecond = 0;
             this.firstDraw = false;
             this.canvas = canvas;
+
+            //temp data, probably delete later?
             this.map = new GameMap.Map();
+            this.playerOne = new Player.Player(3, "#ff0000", false, 1, 1);
+            this.playerTwo = new Player.Player(3, "#ff0000", false, 14, 14);
+            this.players = [this.playerOne, this.playerTwo];
         }
 
         StoreDrawData(
@@ -80,7 +89,6 @@ export namespace Renderer {
 
             let y = 0;
             let x = 0;
-            //PAKEISTI VELIAU!!!!sauktukassauktukassauktukas
             while (y < this.mapH) {
                 x = 0;
                 while (x < this.mapW) {
@@ -88,9 +96,14 @@ export namespace Renderer {
                     this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
                     x++;
                 }
-                console.log("MapH - " + this.mapH);
-                console.log("YY - " + y);
                 y++;
+            }
+            console.log(this.players);
+            for (let p of this.players) {
+                console.log(p);
+                this.canvas.fillStyle = this.map.GetTile(p.x, p.y).texture;
+                this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                console.log("googoo gaga");
             }
 
             this.canvas.fillStyle = "#ff0000";
