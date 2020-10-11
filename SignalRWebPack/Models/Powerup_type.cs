@@ -7,7 +7,6 @@ namespace SignalRWebPack.Models
 {
     public enum Powerup_type
     {
-        BombDamage,
         BombTickDuration,
         PlayerSpeed,
         ExplosionDamage,

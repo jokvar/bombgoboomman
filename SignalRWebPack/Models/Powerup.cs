@@ -10,5 +10,14 @@ namespace SignalRWebPack.Models
         public Powerup_type type { get; set; }
         public int existDuration { get; set; }
         public DateTime plantedAt { get; set; }
+
+        public Powerup(Powerup_type type, int x, int y)
+        {
+            this.type = type;
+            this.x = x;
+            this.y = y;
+            existDuration = 10; //seconds
+            plantedAt = DateTime.Now;
+        }
     }
 }

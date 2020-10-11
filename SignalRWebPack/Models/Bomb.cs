@@ -16,13 +16,13 @@ namespace SignalRWebPack.Models
 
         public Bomb(int x, int y, Player placedBy)
         {
-            tickDuration = 3; //seconds
+            this.placedBy = placedBy;
+            tickDuration = placedBy.bombTickDuration; //seconds
             plantedAt = DateTime.Now;
             explodesAt = plantedAt.AddSeconds(tickDuration);
             preExplodeTexture = "black.jpeg";
             this.x = x;
             this.y = y;
-            this.placedBy = placedBy;
         }
     }
 }
