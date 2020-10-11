@@ -16,18 +16,18 @@ export namespace Renderer {
         public canvas: CanvasRenderingContext2D;
 
         map: GameMap.Map;
-        players: Player.Player;
-        bomb: Array<GameObjects.Bomb>;
+        players: Array<Player.Player>;
+        bombs: Array<GameObjects.Bomb>;
         powerups: Array<GameObjects.Powerup>;
         explosions: Array<GameObjects.Explosion>;
         messages: Array<ChatHub.Message>;
 
         constructor(canvas: CanvasRenderingContext2D) {
             console.log("Renderer constructor");
-            this.tileW = 20;
-            this.tileH = 20;
             this.mapW = 15;
             this.mapH = 15;
+            this.tileW = canvas.canvas.width / this.mapW;
+            this.tileH = canvas.canvas.height / this.mapH;
             this.currentSecond = 0;
             this.frameCount = 0;
             this.framesLastSecond = 0;
@@ -43,10 +43,26 @@ export namespace Renderer {
             powerups: Array<GameObjects.Powerup>,
             explosions: Array<GameObjects.Explosion>,
             messages: Array<ChatHub.Message>): void {
+
+            //init or update map
             if (this.firstDraw == false) {
                 this.map = new GameMap.Map();
             }
-            //console.log("draw");
+            else {
+                for (let tile of map.tiles) {
+                    this.map.UpdateTile(tile);
+                }
+            }
+
+            this.players = players;
+            this.bombs = bombs;
+            this.powerups = powerups;
+            this.explosions = explosions;
+            this.messages = messages;
+        }
+
+        rand(max: number) {
+            return Math.floor(Math.random() * Math.floor(max));
         }
 
         drawGame = () => {
