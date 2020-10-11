@@ -47,6 +47,7 @@ export namespace Renderer {
             //init or update map
             if (this.firstDraw == false) {
                 this.map = new GameMap.Map();
+                this.firstDraw = true;
             }
             else {
                 for (let tile of map.tiles) {
@@ -83,16 +84,7 @@ export namespace Renderer {
             while (y < this.mapH) {
                 x = 0;
                 while (x < this.mapW) {
-                    switch (this.map.GetTile(x, y).passable) {
-                        case true:
-                            console.log("FALSET");
-                            this.canvas.fillStyle = "#ffffff";
-                            break;
-                        case false:
-                            console.log("FALSE");
-                            this.canvas.fillStyle = "#000000";
-                            break;
-                    }
+                    this.canvas.fillStyle = this.map.GetTile(x, y).texture;
                     this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
                     x++;
                 }
