@@ -15,7 +15,7 @@
             this.tiles = new Array<Tile>(225);
             this.mapData.forEach((value) => {
                 var x = this.index % 15;
-                var y = this.index / 15;
+                var y = Math.floor(this.index / 15);
 
                 if (value == 0) {
                     let tile = new EmptyTile(x, y, "test");
@@ -30,7 +30,6 @@
         }
 
         GetTile(x: number, y: number) {
-            console.log(this.width);
             let index = y * this.width + x;
             console.log(x + " " + y);
             console.log(index);

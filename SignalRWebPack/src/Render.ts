@@ -24,8 +24,8 @@ export namespace Renderer {
 
         constructor(canvas: CanvasRenderingContext2D) {
             console.log("Renderer constructor");
-            this.tileW = 40;
-            this.tileH = 40;
+            this.tileW = 20;
+            this.tileH = 20;
             this.mapW = 15;
             this.mapH = 15;
             this.currentSecond = 0;
@@ -51,8 +51,7 @@ export namespace Renderer {
 
         drawGame = () => {
             console.log("DrawGame()");
-            //if (this.canvas == null) { return; }
-            //console.log("passed null");
+            if (this.canvas == null) { return; }
             var sec = Math.floor(Date.now() / 1000);
 
             if (sec != this.currentSecond) {
@@ -64,24 +63,26 @@ export namespace Renderer {
 
             let y = 0;
             let x = 0;
-            console.log("fps count");
             //PAKEISTI VELIAU!!!!sauktukassauktukassauktukas
             while (y < this.mapH) {
-                y++;
+                x = 0;
                 while (x < this.mapW) {
-                    x++;
-                    console.log(this.map);
-                    var tile = this.map.GetTile(0, 0);
-                    console.log(tile);
                     switch (this.map.GetTile(x, y).passable) {
                         case true:
-                            this.canvas.fillStyle = "#e6ffe6";
+                            console.log("FALSET");
+                            this.canvas.fillStyle = "#ffffff";
                             break;
                         case false:
+                            console.log("FALSE");
                             this.canvas.fillStyle = "#000000";
+                            break;
                     }
                     this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                    x++;
                 }
+                console.log("MapH - " + this.mapH);
+                console.log("YY - " + y);
+                y++;
             }
 
             this.canvas.fillStyle = "#ff0000";
