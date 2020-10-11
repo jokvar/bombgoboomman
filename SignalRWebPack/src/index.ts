@@ -1,46 +1,15 @@
 import "./css/main.css";
 import * as signalR from "@microsoft/signalr";
+import { ChatHub } from "./chathub/ChatHub";
+import { Renderer } from "./Render";
 
-const divMessages: HTMLDivElement = document.querySelector("#divMessages");
-const tbMessage: HTMLInputElement = document.querySelector("#tbMessage");
-const btnSend: HTMLButtonElement = document.querySelector("#btnSend");
-const username = new Date().getTime();
-
-const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/hub")
-    .configureLogging(signalR.LogLevel.Information)
-    .build();
-
-connection.on("messageReceived", (username: string, message: string) => {
-    let m = document.createElement("div");
-    m.innerHTML =
-        `<div class="message-author">${username}</div><div>${message}</div>`;
-
-    divMessages.appendChild(m);
-    divMessages.scrollTop = divMessages.scrollHeight;
-});
-
-connection.start().catch(err => document.write(err));
-
-tbMessage.addEventListener("keyup", (e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-        send();
-    }
-});
-
-btnSend.addEventListener("click", send);
-
-function send() {
-    connection.send("newMessage", username, tbMessage.value)
-        .then(() => tbMessage.value = "");
-}
-
-function dumpvar(test: string) {
-    prompt(test);
-}
-connection.on("test", (ligma: string) => dumpvar); //NEVEIKIANTIS PVZ
-connection.on("test2", (ligma: string) => { //VEIKIANTIS PVZ
-    console.log("test2");
-    dumpvar(ligma);
-});
-
+window.onload = function () {
+    var canvas = (document.getElementById('game') as any).getContext("2d");
+    //console.log("got id of canvas")
+    //console.log(canvas)
+    canvas.font = "bold 10pt sans-serif";
+    var renderer: Renderer.Renderer = new Renderer.Renderer(canvas);
+    var chathub: ChatHub.Hub = new ChatHub.Hub(renderer);
+    renderer.drawGame(); 
+    console.log("requtested frame");
+};
