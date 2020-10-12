@@ -3,7 +3,7 @@ import { ChatHub } from "./chathub/ChatHub";
 import { Renderer } from "./ui/Render";
 import { Input } from "./ui/Input";
 
-const version = "v0.9.5";
+const version = "v0.0.97";
 
 window.onload = function () {
     var canvas = (document.getElementById('game') as HTMLCanvasElement).getContext("2d");

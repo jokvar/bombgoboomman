@@ -29,15 +29,17 @@ export namespace ChatHub {
                 this.start = true;
             });
             this.connection.on("messageReceived", (username: string, message: Message) => {
-                console.log(username + ": " + message.content);
+                console.log(message);
                 renderer.DisplayMessage(username, message.content);
             });
         }
     }
     export class Message {
         content: string;
-        constructor(content: string) {
+        code: number;
+        constructor(content: string, code: number) {
             this.content = content;
+            this.code = code;
         }
     }
     export class Server {
@@ -61,7 +63,7 @@ export namespace ChatHub {
         }
         NewMessage(username: string, message: ChatHub.Message): void {
             console.log(username + " " + message.content);
-            this.connection.send("NewMessage", username, message)
+            this.connection.send("NewMessage", username as string, message as ChatHub.Message)
                 .then(() => console.log("input sent"));
         }
     }

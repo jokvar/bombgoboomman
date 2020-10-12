@@ -19,12 +19,12 @@ export namespace Input {
             this.tbMessage.addEventListener("keyup", (e: KeyboardEvent) => {
                 if (e.key === "Enter") {
                     console.log("eventEnter: " + this.username + "- " + this.tbMessage.value);
-                    var message = new ChatHub.Message(this.tbMessage.value);
+                    var message = new ChatHub.Message(this.tbMessage.value, 0);
                     server.NewMessage(this.username, message);
                 }
             });
-            this.tbMessage.addEventListener("keyup", (e: KeyboardEvent) => {
-                if (e.key === "Space") {
+            document.addEventListener("keydown", (e: KeyboardEvent) => {
+                if (e.key === "ArrowRight" || e.key === "Right" || e.keyCode === 39) {
                     console.log("arrow right");
                     var action = new Player.PlayerAction(Player.ActionEnum.Right)
                     server.SendInput(action);

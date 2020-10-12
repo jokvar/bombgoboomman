@@ -55,7 +55,7 @@ namespace SignalRWebPack
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(5000);
-                await Broadcast(new Message("ligma lol"));
+                await Broadcast(new Message("ligma lol", 1));
                 //CheckBombTimers();
                 //CheckExplosionTimers();
                 //CheckInvulnerabilityPeriods();

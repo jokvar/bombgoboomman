@@ -17,6 +17,7 @@ namespace SignalRWebPack.Hubs
         //}
 
         public async Task NewMessage(string username, Message messageContainer)
+        
         {
             string message = messageContainer.content;
             if (message == "test")
@@ -24,7 +25,7 @@ namespace SignalRWebPack.Hubs
                 string ligma = "ligma";
                 await Clients.Client(Context.ConnectionId).SendAsync("test2", ligma);
             }
-            await Clients.All.SendAsync("messageReceived", username, new Message(message));
+            await Clients.All.SendAsync("messageReceived", username, new Message(message, 0));
         }
 
         public async Task CreateSession(string mapName)
