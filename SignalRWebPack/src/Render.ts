@@ -22,9 +22,12 @@ export namespace Renderer {
         explosions: Array<GameObjects.Explosion>;
         messages: Array<ChatHub.Message>;
 
-        //temp date, probably delete later?
+        //temp data, delete later
         playerOne: Player.Player;
         playerTwo: Player.Player;
+        bomb: GameObjects.Bomb;
+        powerup: GameObjects.Powerup;
+        explosion: GameObjects.Explosion;
 
         constructor(canvas: CanvasRenderingContext2D) {
             console.log("Renderer constructor");
@@ -38,11 +41,17 @@ export namespace Renderer {
             this.firstDraw = false;
             this.canvas = canvas;
 
-            //temp data, probably delete later?
+            //temp data, delete later
             this.map = new GameMap.Map();
-            this.playerOne = new Player.Player(3, "#ff0000", false, 1, 1);
-            this.playerTwo = new Player.Player(3, "#ff0000", false, 14, 14);
+            this.playerOne = new Player.Player(3, "#66ff99", false, 1, 1);
+            this.playerTwo = new Player.Player(3, "#66ff99", false, 13, 13);
+            this.bomb = new GameObjects.Bomb(7, 7, "#0d0d0d", 3, new Date("2019-01-16"), "#0d0d0d");
+            this.powerup = new GameObjects.Powerup(8, 8, "#ffff00", GameObjects.Powerup_type.BombDamage, 10, new Date("2019-01-16"));
+            this.explosion = new GameObjects.Explosion(9, 9, "#ffffff", 3, 2, 3, new Date("2019-01-16"));
             this.players = [this.playerOne, this.playerTwo];
+            this.bombs = [this.bomb];
+            this.powerups = [this.powerup];
+            this.explosions = [this.explosion];
         }
 
         StoreDrawData(
@@ -76,7 +85,6 @@ export namespace Renderer {
         }
 
         drawGame = () => {
-            console.log("DrawGame()");
             if (this.canvas == null) { return; }
             var sec = Math.floor(Date.now() / 1000);
 
@@ -92,20 +100,46 @@ export namespace Renderer {
             while (y < this.mapH) {
                 x = 0;
                 while (x < this.mapW) {
+                    let rand = Math.floor(Math.random() * Math.floor(4));
+                    //checking drawing, delete later
+                    if (rand == 1) {
+                        this.map.GetTile(x, y).texture = "#006600";
+                    }
+                    if (rand == 2) {
+                        this.map.GetTile(x, y).texture = "#ff0000";
+                    }
+                    if (rand == 3) {
+                        this.map.GetTile(x, y).texture = "#003399";
+                    }
                     this.canvas.fillStyle = this.map.GetTile(x, y).texture;
                     this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
                     x++;
                 }
                 y++;
             }
-            console.log(this.players);
+
             for (let p of this.players) {
-                console.log(p);
-                this.canvas.fillStyle = this.map.GetTile(p.x, p.y).texture;
-                this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
-                console.log("googoo gaga");
+                this.canvas.fillStyle = p.texture;
+                this.canvas.fillRect(p.x * this.tileW, p.y * this.tileH, this.tileW, this.tileH);
             }
 
+            for (let b of this.bombs) {
+                console.log("bomb");
+                this.canvas.fillStyle = b.texture;
+                this.canvas.fillRect(b.x * this.tileW, b.y * this.tileH, this.tileW, this.tileH);
+            }
+
+            for (let pow of this.powerups) {
+                console.log("powerups");
+                this.canvas.fillStyle = pow.texture;
+                this.canvas.fillRect(pow.x * this.tileW, pow.y * this.tileH, this.tileW, this.tileH);
+            }
+
+            for (let e of this.explosions) {
+                console.log("explosions");
+                this.canvas.fillStyle = e.texture;
+                this.canvas.fillRect(e.x * this.tileW, e.y * this.tileH, this.tileW, this.tileH);
+            }
             this.canvas.fillStyle = "#ff0000";
             this.canvas.fillText("FPS: " + this.framesLastSecond, 10, 20);
             console.log("draw dobne");
