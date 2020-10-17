@@ -77,7 +77,7 @@ namespace SignalRWebPack
             int i = 0;
             while (!cancellationToken.IsCancellationRequested)
             {
-                _logger.LogInformation("iteration");
+                //_logger.LogInformation("iteration");
 
                 //example action dequeing
                 Tuple<string, PlayerAction> tuple = InputQueueManager.Instance.ReadOne(); //deleted when read
@@ -90,7 +90,7 @@ namespace SignalRWebPack
                 //end example
 
                 explosions[0].x = (i++ % 5) + 1;
-                _logger.LogInformation("sending draw data");
+                //_logger.LogInformation("sending draw data");
                 await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
                 await Task.Delay(1000); // 😎😎😎😎
                 //await Broadcast(new Message("ligma lol", 1)); 
@@ -574,7 +574,6 @@ namespace SignalRWebPack
             Message[] messages = _messages.ToArray();
 
             //await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
-            _logger.LogInformation("tipo siunciam");
             await _hub.Clients.All.SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
         }   
 
