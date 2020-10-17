@@ -116,17 +116,6 @@ export namespace Renderer {
             while (y < this.mapH) {
                 x = 0;
                 while (x < this.mapW) {
-                    let rand = Math.floor(Math.random() * Math.floor(4));
-                    //checking drawing, delete later
-                    if (rand == 1) {
-                        this.map.GetTile(x, y).texture = "#006600";
-                    }
-                    if (rand == 2) {
-                        this.map.GetTile(x, y).texture = "#ff0000";
-                    }
-                    if (rand == 3) {
-                        this.map.GetTile(x, y).texture = "#003399";
-                    }
                     this.canvas.fillStyle = this.map.GetTile(x, y).texture;
                     this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
                     x++;

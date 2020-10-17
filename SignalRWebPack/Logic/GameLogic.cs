@@ -92,8 +92,7 @@ namespace SignalRWebPack
                 explosions[0].x = (i++ % 5) + 1;
                 _logger.LogInformation("sending draw data");
                 await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
-                _logger.LogInformation("end iteration");
-                await Task.Delay(5000); // 😎😎😎😎
+                await Task.Delay(1000); // 😎😎😎😎
                 //await Broadcast(new Message("ligma lol", 1)); 
 
                 //CheckBombTimers();s
