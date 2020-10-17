@@ -10,11 +10,6 @@ namespace SignalRWebPack.Hubs
 {
     public class ChatHub : Hub
     {
-        //private ISpecializedLogger logger;
-        //public ChatHub(ISpecializedLogger logger)
-        //{
-        //    this.logger = logger;
-        //}
 
         public async Task NewMessage(string username, Message messageContainer)
         
@@ -49,9 +44,7 @@ namespace SignalRWebPack.Hubs
 
         public async Task SendInput(PlayerAction input)
         {
-            //this queue needs to be thread safe; the send input requests are async (duh)
-            var x = 0;
-            //GameLogic.AddToInputQueue(Context.ConnectionId, input);
+            InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
         }
     }
 }
