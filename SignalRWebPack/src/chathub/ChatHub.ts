@@ -22,6 +22,7 @@ export namespace ChatHub {
                     bombs: Array<GameObjects.Bomb>, powerups: Array<GameObjects.Powerup>,
                     explosions: Array<GameObjects.Explosion>, messages: Array<Message>) => {
                     console.log("StoreDrawData");
+                    console.log(map, players, bombs, powerups, explosions, messages);
                     renderer.StoreDrawData(map, players, bombs, powerups, explosions, messages);
             });
             this.connection.on("StartPlaying", () => {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using SignalRWebPack.Logic;
 using SignalRWebPack.Models;
+using SignalRWebPack.Models.TransportModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,10 +53,22 @@ namespace SignalRWebPack
 
         public async Task GameLoop(CancellationToken cancellationToken)
         {
+        int[] mapData = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            gameMap = new Map(mapData);
+            players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
+            bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
+            powerups = new List<Powerup> { new Powerup(Powerup_type.AdditionalBomb, 2, 1) };
+            explosions = new List<Explosion> { new Explosion(DateTime.Now, 1, 5) };
+            List<Message> messages = new List<Message>();
+
+            int i = 0;
             while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Delay(5000);
-                await Broadcast(new Message("ligma lol", 1));
+                explosions[0].x = (i++ % 5) + 1;
+                await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
+                await Task.Delay(5000); // 😎😎😎😎
+                //await Broadcast(new Message("ligma lol", 1)); 
+
                 //CheckBombTimers();
                 //CheckExplosionTimers();
                 //CheckInvulnerabilityPeriods();
@@ -498,10 +511,46 @@ namespace SignalRWebPack
 
         }
 
-        public async Task StoreDrawData(string[] playerIDs, Map map, List<Player> players, List<Bomb> bombs, List<Powerup> powerups, List<Explosion> explosions, List<Message> messages)
+        public async Task StoreDrawData(string[] playerIDs, Map _map, List<Player> _players, List<Bomb> _bombs, List<Powerup> _powerups, List<Explosion> _explosions, List<Message> _messages)
         {
-            await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
-        }
+            // ------
+            TTile[] tiles = new TTile[_map.tiles.Length];
+            for (int i = 0; i < _map.tiles.Length; i++)
+            {
+                tiles[i] = new TTile() { x = _map.tiles[i].x, y = _map.tiles[i].y, texture = _map.tiles[i].texture };
+            }
+            TMap map = new TMap() { tiles = tiles };
+            // ------
+            TPlayer[] players = new TPlayer[_players.Count];
+            for (int i = 0; i < _players.Count; i++)
+            {
+                players[i] = new TPlayer() { x = _players[i].x, y = _players[i].y, texture = _players[i].texture };
+            }
+            // ------
+            TBomb[] bombs = new TBomb[_bombs.Count];
+            for (int i = 0; i < _bombs.Count; i++)
+            {
+                bombs[i] = new TBomb() { x = _bombs[i].x, y = _bombs[i].y, texture = _bombs[i].texture };
+            }
+            // ------
+            TPowerup[] powerups = new TPowerup[_powerups.Count];
+            for (int i = 0; i < _powerups.Count; i++)
+            {
+                powerups[i] = new TPowerup() { x = _powerups[i].x, y = _powerups[i].y, texture = _powerups[i].texture };
+            }
+            // ------
+            TExplosion[] explosions = new TExplosion[_explosions.Count];
+            for (int i = 0; i < _explosions.Count; i++)
+            {
+                explosions[i] = new TExplosion() { x = _explosions[i].x, y = _explosions[i].y, texture = _explosions[i].texture };
+            }
+            // ------
+            Message[] messages = _messages.ToArray();
+
+            //await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+            _logger.LogInformation("tipo siunciam");
+            await _hub.Clients.All.SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+        }   
 
         public async Task StartPlaying(string[] playerIDs)
         {

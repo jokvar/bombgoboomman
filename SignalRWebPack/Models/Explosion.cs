@@ -20,6 +20,7 @@ namespace SignalRWebPack.Models
             this.explodedAt = explodedAt;
             this.x = x;
             this.y = y;
+            texture = "#ff0000";
         }
     }
 }

@@ -1,0 +1,12 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SignalRWebPack.Models.TransportModels
+{
+    public class TBomb : TransportObject
+    {
+
+    }
+}
