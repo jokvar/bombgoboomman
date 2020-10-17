@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Features;
-using SignalRWebPack.Logic;
+﻿using SignalRWebPack.Logic;
 using SignalRWebPack.Models;
 using SignalRWebPack.Models.TransportModels;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Hubs;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading;
 using Microsoft.Extensions.Logging;
@@ -29,12 +27,13 @@ namespace SignalRWebPack
         private List<Explosion> explosions = new List<Explosion>();
         private List<Powerup> powerups = new List<Powerup>();
         private int mapDimensions = 15;
+
         private readonly ILogger _logger;
  
-        public GameLogic(IHubContext<ChatHub> _hub, ILogger<GameLogic> logger)
+        public GameLogic(IHubContext<ChatHub> hub, ILogger<GameLogic> logger)
         {
-            this._hub = _hub;
-            this._logger = logger;
+            _hub = hub;
+            _logger = logger;
         }
         public void SpawnPlayers()
         {
@@ -53,7 +52,21 @@ namespace SignalRWebPack
 
         public async Task GameLoop(CancellationToken cancellationToken)
         {
-        int[] mapData = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+        int[] mapData = {   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
             gameMap = new Map(mapData);
             players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
             bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
@@ -64,17 +77,31 @@ namespace SignalRWebPack
             int i = 0;
             while (!cancellationToken.IsCancellationRequested)
             {
+                _logger.LogInformation("iteration");
+
+                //example action dequeing
+                Tuple<string, PlayerAction> tuple = InputQueueManager.Instance.ReadOne(); //deleted when read
+                if (tuple != null)
+                {
+                    string playerId = tuple.Item1;
+                    PlayerAction action = tuple.Item2;
+                    _logger.LogInformation("analyzed tuple");
+                }
+                //end example
+
                 explosions[0].x = (i++ % 5) + 1;
+                _logger.LogInformation("sending draw data");
                 await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
+                _logger.LogInformation("end iteration");
                 await Task.Delay(5000); // 😎😎😎😎
                 //await Broadcast(new Message("ligma lol", 1)); 
 
-                //CheckBombTimers();
+                //CheckBombTimers();s
                 //CheckExplosionTimers();
                 //CheckInvulnerabilityPeriods();
                 //CheckPowerupTimers();
                 //client.StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages); ; 
-            }
+            } 
         }
 
         public void ProcessAction(PlayerAction playerAction, string id)
