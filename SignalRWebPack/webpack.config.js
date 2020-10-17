@@ -6,7 +6,7 @@ module.exports = {
     entry: "./src/index.ts",
     output: {
         path: path.resolve(__dirname, "wwwroot"),
-        filename: "[name].[chunkhash].js",
+        filename: "main.js",
         publicPath: "/"
     },
     resolve: {

@@ -2,19 +2,21 @@
 import { GameMap } from "../models/GameMap";
 import { GameObjects } from "../models/GameObjects";
 import { Player } from "../models/Player";
-import { Renderer } from "../Render"
+import { Renderer } from "../ui/Render"
 export namespace ChatHub {
     export class Hub {
         connection: signalRlib.HubConnection;
         renderer: Renderer.Renderer;
         start: boolean = false;
         server: Server;
+        username: string
         constructor(renderer: Renderer.Renderer) {
             this.connection = new signalRlib.HubConnectionBuilder()
                 .withUrl("/chathub")
                 .configureLogging(signalRlib.LogLevel.Information)
                 .build();
-            console.log("hub constructor");
+            this.username = new Date().getTime().toString();
+            this.server = new Server(this.connection, this.username);
             this.connection.on("StoreDrawData",
                 (map: GameMap.Map, players: Array<Player.Player>,
                     bombs: Array<GameObjects.Bomb>, powerups: Array<GameObjects.Powerup>,
@@ -26,10 +28,9 @@ export namespace ChatHub {
                 console.log("StartPlaying");
                 this.start = true;
             });
-            this.connection.on("messageReceived", (username: string, message: string) => {
-                console.log(username + ": " + message);
-                //not implemented yet
-                //renderer.newMessage(username, message);
+            this.connection.on("messageReceived", (username: string, message: Message) => {
+                console.log(message);
+                renderer.DisplayMessage(username, message.content);
             });
         }
     }
@@ -41,10 +42,12 @@ export namespace ChatHub {
             this.code = code;
         }
     }
-    class Server {
+    export class Server {
         connection: signalRlib.HubConnection;
-        constructor(connection: signalRlib.HubConnection) {
+        username: string;
+        constructor(connection: signalRlib.HubConnection, username: string) {
             this.connection = connection;
+            this.username = username;
         }
         CreateSession(mapName: string): void {
             this.connection.send("CreateSession", mapName)
@@ -58,8 +61,10 @@ export namespace ChatHub {
             this.connection.send("SendInput", input)
                 .then(() => console.log("input sent"));
         }
-        //not implemented yet
-        //newMessage(mapname: string): void { } 
-
+        NewMessage(username: string, message: ChatHub.Message): void {
+            console.log(username + " " + message.content);
+            this.connection.send("NewMessage", username as string, message as ChatHub.Message)
+                .then(() => console.log("input sent"));
+        }
     }
 }
