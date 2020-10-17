@@ -18,6 +18,7 @@ namespace SignalRWebPack.Models
             this.y = y;
             existDuration = 10; //seconds
             plantedAt = DateTime.Now;
+            texture = "##0d0d0d";
         }
     }
 }

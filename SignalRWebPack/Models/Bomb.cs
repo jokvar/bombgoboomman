@@ -20,7 +20,7 @@ namespace SignalRWebPack.Models
             tickDuration = placedBy.bombTickDuration; //seconds
             plantedAt = DateTime.Now;
             explodesAt = plantedAt.AddSeconds(tickDuration);
-            preExplodeTexture = "black.jpeg";
+            preExplodeTexture = "#0d0d0d";
             this.x = x;
             this.y = y;
         }
