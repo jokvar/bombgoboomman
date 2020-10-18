@@ -71,7 +71,7 @@ namespace SignalRWebPack
             players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
             bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
             powerups = new List<Powerup> { new Powerup(Powerup_type.AdditionalBomb, 2, 1) };
-            explosions = new List<Explosion> { new Explosion(DateTime.Now, 1, 5) };
+            //explosions = new List<Explosion> { new Explosion(DateTime.Now, 1, 5) };
             List<Message> messages = new List<Message>();
 
             int i = 0;
@@ -80,23 +80,24 @@ namespace SignalRWebPack
                 //_logger.LogInformation("iteration");
 
                 //example action dequeing
-                Tuple<string, PlayerAction> tuple = InputQueueManager.Instance.ReadOne(); //deleted when read
-                if (tuple != null)
+                Tuple<string, PlayerAction> tuple;
+                while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
                 {
                     string playerId = tuple.Item1;
                     PlayerAction action = tuple.Item2;
                     _logger.LogInformation("analyzed tuple");
+                    ProcessAction(action, playerId);
                 }
                 //end example
 
-                explosions[0].x = (i++ % 5) + 1;
+                //explosions[0].x = (i++ % 5) + 1;
                 //_logger.LogInformation("sending draw data");
                 await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
-                await Task.Delay(1000); // 😎😎😎😎
+                await Task.Delay(60); // 😎😎😎😎
                 //await Broadcast(new Message("ligma lol", 1)); 
 
-                //CheckBombTimers();s
-                //CheckExplosionTimers();
+                CheckBombTimers();
+                CheckExplosionTimers();
                 //CheckInvulnerabilityPeriods();
                 //CheckPowerupTimers();
                 //client.StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages); ; 
@@ -105,7 +106,7 @@ namespace SignalRWebPack
 
         public void ProcessAction(PlayerAction playerAction, string id)
         {
-            int requestIndex = session.MatchId(id);
+            int requestIndex = 0;//session.MatchId(id);
             //storing current coordinates
             int x = players[requestIndex].x;
             int y = players[requestIndex].y;
@@ -165,6 +166,12 @@ namespace SignalRWebPack
                     {
                         //I sleep
                     }
+                    else if (powerupCheck != null)
+                    {
+                        players[index].x += increment;
+                        ResolvePowerup(players[index]);
+                        powerups.RemoveAt(GetPowerupIndex(powerupCheck));
+                    }
                     else if (explosionCheck != null)
                     {
                         players[index].x += increment;
@@ -176,11 +183,7 @@ namespace SignalRWebPack
                     {
                         players[index].x += increment;
                     }
-                    else if (powerupCheck != null)
-                    {
-                        players[index].x += increment;
-                        ResolvePowerup(players[index], x, y);
-                    }
+                    
                     break;
 
                 case "y":
@@ -200,6 +203,12 @@ namespace SignalRWebPack
                     {
                         //I sleep
                     }
+                    else if (powerupCheck != null)
+                    {
+                        players[index].y += increment;
+                        ResolvePowerup(players[index]);
+                        powerups.RemoveAt(GetPowerupIndex(powerupCheck));
+                    }
                     else if (explosionCheck != null)
                     {
                         players[index].y += increment;
@@ -211,19 +220,15 @@ namespace SignalRWebPack
                     {
                         players[index].y += increment;
                     }
-                    else if (powerupCheck != null)
-                    {
-                        players[index].y += increment;
-                        ResolvePowerup(players[index], x, y);
-                    }
+                    
                     break;
             }
         }
 
         //resolves powerup pick ups
-        public void ResolvePowerup(Player playerReference, int x, int y)
+        public void ResolvePowerup(Player playerReference)
         {
-            Powerup powerupCheck = powerups.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            Powerup powerupCheck = powerups.Where(e => e.x == playerReference.x && e.y == playerReference.y).FirstOrDefault();
             switch (powerupCheck.type)
             {
                 case Powerup_type.AdditionalBomb:
@@ -284,6 +289,18 @@ namespace SignalRWebPack
             return 404; //not found
         }
 
+        public int GetPowerupIndex(Powerup powerup)
+        {
+            for (int i = 0; i < powerups.Count; i++)
+            {
+                if (powerups[i] == powerup)
+                {
+                    return i;
+                }
+            }
+            return 404; //not found
+        }
+
         //spawns gunpowder with the center of the explosion being the coordinates x and y (where the bomb was initially placed)
         public void SpawnExplosions(int x, int y, Player playerReference)
         {
@@ -319,10 +336,15 @@ namespace SignalRWebPack
             Explosion explosionCheck;
             Bomb bombCheck;
             Player playerCheck;
+            Powerup powerupCheck;
             switch (axis)
             {
                 case "x":
                     explosionIndex = ConvertCoordsToIndex(x + increment, y);
+                    if (explosionIndex > 225 || explosionIndex < 0)
+                    {
+                        break;
+                    }
 
                     //checking whether an explosion already exists at the given coordinates
                     explosionCheck = explosions.Where(e => e.x == x + increment && e.y == y).FirstOrDefault();
@@ -332,6 +354,9 @@ namespace SignalRWebPack
 
                     //checking whether a player is standing at the given coordinates
                     playerCheck = players.Where(e => e.x == x + increment && e.y == y).FirstOrDefault();
+
+                    //checking whether a powerup exists at the given coordinates
+                    powerupCheck = powerups.Where(e => e.x == x + increment && e.y == y).FirstOrDefault();
 
                     if (gameMap.tiles[explosionIndex] is Wall)
                     {
@@ -347,9 +372,17 @@ namespace SignalRWebPack
                         explosionStopped = true;
                         BombExplosion(GetBombIndex(bombCheck));
                     }
+                    else if (powerupCheck != null)
+                    {
+                        Explosion exp1 = new Explosion(explodedAt, x + increment, y);
+                        explosions.Add(exp1);
+                        powerups.RemoveAt(GetPowerupIndex(powerupCheck));
+                    }
                     //if explosion spawns on player
                     else if (playerCheck != null)
                     {
+                        Explosion exp1 = new Explosion(explodedAt, x + increment, y);
+                        explosions.Add(exp1);
                         playerCheck.lives--;
                         playerCheck.invulnerableSince = DateTime.Now;
                         playerCheck.invulnerable = true;
@@ -360,18 +393,22 @@ namespace SignalRWebPack
                         explosions.Add(exp1);
                         GeneratePowerup(x + increment, y, explosionIndex);
                         explosionStopped = true;
-                        gameMap.tiles[explosionIndex] = new EmptyTile();
+                        gameMap.tiles[explosionIndex] = new EmptyTile { x = x + increment, y = y, texture = "#ffffff" };
                     }
                     else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
                     {
                         Explosion exp1 = new Explosion(explodedAt, x + increment, y);
                         explosions.Add(exp1);
                     }
+                    
                     break;
 
                 case "y":
                     explosionIndex = ConvertCoordsToIndex(x, y + increment);
-
+                    if(explosionIndex > 225 || explosionIndex < 0)
+                    {
+                        break;
+                    }
                     //checking whether an explosion already exists at the given coordinates
                     explosionCheck = explosions.Where(e => e.x == x && e.y == y + increment).FirstOrDefault();
 
@@ -380,6 +417,9 @@ namespace SignalRWebPack
 
                     //checking whether a player is standing at the given coordinates
                     playerCheck = players.Where(e => e.x == x && e.y == y + increment).FirstOrDefault();
+
+                    //checking whether a powerup exists at the given coordinates
+                    powerupCheck = powerups.Where(e => e.x == x && e.y == y + increment).FirstOrDefault();
 
                     if (gameMap.tiles[explosionIndex] is Wall)
                     {
@@ -394,8 +434,16 @@ namespace SignalRWebPack
                         explosionStopped = true;
                         BombExplosion(GetBombIndex(bombCheck));
                     }
+                    else if (powerupCheck != null)
+                    {
+                        Explosion exp1 = new Explosion(explodedAt, x, y + increment);
+                        explosions.Add(exp1);
+                        powerups.RemoveAt(GetPowerupIndex(powerupCheck));
+                    }
                     else if (playerCheck != null)
                     {
+                        Explosion exp1 = new Explosion(explodedAt, x, y + increment);
+                        explosions.Add(exp1);
                         playerCheck.lives--;
                         playerCheck.invulnerableSince = DateTime.Now;
                         playerCheck.invulnerable = true;
@@ -404,15 +452,16 @@ namespace SignalRWebPack
                     {
                         Explosion exp = new Explosion(explodedAt, x, y + increment);
                         explosions.Add(exp);
-                        GeneratePowerup(x + increment, y, explosionIndex);
+                        GeneratePowerup(x, y + increment, explosionIndex);
                         explosionStopped = true;
-                        gameMap.tiles[explosionIndex] = new EmptyTile();
+                        gameMap.tiles[explosionIndex] = new EmptyTile {x = x, y = y + increment, texture = "#ffffff" };
                     }
                     else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
                     {
                         Explosion exp = new Explosion(explodedAt, x, y + increment);
                         explosions.Add(exp);
                     }
+                    
                     break;
             }
             return explosionStopped;
@@ -420,7 +469,7 @@ namespace SignalRWebPack
 
         public int ConvertCoordsToIndex(int x, int y)
         {
-            return 15 * y + x + 1;
+            return 15 * y + x;
         }
 
         //repeatedly called method for checking whether any bomb timers in the bomb list have expired yet
@@ -481,10 +530,8 @@ namespace SignalRWebPack
             {
                 for (int i = 0; i < explosions.Count; i++)
                 {
-                    DateTime explosionExpiration = explosions[i].explodedAt;
-                    explosionExpiration.AddSeconds(explosions[i].explosionDuration);
 
-                    if(explosionExpiration <= DateTime.Now)
+                    if(explosions[i].expiresAt <= DateTime.Now)
                     {
                         explosions.RemoveAt(i);
                     }

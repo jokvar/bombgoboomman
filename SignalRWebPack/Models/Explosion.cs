@@ -11,13 +11,15 @@ namespace SignalRWebPack.Models
         public int size { get; set; }
         public int explosionDuration { get; set; }
         public DateTime explodedAt { get; set; }
+        public DateTime expiresAt { get; set; }
 
         public Explosion(DateTime explodedAt, int x, int y)
         {
             damage = 1;
             size = 1;
-            explosionDuration = 3; //explosion persists for 3 seconds
+            explosionDuration = 2; //explosion persists for 3 seconds
             this.explodedAt = explodedAt;
+            expiresAt = explodedAt.AddSeconds(explosionDuration);
             this.x = x;
             this.y = y;
             texture = "#ff0000";
