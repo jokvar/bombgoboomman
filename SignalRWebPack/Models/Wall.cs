@@ -8,5 +8,15 @@ namespace SignalRWebPack.Models
     public class Wall : Tile
     {
 
+        public Wall()
+        {
+
+        }
+        public void SetValues(int x, int y, string texture)
+        {
+            this.x = x;
+            this.y = y;
+            this.texture = texture;
+        }
     }
 }

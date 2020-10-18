@@ -7,5 +7,16 @@ namespace SignalRWebPack.Models
 {
     public class EmptyTile : Tile
     {
+        public EmptyTile()
+        {
+
+        }
+
+        public void SetValues(int x, int y, string texture)
+        {
+            this.x = x;
+            this.y = y;
+            this.texture = texture;
+        }
     }
 }
