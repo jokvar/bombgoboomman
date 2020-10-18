@@ -9,8 +9,10 @@ using SignalRWebPack.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using SignalRWebPack.Patterns.Singleton;
+using SignalRWebPack.Patterns.FactoryMethod;
 
-namespace SignalRWebPack
+namespace SignalRWebPack.Logic
 {
     public interface IGameLogic
     {
@@ -28,12 +30,21 @@ namespace SignalRWebPack
         private List<Powerup> powerups = new List<Powerup>();
         private int mapDimensions = 15;
 
+        //-------FactoryMethod--------------
+        // Creators: 
+        BombTransportCreator bombCreator;
+        PowerupTransportCreator powerupCreator; 
+        ExplosionTransportCreator explosionCreator;
+        //-------FactoryMethod--------------
         private readonly ILogger _logger;
  
         public GameLogic(IHubContext<ChatHub> hub, ILogger<GameLogic> logger)
         {
             _hub = hub;
             _logger = logger;
+            bombCreator = new BombTransportCreator();
+            powerupCreator = new PowerupTransportCreator();
+            explosionCreator = new ExplosionTransportCreator();
         }
         public void SpawnPlayers()
         {
@@ -584,9 +595,8 @@ namespace SignalRWebPack
 
         }
 
-        public async Task StoreDrawData(string[] playerIDs, Map _map, List<Player> _players, List<Bomb> _bombs, List<Powerup> _powerups, List<Explosion> _explosions, List<Message> _messages)
+        private async Task StoreDrawData(string[] playerIDs, Map _map, List<Player> _players, List<Bomb> _bombs, List<Powerup> _powerups, List<Explosion> _explosions, List<Message> _messages)
         {
-            // ------
             TTile[] tiles = new TTile[_map.tiles.Length];
             for (int i = 0; i < _map.tiles.Length; i++)
             {
@@ -600,29 +610,13 @@ namespace SignalRWebPack
                 players[i] = new TPlayer() { x = _players[i].x, y = _players[i].y, texture = _players[i].texture };
             }
             // ------
-            TBomb[] bombs = new TBomb[_bombs.Count];
-            for (int i = 0; i < _bombs.Count; i++)
-            {
-                bombs[i] = new TBomb() { x = _bombs[i].x, y = _bombs[i].y, texture = _bombs[i].texture };
-            }
-            // ------
-            TPowerup[] powerups = new TPowerup[_powerups.Count];
-            for (int i = 0; i < _powerups.Count; i++)
-            {
-                powerups[i] = new TPowerup() { x = _powerups[i].x, y = _powerups[i].y, texture = _powerups[i].texture };
-            }
-            // ------
-            TExplosion[] explosions = new TExplosion[_explosions.Count];
-            for (int i = 0; i < _explosions.Count; i++)
-            {
-                explosions[i] = new TExplosion() { x = _explosions[i].x, y = _explosions[i].y, texture = _explosions[i].texture };
-            }
-            // ------
+            BombTransport[] bombs = (BombTransport[])_bombs.Select(bomb => bombCreator.Pack(bomb)).ToArray();
+            PowerupTransport[] powerups = (PowerupTransport[])_powerups.Select(powerup => powerupCreator.Pack(powerup)).ToArray();
+            ExplosionTransport[] explosions = (ExplosionTransport[])_explosions.Select(explosion => explosionCreator.Pack(explosion)).ToArray();
             Message[] messages = _messages.ToArray();
-
             //await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
             await _hub.Clients.All.SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
-        }   
+        }
 
         public async Task StartPlaying(string[] playerIDs)
         {
