@@ -13,10 +13,6 @@ namespace SignalRWebPack.Models
         public DateTime explodedAt { get; set; }
         public DateTime expiresAt { get; set; }
 
-        public string texture { get; set; }
-        public int x { get; set; }
-        public int y { get; set; }
-
         public Explosion(DateTime explodedAt, int x, int y)
         {
             damage = 1;

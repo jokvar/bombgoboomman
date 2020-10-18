@@ -11,7 +11,7 @@ namespace SignalRWebPack.Patterns.FactoryMethod
 
         public void Pack(GameObject gameObject)
         {
-            if (gameObject.GetType() != typeof(Bomb))
+            if (gameObject.GetType() != typeof(Explosion))
             {
                 throw new ArgumentException(
                     string.Format("Attempted to Pack {0} as {1}.",

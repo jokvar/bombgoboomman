@@ -10,10 +10,6 @@ namespace SignalRWebPack.Models
         public Powerup_type type { get; set; }
         public int existDuration { get; set; }
         public DateTime plantedAt { get; set; }
-        public string texture { get; set; }
-        public int x { get; set; }
-        public int y { get; set; }
-
         public Powerup(Powerup_type type, int x, int y)
         {
             this.type = type;

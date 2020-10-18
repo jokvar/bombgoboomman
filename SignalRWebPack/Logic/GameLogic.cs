@@ -85,7 +85,6 @@ namespace SignalRWebPack.Logic
             //explosions = new List<Explosion> { new Explosion(DateTime.Now, 1, 5) };
             List<Message> messages = new List<Message>();
 
-            int i = 0;
             while (!cancellationToken.IsCancellationRequested)
             {
                 //_logger.LogInformation("iteration");
@@ -610,9 +609,9 @@ namespace SignalRWebPack.Logic
                 players[i] = new TPlayer() { x = _players[i].x, y = _players[i].y, texture = _players[i].texture };
             }
             // ------
-            BombTransport[] bombs = (BombTransport[])_bombs.Select(bomb => bombCreator.Pack(bomb)).ToArray();
-            PowerupTransport[] powerups = (PowerupTransport[])_powerups.Select(powerup => powerupCreator.Pack(powerup)).ToArray();
-            ExplosionTransport[] explosions = (ExplosionTransport[])_explosions.Select(explosion => explosionCreator.Pack(explosion)).ToArray();
+            BombTransport[] bombs = _bombs.Select(bomb => (BombTransport) bombCreator.Pack(bomb)).ToArray();
+            PowerupTransport[] powerups = _powerups.Select(powerup => (PowerupTransport) powerupCreator.Pack(powerup)).ToArray();
+            ExplosionTransport[] explosions = _explosions.Select(explosion => (ExplosionTransport) explosionCreator.Pack(explosion)).ToArray();
             Message[] messages = _messages.ToArray();
             //await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
             await _hub.Clients.All.SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);

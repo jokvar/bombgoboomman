@@ -12,10 +12,6 @@ namespace SignalRWebPack.Models
         public DateTime explodesAt { get; set; }
         public string preExplodeTexture { get; set; }
         public Player placedBy { get; set; }
-        public string texture { get; set; }
-        public int x { get; set; }
-        public int y { get; set; }
-
 
         public Bomb(int x, int y, Player placedBy)
         {

@@ -5,6 +5,7 @@ using SignalRWebPack.Logic;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using SignalRWebPack.Patterns.Singleton;
 
 namespace SignalRWebPack.Hubs
 {
