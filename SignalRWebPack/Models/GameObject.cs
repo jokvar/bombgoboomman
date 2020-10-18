@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Models
 {
-    public class GameObject
+    public abstract class GameObject
     {
         public string texture { get; set; }
         public int x { get; set; }
