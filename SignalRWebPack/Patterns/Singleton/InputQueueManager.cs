@@ -4,34 +4,40 @@ using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Models;
 
-namespace SignalRWebPack.Logic
+namespace SignalRWebPack.Patterns.Singleton
 {
-
-
     public class InputQueueManager 
     {
-        private static readonly InputQueueManager instance = new InputQueueManager();
         private List<Input> inputQueue;
+        private readonly object queueLock = new object();
         private InputQueueManager()
         {
             inputQueue = new List<Input>();
         }
 
-        public static InputQueueManager Instance => instance;
+        public static InputQueueManager Instance { get; } = new InputQueueManager();
 
         public void AddToInputQueue(string _connectionId, PlayerAction _action)
         {
-            inputQueue.Add(new Input(_connectionId, _action));
+            Input input = new Input(_connectionId, _action);
+            lock (queueLock)
+            {
+                inputQueue.Add(input);
+            }          
         }
 
         public Tuple<string, PlayerAction> ReadOne()
         {
-            if (inputQueue.Count == 0) //if empty
+            Tuple<string, PlayerAction> input;
+            lock (queueLock)
             {
-                return null;
+                if (inputQueue.Count == 0) //if empty
+                {
+                    return null;
+                }
+                input = inputQueue[0].Get();
+                inputQueue.RemoveAt(0);
             }
-            Tuple<string, PlayerAction> input = inputQueue[0].Get();
-            inputQueue.RemoveAt(0);
             return input;
         }
 

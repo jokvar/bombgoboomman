@@ -5,14 +5,13 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Models
 {
-    public class Player
+    public class Player : GameObject
     {
         public int lives { get; set; }
         public string name { get; set; }
         public string id { get; set; }
         public bool invulnerable { get; set; }
         public double speedMultiplier { get; set; }
-        public string texture { get; set; }
         public bool ready { get; set; }
         public DateTime invulnerableSince { get; set; }
         public int invulnerabilityDuration { get; set; }
@@ -20,8 +19,6 @@ namespace SignalRWebPack.Models
         public int activeBombCount { get; set; }
         public int explosionSizeMultiplier { get; set; }
         public int bombTickDuration { get; set; }
-        public int x { get; set; }
-        public int y { get; set; }
 
         public Player(string name, string id, int x, int y)
         {
