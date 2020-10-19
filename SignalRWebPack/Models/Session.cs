@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRWebPack.Patterns;
+using SignalRWebPack.Patterns.Observer;
 
 namespace SignalRWebPack.Models
 {
-    public class Session
+    public class Session : ISubject
     {
         public List<Player> Players { get; set; }
         public Player Host { get; set; }
@@ -23,6 +25,8 @@ namespace SignalRWebPack.Models
         }
         public string roomCode { get; set; }
         public string id { get; set; }
+
+        private List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
 
@@ -55,5 +59,22 @@ namespace SignalRWebPack.Models
         }
 
         public void SetMap(string mapName) => Map = new Map(mapName);
+
+        public void Attach(IObserver observer)
+        {
+            this.Observers.Add(observer);
+        }
+
+        public void Detach(IObserver observer)
+        {
+            this.Observers.Remove(observer);
+        }
+        public void Notify()
+        {
+            foreach (var observer in Observers)
+            {
+                observer.Update(this);
+            }
+        }
     }
 }
