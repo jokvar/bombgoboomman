@@ -29,7 +29,9 @@ namespace SignalRWebPack.Models
         private List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
-
+            //commented out because right now, session has no player array, unless hard coded
+            //var livesObserver = new LivesObserver();
+            //this.Attach(livesObserver);
         }
 
         public string GenerateRoomCode()
