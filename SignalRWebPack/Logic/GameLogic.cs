@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using SignalRWebPack.Patterns.Singleton;
 using SignalRWebPack.Patterns.FactoryMethod;
 using SignalRWebPack.Patterns.Strategy;
+using SignalRWebPack.Patterns.Builder;
 
 namespace SignalRWebPack.Logic
 {
@@ -64,25 +65,32 @@ namespace SignalRWebPack.Logic
 
         public async Task GameLoop(CancellationToken cancellationToken)
         {
-        int[] mapData = {   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-                            1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                            1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1,
-                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            gameMap = new Map(mapData);
+            //int[] mapData = {   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+            //                    1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1,
+            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+            //                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            //    gameMap = new Map(mapData);
+
+            MapDirector director = new MapDirector();
+            MapBuilder b1 = new ClassicBuilder();
+            //MapBuilder b1 = new MLGBuilder();
+            director.Construct(b1);
+            gameMap = b1.GetResult();
+
             players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
-            bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
-            powerups = new List<Powerup> { new Powerup(Powerup_type.AdditionalBomb, 2, 1) };
+            //bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
+            //powerups = new List<Powerup> { new Powerup(Powerup_type.AdditionalBomb, 2, 1) };
             //explosions = new List<Explosion> { new Explosion(DateTime.Now, 1, 5) };
             List<Message> messages = new List<Message>();
 
@@ -139,7 +147,7 @@ namespace SignalRWebPack.Logic
                     break;
 
                 case ActionEnums.PlaceBomb:
-                    if(players[requestIndex].activeBombCount + 1 < players[requestIndex].maxBombs)
+                    if(players[requestIndex].activeBombCount + 1 <= players[requestIndex].maxBombs)
                     {
                         players[requestIndex].activeBombCount++;
                         PlaceBomb(requestIndex);
