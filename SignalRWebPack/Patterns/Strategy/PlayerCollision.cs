@@ -8,7 +8,7 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class PlayerCollision : CollisionStrategy
     {
-        public override void ExplosionCollisionStrategy(object collisionObject, List<Explosion> explosions, DateTime explodedAt, List<GameObject> collisionList)
+        public override void ExplosionCollisionStrategy(object collisionObject, List<Explosion> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             var player = collisionObject as Player;
             Explosion exp1 = new Explosion(explodedAt, player.x, player.y);
@@ -18,7 +18,7 @@ namespace SignalRWebPack.Patterns.Strategy
             player.invulnerable = true;
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionObject, List<GameObject> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionObject, List<Powerup> collisionList)
         {
             //do nothing
         }
