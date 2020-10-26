@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRWebPack.Patterns;
+using SignalRWebPack.Patterns.Observer;
 
 namespace SignalRWebPack.Models
 {
-    public class Session
+    public class Session : ISubject
     {
         public List<Player> Players { get; set; }
         public Player Host { get; set; }
@@ -23,9 +25,13 @@ namespace SignalRWebPack.Models
         }
         public string roomCode { get; set; }
         public string id { get; set; }
+
+        private List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
-
+            //commented out because right now, session has no player array, unless hard coded
+            //var livesObserver = new LivesObserver();
+            //this.Attach(livesObserver);
         }
 
         public string GenerateRoomCode()
@@ -54,6 +60,23 @@ namespace SignalRWebPack.Models
             // -1 if not found
         }
 
-        public void SetMap(string mapName) => Map = new Map();
+        public void SetMap() => Map = new Map();
+
+        public void Attach(IObserver observer)
+        {
+            this.Observers.Add(observer);
+        }
+
+        public void Detach(IObserver observer)
+        {
+            this.Observers.Remove(observer);
+        }
+        public void Notify()
+        {
+            foreach (var observer in Observers)
+            {
+                observer.Update(this);
+            }
+        }
     }
 }
