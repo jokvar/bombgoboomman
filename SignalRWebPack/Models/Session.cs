@@ -60,7 +60,7 @@ namespace SignalRWebPack.Models
             // -1 if not found
         }
 
-        public void SetMap(string mapName) => Map = new Map(mapName);
+        public void SetMap() => Map = new Map();
 
         public void Attach(IObserver observer)
         {
