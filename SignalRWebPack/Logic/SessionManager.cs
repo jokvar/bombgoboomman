@@ -6,7 +6,7 @@ using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Logic
 {
-    public static class SessionManager //possibly static
+    static class SessionManager //possibly static
     {
         public static Session GetSession()
         {

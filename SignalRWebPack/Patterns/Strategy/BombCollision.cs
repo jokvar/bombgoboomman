@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
-    class WallCollision : CollisionStrategy
+    class BombCollision : CollisionStrategy
     {
-        public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
+        public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> powerupList)
         {
-            //do nothing
+            var bomb = collisionTarget as Bomb;
+            bomb.Explode();
         }
 
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
         {
-            //do nothing
+            throw new NotImplementedException();
         }
     }
 }

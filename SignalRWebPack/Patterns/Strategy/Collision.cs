@@ -16,7 +16,7 @@ namespace SignalRWebPack.Patterns.Strategy
             _collisionStrategy = collisionStrategy;
         }
 
-        public void ResolveExplosionCollision(object collisionTarget, List<Explosion> explosions, DateTime explodedAt, List<Powerup> collisionList)
+        public void ResolveExplosionCollision(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             _collisionStrategy.ExplosionCollisionStrategy(collisionTarget, explosions, explodedAt, collisionList);
         }

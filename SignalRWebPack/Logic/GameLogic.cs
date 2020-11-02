@@ -28,8 +28,8 @@ namespace SignalRWebPack.Logic
         private List<Player> players = session.Players;
         private Map gameMap = session.Map;
         private List<Bomb> bombs = new List<Bomb>();
-        private List<Explosion> explosions = new List<Explosion>();
-        private List<Powerup> powerups = new List<Powerup>();
+        private List<ExplosionCell> explosions = new List<ExplosionCell>();
+        private List<Powerup> powerups = session.powerups;
         private int mapDimensions = 15;
 
         //-------FactoryMethod--------------
@@ -82,13 +82,10 @@ namespace SignalRWebPack.Logic
             //                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
             //    gameMap = new Map(mapData);
 
-            MapDirector director = new MapDirector();
-            MapBuilder b1 = new ClassicBuilder();
-            //MapBuilder b1 = new MLGBuilder();
-            director.Construct(b1);
-            gameMap = b1.GetResult();
+            
 
-            players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
+            
+
             //bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
             //powerups = new List<Powerup> { new Powerup(Powerup_type.AdditionalBomb, 2, 1) };
             //explosions = new List<Explosion> { new Explosion(DateTime.Now, 1, 5) };
@@ -110,12 +107,30 @@ namespace SignalRWebPack.Logic
                 //end example
                 //explosions[0].x = (i++ % 5) + 1;
                 //_logger.LogInformation("sending draw data");
-                await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
+                FormDrawingObjectLists();
+                await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, session.powerups, explosions, messages);
                 await Task.Delay(60); // 😎😎😎😎
                 //await Broadcast(new Message("ligma lol", 1)); 
 
-                CheckBombTimers();
-                CheckExplosionTimers();
+                foreach(Player player in players)
+                {
+                    player.CheckBombTimers();
+                    foreach(Bomb bomb in player.bombs)
+                    {
+                        if(bomb.GetExplosion() != null)
+                        {
+                            bomb.GetExplosion().CheckExplosionTimers();
+                            if (bomb.GetExplosion().isExpired)
+                            {
+                                player.RefreshBombList(bomb);
+                            }
+                        }
+                        
+                    }
+                }
+
+                
+                //CheckExplosionTimers();
                 //CheckInvulnerabilityPeriods();
                 //CheckPowerupTimers();
                 //client.StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages); ; 
@@ -147,11 +162,7 @@ namespace SignalRWebPack.Logic
                     break;
 
                 case ActionEnums.PlaceBomb:
-                    if(players[requestIndex].activeBombCount + 1 <= players[requestIndex].maxBombs)
-                    {
-                        players[requestIndex].activeBombCount++;
-                        PlaceBomb(requestIndex);
-                    }
+                    players[requestIndex].PlaceBomb();
                     break;
 
             }
@@ -160,18 +171,18 @@ namespace SignalRWebPack.Logic
         public void PlayerCheckAdjacentTiles(int x, int y, int index)
         {
             int movementIndex = 0;
-            Collision playerCollision = new Collision();
+            //Collision playerCollision = new Collision();
 
             //converting player coordinates to map tile index
             movementIndex = ConvertCoordsToIndex(x, y);
             //retrieving every type of gameobject that could exist on the tile the player is trying to move towards
             Bomb bombCheck = bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
             Powerup powerupCheck = powerups.Where(e => e.x == x && e.y == y).FirstOrDefault();
-            Explosion explosionCheck = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            ExplosionCell explosionCheck = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
             if (gameMap.tiles[movementIndex] is Wall)
             {
-                playerCollision.SetCollisionStrategy(new WallCollision());
-                playerCollision.ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>());
+                players[index].SetCollisionStrategy(new WallCollision());
+                players[index].ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>());
             }
             else if (bombCheck != null)
             {
@@ -179,165 +190,165 @@ namespace SignalRWebPack.Logic
             }
             else if (gameMap.tiles[movementIndex] is Box)
             {
-                playerCollision.SetCollisionStrategy(new BoxCollision());
-                playerCollision.ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>());
+                players[index].SetCollisionStrategy(new BoxCollision());
+                players[index].ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>());
             }
             else if (powerupCheck != null)
             {
-                playerCollision.SetCollisionStrategy(new PowerupCollision());
-                playerCollision.ResolvePlayerCollision(players[index], powerupCheck, powerups);
+                players[index].SetCollisionStrategy(new PowerupCollision());
+                players[index].ResolvePlayerCollision(players[index], powerupCheck, powerups);
             }
             else if (explosionCheck != null)
             {
-                playerCollision.SetCollisionStrategy(new ExplosionCollision());
-                playerCollision.ResolvePlayerCollision(players[index], explosionCheck, new List<Powerup>());
+                players[index].SetCollisionStrategy(new ExplosionCollision());
+                players[index].ResolvePlayerCollision(players[index], explosionCheck, new List<Powerup>());
             }
             else if (gameMap.tiles[movementIndex] is EmptyTile)
             {
-                playerCollision.SetCollisionStrategy(new EmptyTileCollision());
-                playerCollision.ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>());
+                players[index].SetCollisionStrategy(new EmptyTileCollision());
+                players[index].ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>());
             }
         }
 
 
-        public void PlaceBomb(int requestIndex)
-        {
-            int x = players[requestIndex].x;
-            int y = players[requestIndex].y;
-            Bomb bomb = new Bomb(x, y, players[requestIndex]);
-            bombs.Add(bomb);
-        }
+        //public void PlaceBomb(int requestIndex)
+        //{
+        //    int x = players[requestIndex].x;
+        //    int y = players[requestIndex].y;
+        //    Bomb bomb = new Bomb(x, y, players[requestIndex]);
+        //    bombs.Add(bomb);
+        //}
 
         //method for resolving bomb explosions
-        public void BombExplosion(int bombIndex)
-        {
-            int x = bombs[bombIndex].x;
-            int y = bombs[bombIndex].y;
-            Player playerReference = bombs[bombIndex].placedBy;
-            bombs.RemoveAt(bombIndex);
-            playerReference.activeBombCount--;
-            SpawnExplosions(x, y, playerReference);
-        }
+        //public void BombExplosion(int bombIndex)
+        //{
+        //    int x = bombs[bombIndex].x;
+        //    int y = bombs[bombIndex].y;
+        //    Player playerReference = bombs[bombIndex].placedBy;
+        //    bombs.RemoveAt(bombIndex);
+        //    playerReference.activeBombCount--;
+        //    SpawnExplosions(x, y, playerReference);
+        //}
 
-        public int GetBombIndex(Bomb bomb)
-        {
-            for (int i = 0; i < bombs.Count; i++)
-            {
-                if(bombs[i] == bomb)
-                {
-                    return i;
-                }
-            }
-            return 404; //not found
-        }
+        //public int GetBombIndex(Bomb bomb)
+        //{
+        //    for (int i = 0; i < bombs.Count; i++)
+        //    {
+        //        if(bombs[i] == bomb)
+        //        {
+        //            return i;
+        //        }
+        //    }
+        //    return 404; //not found
+        //}
 
-        public int GetPowerupIndex(Powerup powerup)
-        {
-            for (int i = 0; i < powerups.Count; i++)
-            {
-                if (powerups[i] == powerup)
-                {
-                    return i;
-                }
-            }
-            return 404; //not found
-        }
+        //public int GetPowerupIndex(Powerup powerup)
+        //{
+        //    for (int i = 0; i < powerups.Count; i++)
+        //    {
+        //        if (powerups[i] == powerup)
+        //        {
+        //            return i;
+        //        }
+        //    }
+        //    return 404; //not found
+        //}
 
         //spawns gunpowder with the center of the explosion being the coordinates x and y (where the bomb was initially placed)
-        public void SpawnExplosions(int x, int y, Player playerReference)
-        {
-            DateTime explodedAt = DateTime.Now;
-            Explosion explosion = new Explosion(explodedAt, x, y);
-            DateTime expiresAt = explodedAt.AddSeconds(explosion.explosionDuration);
+        //public void SpawnExplosions(int x, int y, Player playerReference)
+        //{
+        //    DateTime explodedAt = DateTime.Now;
+        //    ExplosionCell explosion = new ExplosionCell(explodedAt, x, y);
+        //    DateTime expiresAt = explodedAt.AddSeconds(explosion.explosionDuration);
 
-            //make 4 flags for each direction of the explosion to track whether it continues to spread or not
-            bool xPlusStopped = false;
-            bool xMinusStopped = false;
-            bool yPlusStopped = false;
-            bool yMinusStopped = false;
+        //    //make 4 flags for each direction of the explosion to track whether it continues to spread or not
+        //    bool xPlusStopped = false;
+        //    bool xMinusStopped = false;
+        //    bool yPlusStopped = false;
+        //    bool yMinusStopped = false;
 
-            //calculating explosion coordinates
-            //replacing the initial bomb with an explosion tile
-            explosions.Add(explosion);
-            int explosionSize = explosion.size * playerReference.explosionSizeMultiplier;
-            for (int i = 1; i <= explosionSize; i++)
-            {
-                xPlusStopped = ExplosionCheckAdjacentTiles(x + i, y, xPlusStopped, explodedAt);
+        //    //calculating explosion coordinates
+        //    //replacing the initial bomb with an explosion tile
+        //    explosions.Add(explosion);
+        //    int explosionSize = explosion.size * playerReference.explosionSizeMultiplier;
+        //    for (int i = 1; i <= explosionSize; i++)
+        //    {
+        //        xPlusStopped = ExplosionCheckAdjacentTiles(x + i, y, xPlusStopped, explodedAt);
 
-                xMinusStopped = ExplosionCheckAdjacentTiles(x - i, y, xMinusStopped, explodedAt);
+        //        xMinusStopped = ExplosionCheckAdjacentTiles(x - i, y, xMinusStopped, explodedAt);
 
-                yPlusStopped = ExplosionCheckAdjacentTiles(x, y + i, yPlusStopped, explodedAt);
+        //        yPlusStopped = ExplosionCheckAdjacentTiles(x, y + i, yPlusStopped, explodedAt);
 
-                yMinusStopped = ExplosionCheckAdjacentTiles(x, y - i, yMinusStopped, explodedAt);
-            }
-        }
+        //        yMinusStopped = ExplosionCheckAdjacentTiles(x, y - i, yMinusStopped, explodedAt);
+        //    }
+        //}
 
-        public bool ExplosionCheckAdjacentTiles(int x, int y, bool explosionStopped, DateTime explodedAt)
-        {
-            int explosionIndex = 0;
-            Collision explosionCollision = new Collision();
+        //public bool ExplosionCheckAdjacentTiles(int x, int y, bool explosionStopped, DateTime explodedAt)
+        //{
+        //    int explosionIndex = 0;
+        //    Collision explosionCollision = new Collision();
 
-            explosionIndex = ConvertCoordsToIndex(x, y);
-            if (explosionIndex > 225 || explosionIndex < 0 || explosionStopped)
-            {
-                return true;
-            }
+        //    explosionIndex = ConvertCoordsToIndex(x, y);
+        //    if (explosionIndex > 225 || explosionIndex < 0 || explosionStopped)
+        //    {
+        //        return true;
+        //    }
 
-            //checking whether an explosion already exists at the given coordinates
-            Explosion explosionCheck = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
+        //    //checking whether an explosion already exists at the given coordinates
+        //    ExplosionCell explosionCheck = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
 
-            //checking whether an explosion already exists at the given coordinates
-            Bomb bombCheck = bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
+        //    //checking whether an explosion already exists at the given coordinates
+        //    Bomb bombCheck = bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
 
-            //checking whether a player is standing at the given coordinates
-            Player playerCheck = players.Where(e => e.x == x && e.y == y).FirstOrDefault();
+        //    //checking whether a player is standing at the given coordinates
+        //    Player playerCheck = players.Where(e => e.x == x && e.y == y).FirstOrDefault();
 
-            //checking whether a powerup exists at the given coordinates
-            Powerup powerupCheck = powerups.Where(e => e.x == x && e.y == y).FirstOrDefault();
+        //    //checking whether a powerup exists at the given coordinates
+        //    Powerup powerupCheck = powerups.Where(e => e.x == x && e.y == y).FirstOrDefault();
 
-            if (gameMap.tiles[explosionIndex] is Wall)
-            {
-                explosionCollision.SetCollisionStrategy(new WallCollision());
-                explosionCollision.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
-                explosionStopped = true;
-            }
-            //explosionCheck might not be null - confirm during testing
-            else if (explosionCheck != null)
-            {
-                explosionCollision.SetCollisionStrategy(new ExplosionCollision());
-                explosionCollision.ResolveExplosionCollision(explosionCheck, explosions, explodedAt, powerups);
-                explosionStopped = true;
-            }
-            else if (bombCheck != null)
-            {
-                explosionStopped = true;
-                BombExplosion(GetBombIndex(bombCheck));
-            }
-            else if (powerupCheck != null)
-            {
-                explosionCollision.SetCollisionStrategy(new PowerupCollision());
-                explosionCollision.ResolveExplosionCollision(powerupCheck, explosions, explodedAt, powerups);
-            }
-            //if explosion spawns on player
-            else if (playerCheck != null)
-            {
-                explosionCollision.SetCollisionStrategy(new PlayerCollision());
-                explosionCollision.ResolveExplosionCollision(playerCheck, explosions, explodedAt, powerups);
-            }
-            else if (gameMap.tiles[explosionIndex] is Box && !explosionStopped)
-            {
-                explosionCollision.SetCollisionStrategy(new BoxCollision());
-                explosionCollision.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
-                explosionStopped = true;
-                gameMap.tiles[explosionIndex] = new EmptyTile { x = x, y = y, texture = "#ffffff" };
-            }
-            else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
-            {
-                explosionCollision.SetCollisionStrategy(new EmptyTileCollision());
-                explosionCollision.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
-            }
-            return explosionStopped;
-        }
+        //    if (gameMap.tiles[explosionIndex] is Wall)
+        //    {
+        //        explosionCollision.SetCollisionStrategy(new WallCollision());
+        //        explosionCollision.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
+        //        explosionStopped = true;
+        //    }
+        //    //explosionCheck might not be null - confirm during testing
+        //    else if (explosionCheck != null)
+        //    {
+        //        explosionCollision.SetCollisionStrategy(new ExplosionCollision());
+        //        explosionCollision.ResolveExplosionCollision(explosionCheck, explosions, explodedAt, powerups);
+        //        explosionStopped = true;
+        //    }
+        //    else if (bombCheck != null)
+        //    {
+        //        explosionStopped = true;
+        //        BombExplosion(GetBombIndex(bombCheck));
+        //    }
+        //    else if (powerupCheck != null)
+        //    {
+        //        explosionCollision.SetCollisionStrategy(new PowerupCollision());
+        //        explosionCollision.ResolveExplosionCollision(powerupCheck, explosions, explodedAt, powerups);
+        //    }
+        //    //if explosion spawns on player
+        //    else if (playerCheck != null)
+        //    {
+        //        explosionCollision.SetCollisionStrategy(new PlayerCollision());
+        //        explosionCollision.ResolveExplosionCollision(playerCheck, explosions, explodedAt, powerups);
+        //    }
+        //    else if (gameMap.tiles[explosionIndex] is Box && !explosionStopped)
+        //    {
+        //        explosionCollision.SetCollisionStrategy(new BoxCollision());
+        //        explosionCollision.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
+        //        explosionStopped = true;
+        //        gameMap.tiles[explosionIndex] = new EmptyTile { x = x, y = y, texture = "#ffffff" };
+        //    }
+        //    else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
+        //    {
+        //        explosionCollision.SetCollisionStrategy(new EmptyTileCollision());
+        //        explosionCollision.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
+        //    }
+        //    return explosionStopped;
+        //}
 
         public int ConvertCoordsToIndex(int x, int y)
         {
@@ -345,20 +356,20 @@ namespace SignalRWebPack.Logic
         }
 
         //repeatedly called method for checking whether any bomb timers in the bomb list have expired yet
-        public void CheckBombTimers()
-        {
-            if (bombs.Any())
-            {
-                for (int i = 0; i < bombs.Count; i++)
-                {
-                    if (bombs[i].explodesAt <= DateTime.Now)
-                    {
-                        BombExplosion(i);
-                    }
-                }
-            }
-            
-        }
+        //public void CheckBombTimers()
+        //{
+        //    if (bombs.Any())
+        //    {
+        //        for (int i = 0; i < bombs.Count; i++)
+        //        {
+        //            if (bombs[i].explodesAt <= DateTime.Now)
+        //            {
+        //                BombExplosion(i);
+        //            }
+        //        }
+        //    }
+
+        //}
 
         public void CheckInvulnerabilityPeriods()
         {
@@ -396,27 +407,47 @@ namespace SignalRWebPack.Logic
             
         }
 
-        public void CheckExplosionTimers()
-        {
-            if (explosions.Any())
-            {
-                for (int i = 0; i < explosions.Count; i++)
-                {
+        //public void CheckExplosionTimers()
+        //{
+        //    if (explosions.Any())
+        //    {
+        //        for (int i = 0; i < explosions.Count; i++)
+        //        {
 
-                    if(explosions[i].expiresAt <= DateTime.Now)
-                    {
-                        explosions.RemoveAt(i);
-                    }
-                }
-            }
-        }
+        //            if(explosions[i].expiresAt <= DateTime.Now)
+        //            {
+        //                explosions.RemoveAt(i);
+        //            }
+        //        }
+        //    }
+        //}
 
         public async void EnableDrawing()
         {
 
         }
 
-        private async Task StoreDrawData(string[] playerIDs, Map _map, List<Player> _players, List<Bomb> _bombs, List<Powerup> _powerups, List<Explosion> _explosions, List<Message> _messages)
+        public void FormDrawingObjectLists()
+        {
+            for (int i = 0; i < players.Count; i++)
+            {
+                for (int j = 0; j < players[i].GetBombCount(); j++)
+                {
+                    bombs.Add(players[i].bombs[j]);
+                    if(players[i].bombs[j].GetExplosion() != null)
+                    {
+                        int cellCount = players[i].bombs[j].GetExplosion().GetExplosionCells().Count;
+                        for (int k = 0; k < cellCount; k++)
+                        {
+                            explosions.Add(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]);
+                        }
+                    }
+                    
+                }
+            }
+        }
+
+        private async Task StoreDrawData(string[] playerIDs, Map _map, List<Player> _players, List<Bomb> _bombs, List<Powerup> _powerups, List<ExplosionCell> _explosions, List<Message> _messages)
         {
             TTile[] tiles = new TTile[_map.tiles.Length];
             for (int i = 0; i < _map.tiles.Length; i++)
@@ -432,7 +463,12 @@ namespace SignalRWebPack.Logic
             }
             // ------
             BombTransport[] bombs = _bombs.Select(bomb => (BombTransport) bombCreator.Pack(bomb)).ToArray();
-            PowerupTransport[] powerups = _powerups.Select(powerup => (PowerupTransport) powerupCreator.Pack(powerup)).ToArray();
+            PowerupTransport[] powerups = new PowerupTransport[_powerups.Count];
+            for (int i = 0; i < _powerups.Count; i++)
+            {
+                powerups[i] = (PowerupTransport)powerupCreator.Pack(_powerups[i]);
+            }
+
             ExplosionTransport[] explosions = _explosions.Select(explosion => (ExplosionTransport) explosionCreator.Pack(explosion)).ToArray();
             Message[] messages = _messages.ToArray();
             //await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);

@@ -9,10 +9,10 @@ namespace SignalRWebPack.Patterns.Strategy
     class PowerupCollision : CollisionStrategy
     {
 
-        public override void ExplosionCollisionStrategy(object collisionTarget, List<Explosion> explosions, DateTime explodedAt, List<Powerup> collisionList)
+        public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             var powerup = collisionTarget as Powerup;
-            Explosion exp1 = new Explosion(explodedAt, powerup.x, powerup.y);
+            ExplosionCell exp1 = new ExplosionCell(explodedAt, powerup.x, powerup.y);
             explosions.Add(exp1);
             collisionList.RemoveAt(GetPowerupIndex(powerup, collisionList));
         }
