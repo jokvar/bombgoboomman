@@ -11,9 +11,9 @@ namespace SignalRWebPack.Models
     {
         private List<ExplosionCell> explosions { get; set; }
         private static Session session = SessionManager.GetSession();
-        private Map gameMap = session.Map;
-        private List<Powerup> powerups = session.powerups;
-        private List<Player> players = session.Players;
+        private Map gameMap;// = session.Map;
+        private List<Powerup> powerups;// = session.powerups;
+        private List<Player> players;// = session.Players;
 
         public bool isExpired { get; set; }
         public int explosionSizeMultiplier { get; set; }
@@ -28,6 +28,9 @@ namespace SignalRWebPack.Models
             size = 1;
             this.explosionSizeMultiplier = explosionSizeMultiplier;
             explosions = new List<ExplosionCell>();
+            gameMap = session.Map;
+            powerups = session.powerups;
+            players = session.Players;
         }
 
         public List<ExplosionCell> GetExplosionCells()
@@ -54,6 +57,7 @@ namespace SignalRWebPack.Models
             int explosionSize = size * explosionSizeMultiplier;
             for (int i = 1; i <= explosionSize; i++)
             {
+                
                 xPlusStopped = ExplosionCheckAdjacentTiles(x + i, y, xPlusStopped, explodedAt, explosion);
 
                 xMinusStopped = ExplosionCheckAdjacentTiles(x - i, y, xMinusStopped, explodedAt, explosion);
@@ -87,7 +91,6 @@ namespace SignalRWebPack.Models
                 }
                 
             }
-            
 
             //checking whether a player is standing at the given coordinates
             Player playerCheck = players.Where(e => e.x == x && e.y == y).FirstOrDefault();
@@ -153,7 +156,7 @@ namespace SignalRWebPack.Models
                         counter++;
                     }
                 }
-                if (counter >= explosions.Count)
+                if (counter == explosions.Count)
                 {
                     isExpired = true;
                 }

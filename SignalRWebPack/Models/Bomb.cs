@@ -12,7 +12,7 @@ namespace SignalRWebPack.Models
         public DateTime explodesAt { get; set; }
         public string preExplodeTexture { get; set; }
         public int explosionSizeMultiplier { get; set; }
-        private Explosion explosion { get; set; }
+        public Explosion explosion { get; set; }
         public bool hasExploded { get; set; }
 
         public Bomb(int x, int y, int tickDuration, int sizeMultiplier)

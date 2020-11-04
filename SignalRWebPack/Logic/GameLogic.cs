@@ -107,34 +107,61 @@ namespace SignalRWebPack.Logic
                 //end example
                 //explosions[0].x = (i++ % 5) + 1;
                 //_logger.LogInformation("sending draw data");
+
                 FormDrawingObjectLists();
                 await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, session.powerups, explosions, messages);
                 await Task.Delay(60); // 😎😎😎😎
-                //await Broadcast(new Message("ligma lol", 1)); 
+                explosions = new List<ExplosionCell>();
+                bombs = new List<Bomb>();
 
-                foreach(Player player in players)
+                //foreach (Player player in players)
+                //{
+                //    player.CheckBombTimers();
+                //    foreach(Bomb bomb in player.bombs)
+                //    {
+                //        if(bomb.explosion != null)
+                //        {
+                //            bomb.explosion.CheckExplosionTimers();
+                //            if (bomb.explosion.isExpired)
+                //            {
+                //                //foreach(ExplosionCell cellToRemove in bomb.explosion.GetExplosionCells())
+                //                //{
+                //                //    explosions.Remove(cellToRemove);
+                //                //}
+
+                //                player.RefreshBombList(bomb);
+                //                _logger.LogInformation("explosion timer resolved");
+                //            }
+                //        }
+
+                //    }
+                //}
+                for (int i = 0; i < players.Count; i++)
                 {
-                    player.CheckBombTimers();
-                    foreach(Bomb bomb in player.bombs)
+                    players[i].CheckBombTimers();
+                    for (int j = 0; j < players[i].bombs.Count; j++)
                     {
-                        if(bomb.GetExplosion() != null)
+                        if(players[i].bombs[j].explosion != null)
                         {
-                            bomb.GetExplosion().CheckExplosionTimers();
-                            if (bomb.GetExplosion().isExpired)
+                            players[i].bombs[j].explosion.CheckExplosionTimers();
+                            if (players[i].bombs[j].explosion.isExpired)
                             {
-                                player.RefreshBombList(bomb);
+                                players[i].RefreshBombList(players[i].bombs[j]);
+                                _logger.LogInformation("explosion timer resolved");
                             }
                         }
-                        
                     }
                 }
 
-                
+
+
                 //CheckExplosionTimers();
                 //CheckInvulnerabilityPeriods();
                 //CheckPowerupTimers();
-                //client.StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages); ; 
-            } 
+                //client.StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
+                
+                //await Broadcast(new Message("ligma lol", 1)); 
+            }
         }
 
         public void ProcessAction(PlayerAction playerAction, string id)
@@ -433,13 +460,20 @@ namespace SignalRWebPack.Logic
             {
                 for (int j = 0; j < players[i].GetBombCount(); j++)
                 {
-                    bombs.Add(players[i].bombs[j]);
+                   // if (!bombs.Contains(players[i].bombs[j]))
+                    //{
+                        bombs.Add(players[i].bombs[j]);
+                   // }
                     if(players[i].bombs[j].GetExplosion() != null)
                     {
                         int cellCount = players[i].bombs[j].GetExplosion().GetExplosionCells().Count;
                         for (int k = 0; k < cellCount; k++)
                         {
-                            explosions.Add(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]);
+                            //if (!explosions.Contains(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]))
+                            //{
+                                explosions.Add(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]);
+                           // }
+                            
                         }
                     }
                     
@@ -473,6 +507,7 @@ namespace SignalRWebPack.Logic
             Message[] messages = _messages.ToArray();
             //await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
             await _hub.Clients.All.SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+            
         }
 
         public async Task StartPlaying(string[] playerIDs)
