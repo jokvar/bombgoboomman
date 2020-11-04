@@ -29,7 +29,7 @@ namespace SignalRWebPack.Hubs
             Session session = SessionManager.GetSession(); //creates and stores new session and returns it
             string roomCode = session.roomCode;
             session.RegisterPlayer(Context.ConnectionId, true);
-            session.SetMap(mapName);
+            //session.SetMap();
         }
 
         public async Task JoinSession(string roomCode)

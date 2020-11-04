@@ -116,31 +116,32 @@ export namespace Renderer {
             while (y < this.mapH) {
                 x = 0;
                 while (x < this.mapW) {
-                    this.canvas.fillStyle = this.map.GetTile(x, y).texture;
-                    this.canvas.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                    let texture = this.map.GetTile(x, y).texture;
+                    var img = document.getElementById(texture) as HTMLCanvasElement;
+                    this.canvas.drawImage(img, x * this.tileW, y * this.tileH);
                     x++;
                 }
                 y++;
             }
 
             for (let p of this.players) {
-                this.canvas.fillStyle = p.texture;
-                this.canvas.fillRect(p.x * this.tileW, p.y * this.tileH, this.tileW, this.tileH);
+                var img = document.getElementById("player") as HTMLCanvasElement;
+                this.canvas.drawImage(img, p.x * this.tileW, p.y * this.tileH);
             }
 
             for (let b of this.bombs) {
-                this.canvas.fillStyle = b.texture;
-                this.canvas.fillRect(b.x * this.tileW, b.y * this.tileH, this.tileW, this.tileH);
+                var img = document.getElementById("bomb") as HTMLCanvasElement;
+                this.canvas.drawImage(img, b.x * this.tileW, b.y * this.tileH);
             }
 
             for (let pow of this.powerups) {
-                this.canvas.fillStyle = pow.texture;
-                this.canvas.fillRect(pow.x * this.tileW, pow.y * this.tileH, this.tileW, this.tileH);
+                var img = document.getElementById("powerup") as HTMLCanvasElement;
+                this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
             }
 
             for (let e of this.explosions) {
-                this.canvas.fillStyle = e.texture;
-                this.canvas.fillRect(e.x * this.tileW, e.y * this.tileH, this.tileW, this.tileH);
+                var img = document.getElementById("explosion") as HTMLCanvasElement;
+                this.canvas.drawImage(img, e.x * this.tileW, e.y * this.tileH);
             }
             this.canvas.fillStyle = "#ff0000";
             this.canvas.fillText("FPS: " + this.framesLastSecond, 10, 20);

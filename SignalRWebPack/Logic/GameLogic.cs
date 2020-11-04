@@ -403,7 +403,7 @@ namespace SignalRWebPack.Logic
                         explosions.Add(exp1);
                         GeneratePowerup(x + increment, y, explosionIndex);
                         explosionStopped = true;
-                        gameMap.tiles[explosionIndex] = new EmptyTile { x = x + increment, y = y, texture = "#ffffff" };
+                        gameMap.tiles[explosionIndex] = new EmptyTile { x = x + increment, y = y, texture = "blank" };
                     }
                     else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
                     {
@@ -464,7 +464,7 @@ namespace SignalRWebPack.Logic
                         explosions.Add(exp);
                         GeneratePowerup(x, y + increment, explosionIndex);
                         explosionStopped = true;
-                        gameMap.tiles[explosionIndex] = new EmptyTile {x = x, y = y + increment, texture = "#ffffff" };
+                        gameMap.tiles[explosionIndex] = new EmptyTile {x = x, y = y + increment, texture = "blank" };
                     }
                     else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
                     {
