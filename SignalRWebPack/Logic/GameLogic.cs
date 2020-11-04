@@ -161,6 +161,10 @@ namespace SignalRWebPack.Logic
         public void ProcessAction(PlayerAction playerAction, string id)
         {
             int requestIndex = session.MatchId(id); 
+            if (requestIndex == -1)
+            {
+                return;
+            }
             
             //storing current coordinates
             int x = players[requestIndex].x;

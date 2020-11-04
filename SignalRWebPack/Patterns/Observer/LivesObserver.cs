@@ -15,7 +15,7 @@ namespace SignalRWebPack.Patterns.Observer
 
             if (count == 1)
             {
-                //write some code to indicate game ending
+                throw new NotImplementedException();
             }
         }
     }
