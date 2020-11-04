@@ -8,12 +8,12 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class ExplosionCollision : CollisionStrategy
     {
-        public override void ExplosionCollisionStrategy(object collisionObject, List<Explosion> explosions, DateTime explodedAt, List<Powerup> collisionList)
+        public override void ExplosionCollisionStrategy(object collisionObject, List<Explosion> explosions, DateTime explodedAt, List<GameObject> collisionList)
         {
             //do nothing
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<GameObject> collisionList)
         {
             var explosion = collisionTarget as Explosion;
             player.x = explosion.x;

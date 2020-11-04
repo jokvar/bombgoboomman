@@ -10,10 +10,10 @@ namespace SignalRWebPack.Patterns.Strategy
     abstract class CollisionStrategy
     {
         //How explosion collision with collisionTarget is resolved
-        public abstract void ExplosionCollisionStrategy(object collisionTarget, List<Explosion> explosions, DateTime explodedAt, List<Powerup> powerupList);
+        public abstract void ExplosionCollisionStrategy(object collisionTarget, List<Explosion> explosions, DateTime explodedAt, List<GameObject> collisionList);
 
         //How player collision with collisionTarget is resolved
-        public abstract void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList);
+        public abstract void PlayerCollisionStrategy(Player player, object collisionTarget, List<GameObject> collisionList);
 
     }
 }
