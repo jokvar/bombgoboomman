@@ -18,7 +18,7 @@ namespace SignalRWebPack.Logic
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await gameLogic.GameLoop(cancellationToken);
+            await gameLogic._GameLoop(cancellationToken);
         }
     }
 }
