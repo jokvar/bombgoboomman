@@ -35,6 +35,7 @@ namespace SignalRWebPack.Hubs
         {
             Session session = SessionManager.Instance.GetSession(null);
             session.RegisterPlayer(Context.ConnectionId, true);
+
             session.SetMap(mapName); 
         }
 
