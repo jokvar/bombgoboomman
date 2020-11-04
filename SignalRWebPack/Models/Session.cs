@@ -24,53 +24,56 @@ namespace SignalRWebPack.Models
             }
         }
         public string roomCode { get; set; }
-        public string id { get; set; }
 
         private List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
+            Players = new List<Player>();
             //commented out because right now, session has no player array, unless hard coded
             //var livesObserver = new LivesObserver();
             //this.Attach(livesObserver);
         }
 
-        public string GenerateRoomCode()
-        {
-            return "6969";
-        }
-
+        private object _playerRegistryLock = new object();
         public bool RegisterPlayer(string id, bool isHost = false)
         {
-            if (Players == null)
+            lock (_playerRegistryLock)
             {
-                Players = new List<Player>();
-            }
-            Player host = new Player("wtf name here?", id, 0, 0);
-            if (isHost)
-            {
-                Host = host;
-            }
-            Players.Add(host);
-            return (Players.Count >= 4);
+                int index = Players.Count;
+                Player player;
+                switch (index)
+                {
+                    case (0):
+                        player = new Player("player1", id, 1, 1);
+                        break;
+                    case (1):
+                        player = new Player("player2", id, 3, 1);
+                        break;
+                    case (2):
+                        player = new Player("player3", id, 3, 3);
+                        break;
+                    case (3):
+                        player = new Player("player4", id, 1, 3);
+                        break;
+                    default:
+                        return true;
+                }
+                if (isHost)
+                {
+                    Host = player;
+                }
+                Players.Add(player);
+                return Players.Count >= 4;
+            }   
         }
 
-        public int MatchId(string id)
-        {
-            return Players.IndexOf(Players.Where(p => p.id == id).First());
-            // -1 if not found
-        }
+        public int MatchId(string id) => Players.IndexOf(Players.Where(p => p.id == id).First());
 
         public void SetMap(string mapName) => Map = new Map(mapName);
 
-        public void Attach(IObserver observer)
-        {
-            this.Observers.Add(observer);
-        }
+        public void Attach(IObserver observer) => Observers.Add(observer);
 
-        public void Detach(IObserver observer)
-        {
-            this.Observers.Remove(observer);
-        }
+        public void Detach(IObserver observer) => this.Observers.Remove(observer);
         public void Notify()
         {
             foreach (var observer in Observers)
