@@ -1,4 +1,5 @@
 ﻿using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace SignalRWebPack.Patterns.Strategy
             explosions.Add(exp1);
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
             var emptyTile = collisionTarget as EmptyTile;
             player.x = emptyTile.x;
