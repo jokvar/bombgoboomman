@@ -95,7 +95,6 @@ namespace SignalRWebPack.Logic
                 {
                     string playerId = tuple.Item1;
                     PlayerAction action = tuple.Item2;
-                    _logger.LogInformation("analyzed tuple");
                     ProcessAction(action, playerId);
                 }
                 //end example
@@ -119,7 +118,6 @@ namespace SignalRWebPack.Logic
                             if (players[i].bombs[j].explosion.isExpired)
                             {
                                 players[i].RefreshBombList(players[i].bombs[j]);
-                                _logger.LogInformation("explosion timer resolved");
                             }
                         }
                     }
@@ -134,6 +132,8 @@ namespace SignalRWebPack.Logic
                 
                 //await Broadcast(new Message("ligma lol", 1)); 
             }
+
+            throw new NotImplementedException("Reached end of game loop");
         }
 
         public void ProcessAction(PlayerAction playerAction, string id)
@@ -312,9 +312,14 @@ namespace SignalRWebPack.Logic
 
             ExplosionTransport[] explosions = _explosions.Select(explosion => (ExplosionTransport) explosionCreator.Pack(explosion)).ToArray();
             Message[] messages = _messages.ToArray();
-            await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
-            //await _hub.Clients.All.SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
-            
+            if (playerIDs.Length == 4)
+            {
+                await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+            }
+            else
+            {
+                await _hub.Clients.All.SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+            }
         }
 
         public async Task StartPlaying(string[] playerIDs)

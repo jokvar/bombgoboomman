@@ -26,13 +26,13 @@ namespace SignalRWebPack.Patterns.Command
 
         public void Undo(int times)
         {
-            for (int i = 0; i < times; i++)
+            for ( int i = 0; i < times; i++)
             {
                 if (commandStack.Count > 0)
                 {
                     PowerupCommand lastCommand = commandStack.Last();
                     lastCommand.Undo();
-                    commandStack.RemoveAt(commandStack.Count);
+                    commandStack.RemoveAt(commandStack.Count - 1);
                 }
             }
         }
