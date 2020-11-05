@@ -6,7 +6,7 @@ using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Logic
 {
-    public class SessionManager //possibly static
+    class SessionManager //possibly static
     {
         public static SessionManager Instance { get; } = new SessionManager();
         private Dictionary<string, Session> Sessions;
@@ -15,15 +15,15 @@ namespace SignalRWebPack.Logic
         public List<string> AllSessionCodes { get { return new List<string>(Sessions.Keys); } }
         private string _activeSessionCode;
         public string ActiveSessionCode
-        { 
-            get { lock (_sessionLock) { return _activeSessionCode; } } 
-            set { lock (_sessionLock) { _activeSessionCode = value; } } 
+        {
+            get { lock (_sessionLock) { return _activeSessionCode; } }
+            set { lock (_sessionLock) { _activeSessionCode = value; } }
         }
         public SessionManager()
         {
             Sessions = new Dictionary<string, Session>();
         }
-        
+
         public Session GetSession(string code)
         {
             lock (_sessionLock)
@@ -45,6 +45,5 @@ namespace SignalRWebPack.Logic
         {
             return "6969";
         }
-
     }
 }

@@ -5,24 +5,26 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Models
 {
-    public class Bomb : GameObject
+    class Bomb : GameObject
     {
         public int tickDuration { get; set; }
         public DateTime plantedAt { get; set; }
         public DateTime explodesAt { get; set; }
         public string preExplodeTexture { get; set; }
-        public Player placedBy { get; set; }
+        public int explosionSizeMultiplier { get; set; }
+        public Explosion explosion { get; set; }
+        public bool hasExploded { get; set; }
 
-        public Bomb(int x, int y, Player placedBy)
+        public Bomb(int x, int y, int tickDuration, int sizeMultiplier)
         {
-            this.placedBy = placedBy;
-            tickDuration = placedBy.bombTickDuration; //seconds
+            this.tickDuration = tickDuration; //seconds
             plantedAt = DateTime.Now;
             explodesAt = plantedAt.AddSeconds(tickDuration);
             preExplodeTexture = "#101010";
             this.texture = "#a0a0a0";
             this.x = x;
             this.y = y;
+            explosionSizeMultiplier = sizeMultiplier;
         }
 
         public Bomb()
@@ -32,12 +34,33 @@ namespace SignalRWebPack.Models
             preExplodeTexture = "#0d0d0d";
         }
 
-        public void SetValues(int x, int y, Player placedBy)
+        public Explosion GetExplosion()
         {
-            this.placedBy = placedBy;
-            tickDuration = placedBy.bombTickDuration; //seconds
+            
+            return explosion;
+        }
+
+        public void NullExplosion()
+        {
+            explosion = null;
+        }
+
+        public void SetValues(int x, int y)
+        {
+            //this.placedBy = placedBy;
+            //tickDuration = placedBy.bombTickDuration; //seconds
             this.x = x;
             this.y = y;
         }
+
+        //method for resolving bomb explosions
+        public void Explode()
+        {
+            explosion = new Explosion(x, y, false, explosionSizeMultiplier);
+            explosion.SpawnExplosions(x, y);
+            hasExploded = true;
+        }
+
+        
     }
 }

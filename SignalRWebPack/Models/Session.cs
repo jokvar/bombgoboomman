@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns;
 using SignalRWebPack.Patterns.Observer;
 
+
+
 namespace SignalRWebPack.Models
 {
-    public class Session : ISubject
+    class Session : ISubject
     {
         public List<Player> Players { get; set; }
+        public List<Powerup> powerups { get; set; }
         public Player Host { get; set; }
         public Map Map { get; set; }
         public string[] PlayerIDs
@@ -28,10 +32,18 @@ namespace SignalRWebPack.Models
         private List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
-            Players = new List<Player>();
+            powerups = new List<Powerup>();
+            Players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
+
+            MapDirector director = new MapDirector();
+            MapBuilder b1 = new ClassicBuilder();
+            //MapBuilder b1 = new MLGBuilder();
+            director.Construct(b1);
+            Map = b1.GetResult();
             //commented out because right now, session has no player array, unless hard coded
             //var livesObserver = new LivesObserver();
             //this.Attach(livesObserver);
+
         }
 
         private object _playerRegistryLock = new object();
@@ -69,7 +81,11 @@ namespace SignalRWebPack.Models
 
         public int MatchId(string id) => Players.IndexOf(Players.Where(p => p.id == id).First());
 
-        public void SetMap(string mapName) => Map = new Map(mapName);
+        public void SetMap(string mapName) => Map = new Map();
+
+        public void InstantiatePowerups() => powerups = new List<Powerup>();
+
+        public void SetMap() => Map = new Map();
 
         public void Attach(IObserver observer) => Observers.Add(observer);
 
@@ -81,5 +97,6 @@ namespace SignalRWebPack.Models
                 observer.Update(this);
             }
         }
+
     }
 }

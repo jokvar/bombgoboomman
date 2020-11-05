@@ -12,7 +12,7 @@ namespace SignalRWebPack.Patterns.AbstractFactory
        {
            if (objectType.Equals("explosion"))
            {
-               return new Explosion();
+               return new ExplosionCell();
            }
            if (objectType.Equals("bomb"))
            {
