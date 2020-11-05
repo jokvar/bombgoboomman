@@ -56,9 +56,12 @@ namespace SignalRWebPack.Models
         //method for resolving bomb explosions
         public void Explode()
         {
-            explosion = new Explosion(x, y, false, explosionSizeMultiplier);
-            explosion.SpawnExplosions(x, y);
-            hasExploded = true;
+            if (!hasExploded)
+            {
+                hasExploded = true;
+                explosion = new Explosion(x, y, false, explosionSizeMultiplier);
+                explosion.SpawnExplosions(x, y);
+            }
         }
 
         

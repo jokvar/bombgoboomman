@@ -22,6 +22,7 @@ namespace SignalRWebPack.Patterns.Strategy
             {
                 player.lives--;
                 player.invulnerableSince = DateTime.Now;
+                player.invulnerableUntil = player.invulnerableSince.AddSeconds(player.invulnerabilityDuration);
                 player.invulnerable = true;
             }
             
