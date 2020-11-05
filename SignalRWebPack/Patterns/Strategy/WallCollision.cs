@@ -8,7 +8,7 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class WallCollision : CollisionStrategy
     {
-        public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
+        public override void ExplosionCollisionStrategy(object collisionTarget, List<Explosion> explosions, DateTime explodedAt, List<GameObject> collisionList)
         {
             //do nothing
         }
