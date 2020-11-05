@@ -20,6 +20,7 @@ namespace SignalRWebPack.Models
         public double speedMultiplier { get; set; }
         public bool ready { get; set; }
         public DateTime invulnerableSince { get; set; }
+        public DateTime invulnerableUntil { get; set; }
         public int invulnerabilityDuration { get; set; }
         public int maxBombs { get; set; }
         public int activeBombCount { get; set; }
@@ -37,6 +38,7 @@ namespace SignalRWebPack.Models
             texture = "player";
             ready = false;
             invulnerableSince = DateTime.Now;
+            invulnerableUntil = DateTime.MinValue;
             invulnerabilityDuration = 3; //seconds
             bombTickDuration = 3; //seconds
             maxBombs = 1;
@@ -44,6 +46,7 @@ namespace SignalRWebPack.Models
             this.y = y;
             explosionSizeMultiplier = 2;
             bombs = new List<Bomb>();
+            
         }
 
         public void SetCollisionStrategy(CollisionStrategy collisionStrategy)
@@ -91,6 +94,19 @@ namespace SignalRWebPack.Models
                 }
             }
 
+        }
+
+        public void CheckInvulnerabilityPeriods()
+        {
+            if (invulnerable)
+            {
+                if (invulnerableUntil <= DateTime.Now)
+                {
+                    invulnerable = false;
+                    invulnerableUntil = DateTime.MinValue;
+                }
+            }
+            
         }
 
         public void RefreshBombList(Bomb bomb)
