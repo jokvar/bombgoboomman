@@ -8,10 +8,10 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class EmptyTileCollision : CollisionStrategy
     {
-        public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
+        public override void ExplosionCollisionStrategy(object collisionTarget, List<Explosion> explosions, DateTime explodedAt, List<GameObject> collisionList)
         {
             var emptyTile = collisionTarget as EmptyTile;
-            ExplosionCell exp1 = new ExplosionCell(explodedAt, emptyTile.x, emptyTile.y);
+            Explosion exp1 = new Explosion(explodedAt, emptyTile.x, emptyTile.y);
             explosions.Add(exp1);
         }
 
