@@ -6,18 +6,45 @@ using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Logic
 {
-    static class SessionManager //possibly static
+    class SessionManager //possibly static
     {
-        public static Session GetSession()
+        public static SessionManager Instance { get; } = new SessionManager();
+        private Dictionary<string, Session> Sessions;
+        private readonly object _sessionLock = new object();
+        //hardcoded single session
+        public List<string> AllSessionCodes { get { return new List<string>(Sessions.Keys); } }
+        private string _activeSessionCode;
+        public string ActiveSessionCode
         {
-            Session sess = new Session();
-            return sess;
+            get { lock (_sessionLock) { return _activeSessionCode; } }
+            set { lock (_sessionLock) { _activeSessionCode = value; } }
+        }
+        public SessionManager()
+        {
+            Sessions = new Dictionary<string, Session>();
         }
 
-        public static Session GetSession(string roomCode)
+        public Session GetSession(string code)
         {
-            Session sess = new Session();
-            return sess;
+            lock (_sessionLock)
+            {
+                if (code == null)
+                {
+                    code = GenerateRoomCode();
+                    Session session = new Session();
+                    session.roomCode = code;
+                    Sessions.Add(code, session);
+                    return session;
+                }
+                return Sessions[code];
+            }
         }
+
+
+        public static string GenerateRoomCode()
+        {
+            return "6969";
+        }
+
     }
 }

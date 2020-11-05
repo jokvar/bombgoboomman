@@ -76,7 +76,12 @@ namespace SignalRWebPack.Models
                 {
                     if (bombs[i].explodesAt <= DateTime.Now)
                     {
-                        bombs[i].Explode();
+                        if (!bombs[i].hasExploded)
+                        {
+                            bombs[i].Explode();
+                            bombs[i].hasExploded = true;
+                        }
+                        
                         //activeBombCount--;
                     }
                 }

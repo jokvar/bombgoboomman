@@ -10,10 +10,10 @@ namespace SignalRWebPack.Models
     class Explosion : GameObject
     {
         private List<ExplosionCell> explosions { get; set; }
-        private static Session session = SessionManager.GetSession();
-        private Map gameMap;// = session.Map;
-        private List<Powerup> powerups;// = session.powerups;
-        private List<Player> players;// = session.Players;
+        private static Session session = SessionManager.Instance.GetSession(SessionManager.Instance.ActiveSessionCode);
+        private Map gameMap = session.Map;
+        private List<Powerup> powerups = session.powerups;
+        private List<Player> players = session.Players;
 
         public bool isExpired { get; set; }
         public int explosionSizeMultiplier { get; set; }
@@ -28,9 +28,7 @@ namespace SignalRWebPack.Models
             size = 1;
             this.explosionSizeMultiplier = explosionSizeMultiplier;
             explosions = new List<ExplosionCell>();
-            gameMap = session.Map;
-            powerups = session.powerups;
-            players = session.Players;
+            
         }
 
         public List<ExplosionCell> GetExplosionCells()
