@@ -2,8 +2,10 @@
 import { GameObjects } from "../models/GameObjects";
 import { Player } from "../models/Player";
 import { ChatHub } from "../chathub/ChatHub";
+import { oldRenderer } from "../ui/oldRender";
+import { ITarget } from "../ui/ITarget";
 export namespace Renderer {
-    export class Renderer {
+    export class Renderer implements ITarget.ITarget {
         tileW: number;
         tileH: number;
         mapW: number;
@@ -21,6 +23,8 @@ export namespace Renderer {
         powerups: Array<GameObjects.Powerup>;
         explosions: Array<GameObjects.Explosion>;
         messages: Array<ChatHub.Message>;
+        oldRenderer: oldRenderer.oldRenderer;
+        
 
         divMessages: HTMLDivElement;
         tbMessage: HTMLInputElement;
@@ -43,6 +47,7 @@ export namespace Renderer {
             this.framesLastSecond = 0;
             this.firstDraw = false;
             this.canvas = canvas;
+            this.oldRenderer = new oldRenderer.oldRenderer();
 
             this.divMessages = document.querySelector("#divMessages");
             this.tbMessage = document.querySelector("#tbMessage");
@@ -50,11 +55,11 @@ export namespace Renderer {
             //temp data, probably delete later?
             //temp data, delete later
             this.map = new GameMap.Map();
-            this.playerOne = new Player.Player(3, "#66ff99", false, 1, 1);
-            this.playerTwo = new Player.Player(3, "#66ff99", false, 13, 13);
-            this.bomb = new GameObjects.Bomb(7, 7, "#0d0d0d", 3, new Date("2019-01-16"), "#0d0d0d");
-            this.powerup = new GameObjects.Powerup(8, 8, "#ffff00", GameObjects.Powerup_type.BombDamage, 10, new Date("2019-01-16"));
-            this.explosion = new GameObjects.Explosion(9, 9, "#ffffff", 3, 2, 3, new Date("2019-01-16"));
+            this.playerOne = new Player.Player(3, "player", false, 1, 1);
+            this.playerTwo = new Player.Player(3, "playerTwo", false, 13, 13);
+            this.bomb = new GameObjects.Bomb(7, 7, "bomb", 3, new Date("2019-01-16"), "#0d0d0d");
+            this.powerup = new GameObjects.Powerup(8, 8, "powerup", GameObjects.Powerup_type.BombDamage, 10, new Date("2019-01-16"));
+            this.explosion = new GameObjects.Explosion(9, 9, "explosion", 3, 2, 3, new Date("2019-01-16"));
             this.players = [this.playerOne, this.playerTwo];
             this.bombs = [this.bomb];
             this.powerups = [this.powerup];
@@ -97,7 +102,7 @@ export namespace Renderer {
         }
 
         rand(max: number) {
-            return Math.floor(Math.random() * Math.floor(max));
+            return this.oldRenderer.random(max);
         }
 
         drawGame = () => {
@@ -125,7 +130,8 @@ export namespace Renderer {
             }
 
             for (let p of this.players) {
-                var img = document.getElementById("player") as HTMLCanvasElement;
+                let t = p.texture;
+                var img = document.getElementById(t) as HTMLCanvasElement;
                 this.canvas.drawImage(img, p.x * this.tileW, p.y * this.tileH);
             }
 

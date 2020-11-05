@@ -40,6 +40,22 @@ namespace SignalRWebPack.Models
             this.y = y;
             explosionSizeMultiplier = 2;
             bombs = new List<Bomb>();
+
+            switch(name)
+            {
+                case ("player1"):
+                texture = "player";
+                break;
+                case ("player2"):
+                texture = "playerTwo";
+                break;
+                case ("player3"):
+                texture = "playerThree";
+                break;
+                case ("player4"):
+                texture = "playerFour";
+                break;
+            }
         }
 
         public void SetCollisionStrategy(CollisionStrategy collisionStrategy)
