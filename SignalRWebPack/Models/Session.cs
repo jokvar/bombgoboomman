@@ -38,8 +38,8 @@ namespace SignalRWebPack.Models
             Players = new List<Player>();// { new Player("vardas", "lol koks dar id", 1, 1) };
 
             MapDirector director = new MapDirector();
-            MapBuilder b1 = new ClassicBuilder();
-            //MapBuilder b1 = new MLGBuilder();
+            //MapBuilder b1 = new ClassicBuilder();
+            MapBuilder b1 = new MLGBuilder();
             director.Construct(b1);
             Map = b1.GetResult();
 

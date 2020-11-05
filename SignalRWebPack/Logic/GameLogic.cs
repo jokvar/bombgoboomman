@@ -335,7 +335,7 @@ namespace SignalRWebPack.Logic
         //        explosionCollision.SetCollisionStrategy(new BoxCollision());
         //        explosionCollision.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
         //        explosionStopped = true;
-        //        gameMap.tiles[explosionIndex] = new EmptyTile { x = x, y = y, texture = "#ffffff" };
+        //        gameMap.tiles[explosionIndex] = new EmptyTile { x = x, y = y, texture = "blank" };
         //    }
         //    else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
         //    {
