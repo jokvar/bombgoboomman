@@ -107,6 +107,7 @@ namespace SignalRWebPack.Logic
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].CheckBombTimers();
+                    players[i].CheckInvulnerabilityPeriods();
                     for (int j = 0; j < players[i].bombs.Count; j++)
                     {
                         if(players[i].bombs[j].explosion != null)
@@ -173,7 +174,18 @@ namespace SignalRWebPack.Logic
             //retrieving every type of gameobject that could exist on the tile the player is trying to move towards
             Bomb bombCheck = bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
             Powerup powerupCheck = powerups.Where(e => e.x == x && e.y == y).FirstOrDefault();
-            ExplosionCell explosionCheck = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            ExplosionCell explosionCheck = null;// = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            for (int i = 0; i < players.Count; i++)
+            {
+                for (int j = 0; j < players[i].bombs.Count; j++)
+                {
+                    if (explosionCheck == null && players[i].bombs[j].explosion != null)
+                    {
+                        explosionCheck = players[i].bombs[j].explosion.GetExplosionCells().Where(e => e.x == x && e.y == y).FirstOrDefault();
+                    }
+                    //players[i].bombs[j].explosion.GetExplosionCells
+                }
+            }
             if (gameMap.tiles[movementIndex] is Wall)
             {
                 players[index].SetCollisionStrategy(new WallCollision());
