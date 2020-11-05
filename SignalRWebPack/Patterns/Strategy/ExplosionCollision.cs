@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.Command;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
@@ -13,7 +14,7 @@ namespace SignalRWebPack.Patterns.Strategy
             //do nothing
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
             var explosion = collisionTarget as ExplosionCell;
             player.x = explosion.x;

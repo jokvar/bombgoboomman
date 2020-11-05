@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns;
 using SignalRWebPack.Patterns.Observer;
-
-
+using SignalRWebPack.Patterns.Command;
 
 namespace SignalRWebPack.Models
 {
@@ -16,6 +15,8 @@ namespace SignalRWebPack.Models
         public List<Powerup> powerups { get; set; }
         public Player Host { get; set; }
         public Map Map { get; set; }
+        //-------Command (Invoker)--------------
+        public PowerupInvoker powerupInvoker;
         public string[] PlayerIDs
         {
             get
@@ -36,7 +37,7 @@ namespace SignalRWebPack.Models
 
             powerups = new List<Powerup>();
             Players = new List<Player>();// { new Player("vardas", "lol koks dar id", 1, 1) };
-
+            powerupInvoker = new PowerupInvoker();
             MapDirector director = new MapDirector();
             //MapBuilder b1 = new ClassicBuilder();
             MapBuilder b1 = new MLGBuilder();

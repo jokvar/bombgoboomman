@@ -62,8 +62,6 @@ namespace SignalRWebPack.Models
                 explosion = new Explosion(x, y, false, explosionSizeMultiplier);
                 explosion.SpawnExplosions(x, y);
             }
-        }
-
-        
+        }        
     }
 }
