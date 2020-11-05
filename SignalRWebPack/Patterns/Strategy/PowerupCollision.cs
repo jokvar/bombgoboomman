@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Command;
+using Microsoft.Extensions.Logging;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
@@ -39,7 +41,13 @@ namespace SignalRWebPack.Patterns.Strategy
 
         public void ResolvePowerup(Player playerReference, Powerup powerup, PowerupInvoker powerupInvoker)
         {
-            PowerupCommand powerupCommand;
+            //0 - BombTickDuration - DecreaseBombTickDuration
+            //1 - ExplosionSize - IncreaseExplosionSize
+            //2 - AdditionalBomb - IncreaseBombCount
+            //3 - PowerDown - Undo(1)
+            //4 - PowerDownX3 - Undo(3)
+            Console.WriteLine("Resolving powerup {0}", powerup.type);
+            PowerupCommand powerupCommand = null;
             switch (powerup.type)
             {
                 case Powerup_type.BombTickDuration:
@@ -53,13 +61,17 @@ namespace SignalRWebPack.Patterns.Strategy
                     break;
                 case Powerup_type.PowerDown:
                     powerupInvoker.Undo(1);
-                    return;
+                    break;
                 case Powerup_type.PowerDownX3:
                     powerupInvoker.Undo(3);
-                    return;
+                    break;
                 default:
                     powerupCommand = new IncreaseExplosionSize(playerReference);
                     break;
+            }
+            if (powerupCommand == null)
+            {
+                return;
             }
             powerupInvoker.ExecuteCommand(powerupCommand);
         }
