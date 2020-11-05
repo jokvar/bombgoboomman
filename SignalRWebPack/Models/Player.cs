@@ -30,7 +30,7 @@ namespace SignalRWebPack.Models
             this.id = id;
             invulnerable = false;
             speedMultiplier = 1;
-            texture = "#66ff99";
+            texture = "player";
             ready = false;
             invulnerableSince = DateTime.Now;
             invulnerabilityDuration = 3; //seconds

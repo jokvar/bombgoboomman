@@ -1,7 +1,15 @@
 import "./css/main.css";
+import "./images/wall.jpg";
+import "./images/box.jpg";
+import "./images/blank.jpg";
+import "./images/bomb.jpg";
+import "./images/explosion.jpg";
+import "./images/player.jpg";
+import "./images/powerup.jpg";
 import { ChatHub } from "./chathub/ChatHub";
 import { Renderer } from "./ui/Render";
 import { Input } from "./ui/Input";
+
 
 const version = "v0.1";
 

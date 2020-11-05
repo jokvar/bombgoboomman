@@ -30,15 +30,15 @@ namespace SignalRWebPack.Models
 
         //        if (data == 1)
         //        {
-        //            tiles[index] = new Wall() { x = x, y = y, texture = "#000000" };
+        //            tiles[index] = new Wall() { x = x, y = y, texture = "wall" };
         //        }
         //        else if (data == 2)
         //        {
-        //            tiles[index] = new Box() { x = x, y = y, texture = "#ff661a" };
+        //            tiles[index] = new Box() { x = x, y = y, texture = "box" };
         //        }
         //        else
         //        {
-        //            tiles[index] = new EmptyTile() { x = x, y = y, texture = "#ffffff" };
+        //            tiles[index] = new EmptyTile() { x = x, y = y, texture = "blank" };
         //        }
         //        index++;
         //    }
