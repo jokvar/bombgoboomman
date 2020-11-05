@@ -35,7 +35,7 @@ namespace SignalRWebPack.Models
         {
 
             powerups = new List<Powerup>();
-            Players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
+            Players = new List<Player>();// { new Player("vardas", "lol koks dar id", 1, 1) };
 
             MapDirector director = new MapDirector();
             MapBuilder b1 = new ClassicBuilder();
@@ -49,48 +49,46 @@ namespace SignalRWebPack.Models
 
         }
 
-        public string GenerateRoomCode()
-        {
-            return "6969";
-        }
-
+        private object _playerRegistryLock = new object();
         public bool RegisterPlayer(string id, bool isHost = false)
         {
-            if (Players == null)
+            lock (_playerRegistryLock)
             {
-                Players = new List<Player>();
+                int index = Players.Count;
+                Player player;
+                switch (index)
+                {
+                    case (0):
+                        player = new Player("player1", id, 1, 1);
+                        break;
+                    case (1):
+                        player = new Player("player2", id, 13, 1);
+                        break;
+                    case (2):
+                        player = new Player("player3", id, 1, 13);
+                        break;
+                    case (3):
+                        player = new Player("player4", id, 13, 13);
+                        break;
+                    default:
+                        return true;
+                }
+                if (isHost)
+                {
+                    Host = player;
+                }
+                Players.Add(player);
+                return Players.Count >= 4;
             }
-            Player host = new Player("wtf name here?", id, 0, 0);
-            if (isHost)
-            {
-                Host = host;
-            }
-            Players.Add(host);
-            return (Players.Count >= 4);
         }
 
-        public int MatchId(string id)
-        {
-            return Players.IndexOf(Players.Where(p => p.id == id).First());
-            // -1 if not found
-        }
+        public int MatchId(string id) => Players.IndexOf(Players.Where(p => p.id == id).First());
 
+        //public void SetMap(string mapName) => Map = new Map(mapName);
 
-        public void SetMap(string mapName) => Map = new Map();
+        public void Attach(IObserver observer) => Observers.Add(observer);
 
-        public void InstantiatePowerups() => powerups = new List<Powerup>();
-
-        public void SetMap() => Map = new Map();
-
-        public void Attach(IObserver observer)
-        {
-            this.Observers.Add(observer);
-        }
-
-        public void Detach(IObserver observer)
-        {
-            this.Observers.Remove(observer);
-        }
+        public void Detach(IObserver observer) => this.Observers.Remove(observer);
         public void Notify()
         {
             foreach (var observer in Observers)
