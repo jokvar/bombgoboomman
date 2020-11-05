@@ -51,9 +51,9 @@ namespace SignalRWebPack.Models
             _collisionStrategy = collisionStrategy;
         }
 
-        public void ResolvePlayerCollision(Player player, object collisionTarget, List<Powerup> collisionList)
+        public void ResolvePlayerCollision(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
-            _collisionStrategy.PlayerCollisionStrategy(player, collisionTarget, collisionList);
+            _collisionStrategy.PlayerCollisionStrategy(player, collisionTarget, collisionList, powerupInvoker);
         }
 
         public void PlaceBomb()
