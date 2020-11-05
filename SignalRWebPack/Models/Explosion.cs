@@ -27,8 +27,7 @@ namespace SignalRWebPack.Models
             this.isExpired = isExpired;
             size = 1;
             this.explosionSizeMultiplier = explosionSizeMultiplier;
-            explosions = new List<ExplosionCell>();
-            
+            explosions = new List<ExplosionCell>(); 
         }
 
         public List<ExplosionCell> GetExplosionCells()

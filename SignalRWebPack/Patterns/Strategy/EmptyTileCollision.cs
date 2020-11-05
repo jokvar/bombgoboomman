@@ -15,7 +15,7 @@ namespace SignalRWebPack.Patterns.Strategy
             explosions.Add(exp1);
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<GameObject> collisionList)
         {
             var emptyTile = collisionTarget as EmptyTile;
             player.x = emptyTile.x;

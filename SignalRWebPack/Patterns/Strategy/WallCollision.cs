@@ -13,7 +13,7 @@ namespace SignalRWebPack.Patterns.Strategy
             //do nothing
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<GameObject> collisionList)
         {
             //do nothing
         }

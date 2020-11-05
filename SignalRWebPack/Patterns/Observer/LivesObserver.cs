@@ -11,11 +11,21 @@ namespace SignalRWebPack.Patterns.Observer
     {
         public void Update(ISubject subject)
         {
+            List <Player> players = (subject as Session).Players;
+
+            foreach (Player p in players)
+            {
+                if(p.lives == 0)
+                {
+                    (subject as Session).Players.Remove(p);
+                }
+            }
+
             int count = (subject as Session).Players.Where(p => p.lives > 0).ToList().Count;
 
             if (count == 1)
             {
-                //write some code to indicate game ending
+                throw new NotImplementedException();
             }
         }
     }

@@ -13,7 +13,7 @@ namespace SignalRWebPack.Patterns.Strategy
         public abstract void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> powerupList);
 
         //How player collision with collisionTarget is resolved
-        public abstract void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList);
+        public abstract void PlayerCollisionStrategy(Player player, object collisionTarget, List<GameObject> collisionList);
 
     }
 }

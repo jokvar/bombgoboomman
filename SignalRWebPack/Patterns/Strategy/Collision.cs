@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
     //Context class
-    class Collision
+    public class Collision
     {
-        private CollisionStrategy _collisionStrategy;
-
         public void SetCollisionStrategy(CollisionStrategy collisionStrategy)
         {
             _collisionStrategy = collisionStrategy;

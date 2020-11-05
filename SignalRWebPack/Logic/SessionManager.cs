@@ -45,6 +45,5 @@ namespace SignalRWebPack.Logic
         {
             return "6969";
         }
-
     }
 }

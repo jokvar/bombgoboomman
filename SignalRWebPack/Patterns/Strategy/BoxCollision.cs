@@ -17,49 +17,9 @@ namespace SignalRWebPack.Patterns.Strategy
             //no empty tile reinitilization
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<GameObject> collisionList)
         {
-            //do nothing
-        }
-
-        public void GeneratePowerup(int x, int y, List<Powerup> powerups)
-        {
-            var rand = new Random();
-            //will be true 50% of the time
-            if (rand.Next(100) < 50)
-            {
-                int powerupIndex = rand.Next(0, 6);
-                Powerup powerup;
-                switch (powerupIndex)
-                {
-                    case 0:
-                        powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
-                        powerups.Add(powerup);
-                        break;
-
-                    case 1:
-                        powerup = new Powerup(Powerup_type.PlayerSpeed, x, y);
-                        powerups.Add(powerup);
-                        break;
-
-                    case 2:
-                        powerup = new Powerup(Powerup_type.ExplosionDamage, x, y);
-                        powerups.Add(powerup);
-                        break;
-
-                    case 3:
-                        powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
-                        powerups.Add(powerup);
-                        break;
-
-                    case 4:
-                        powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
-                        powerups.Add(powerup);
-                        break;
-
-                }
-            }
-
+            throw new NotImplementedException();
         }
     }
 }

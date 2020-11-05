@@ -28,12 +28,10 @@ namespace SignalRWebPack.Models
             }
         }
         public string roomCode { get; set; }
-        public string id { get; set; }
 
         private List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
-
             powerups = new List<Powerup>();
             Players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
 
@@ -42,39 +40,46 @@ namespace SignalRWebPack.Models
             //MapBuilder b1 = new MLGBuilder();
             director.Construct(b1);
             Map = b1.GetResult();
-
             //commented out because right now, session has no player array, unless hard coded
             //var livesObserver = new LivesObserver();
             //this.Attach(livesObserver);
 
         }
 
-        public string GenerateRoomCode()
-        {
-            return "6969";
-        }
-
+        private object _playerRegistryLock = new object();
         public bool RegisterPlayer(string id, bool isHost = false)
         {
-            if (Players == null)
+            lock (_playerRegistryLock)
             {
-                Players = new List<Player>();
-            }
-            Player host = new Player("wtf name here?", id, 0, 0);
-            if (isHost)
-            {
-                Host = host;
-            }
-            Players.Add(host);
-            return (Players.Count >= 4);
+                int index = Players.Count;
+                Player player;
+                switch (index)
+                {
+                    case (0):
+                        player = new Player("player1", id, 1, 1);
+                        break;
+                    case (1):
+                        player = new Player("player2", id, 3, 1);
+                        break;
+                    case (2):
+                        player = new Player("player3", id, 3, 3);
+                        break;
+                    case (3):
+                        player = new Player("player4", id, 1, 3);
+                        break;
+                    default:
+                        return true;
+                }
+                if (isHost)
+                {
+                    Host = player;
+                }
+                Players.Add(player);
+                return Players.Count >= 4;
+            }   
         }
 
-        public int MatchId(string id)
-        {
-            return Players.IndexOf(Players.Where(p => p.id == id).First());
-            // -1 if not found
-        }
-
+        public int MatchId(string id) => Players.IndexOf(Players.Where(p => p.id == id).First());
 
         public void SetMap(string mapName) => Map = new Map();
 
@@ -82,15 +87,9 @@ namespace SignalRWebPack.Models
 
         public void SetMap() => Map = new Map();
 
-        public void Attach(IObserver observer)
-        {
-            this.Observers.Add(observer);
-        }
+        public void Attach(IObserver observer) => Observers.Add(observer);
 
-        public void Detach(IObserver observer)
-        {
-            this.Observers.Remove(observer);
-        }
+        public void Detach(IObserver observer) => this.Observers.Remove(observer);
         public void Notify()
         {
             foreach (var observer in Observers)

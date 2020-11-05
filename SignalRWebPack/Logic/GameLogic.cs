@@ -11,27 +11,41 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using SignalRWebPack.Patterns.Singleton;
 using SignalRWebPack.Patterns.FactoryMethod;
-using SignalRWebPack.Patterns.Strategy;
-using SignalRWebPack.Patterns.Builder;
 
 namespace SignalRWebPack.Logic
 {
     public interface IGameLogic
     {
         Task GameLoop(CancellationToken cancellationToken);
+        Task _GameLoop(CancellationToken cancellationToken);
     }
     public class GameLogic : IGameLogic
     {
         private readonly IHubContext<ChatHub> _hub;
-
-        private static Session session = SessionManager.GetSession();
-        private List<Player> players = session.Players;
-        private Map gameMap = session.Map;
+        private object _sessionLock = new object();
+        private Session session = null;
+        private SessionManager SessionManager;
+        private List<Player> players;
+        private Map gameMap;
         private List<Bomb> bombs = new List<Bomb>();
         private List<ExplosionCell> explosions = new List<ExplosionCell>();
         private List<Powerup> powerups = session.powerups;
         private int mapDimensions = 15;
-
+        int[] mapData = {   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+                            1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+                            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
         //-------FactoryMethod--------------
         // Creators: 
         BombTransportCreator bombCreator;
@@ -47,6 +61,7 @@ namespace SignalRWebPack.Logic
             bombCreator = new BombTransportCreator();
             powerupCreator = new PowerupTransportCreator();
             explosionCreator = new ExplosionTransportCreator();
+            SessionManager = SessionManager.Instance;
         }
         public void SpawnPlayers()
         {
@@ -63,31 +78,54 @@ namespace SignalRWebPack.Logic
             players[3].y = mapDimensions - 1;
         }
 
+        public async Task _GameLoop(CancellationToken cancellationToken)
+        {
+            //wait for session to be loaded / playing to be enabled
+            while (true) 
+            { 
+                lock (_sessionLock)
+                { 
+                    if (SessionManager.ActiveSessionCode != null) 
+                    {
+                        session = SessionManager.Instance.GetSession(SessionManager.ActiveSessionCode);
+                        break;
+                    }
+                } 
+            }
+            
+            //gameMap = new Map(session.MapName);
+
+            gameMap = session.Map;
+            players = session.Players;
+            bombs = new List<Bomb>();
+            powerups = new List<Powerup>();
+            List<Message> messages = new List<Message>();
+
+            Tuple<string, PlayerAction> tuple;
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
+                {
+                    string playerId = tuple.Item1;
+                    PlayerAction action = tuple.Item2;
+                    ProcessAction(action, playerId);
+                }
+                await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
+                await Task.Delay(120); // 😎😎😎😎
+
+                CheckBombTimers();
+                CheckExplosionTimers();
+            }
+        }
+
         public async Task GameLoop(CancellationToken cancellationToken)
         {
-            //int[] mapData = {   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-            //                    1, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1,
-            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            //                    1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-            //                    1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-            //                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-            //    gameMap = new Map(mapData);
-
-            
-
-            
-
-            //bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
-            //powerups = new List<Powerup> { new Powerup(Powerup_type.AdditionalBomb, 2, 1) };
+        
+            gameMap = new Map(mapData);
+            players = new List<Player> { new Player("vardas", "lol koks dar id", 1, 1) };
+            bombs = new List<Bomb> { new Bomb(1, 2, players.Last()) };
+            powerups = new List<Powerup> { new Powerup(Powerup_type.AdditionalBomb, 2, 1) };
             //explosions = new List<Explosion> { new Explosion(DateTime.Now, 1, 5) };
             List<Message> messages = new List<Message>();
 
@@ -105,6 +143,7 @@ namespace SignalRWebPack.Logic
                     ProcessAction(action, playerId);
                 }
                 //end example
+
                 //explosions[0].x = (i++ % 5) + 1;
                 //_logger.LogInformation("sending draw data");
 
@@ -114,28 +153,6 @@ namespace SignalRWebPack.Logic
                 explosions = new List<ExplosionCell>();
                 bombs = new List<Bomb>();
 
-                //foreach (Player player in players)
-                //{
-                //    player.CheckBombTimers();
-                //    foreach(Bomb bomb in player.bombs)
-                //    {
-                //        if(bomb.explosion != null)
-                //        {
-                //            bomb.explosion.CheckExplosionTimers();
-                //            if (bomb.explosion.isExpired)
-                //            {
-                //                //foreach(ExplosionCell cellToRemove in bomb.explosion.GetExplosionCells())
-                //                //{
-                //                //    explosions.Remove(cellToRemove);
-                //                //}
-
-                //                player.RefreshBombList(bomb);
-                //                _logger.LogInformation("explosion timer resolved");
-                //            }
-                //        }
-
-                //    }
-                //}
                 for (int i = 0; i < players.Count; i++)
                 {
                     players[i].CheckBombTimers();
@@ -166,26 +183,31 @@ namespace SignalRWebPack.Logic
 
         public void ProcessAction(PlayerAction playerAction, string id)
         {
-            int requestIndex = 0;//session.MatchId(id);
+            int requestIndex = session.MatchId(id); 
+            if (requestIndex == -1)
+            {
+                return;
+            }
+            
             //storing current coordinates
             int x = players[requestIndex].x;
             int y = players[requestIndex].y;
             switch (playerAction.action)
             {
                 case ActionEnums.Up:
-                    PlayerCheckAdjacentTiles(x, y - 1, requestIndex);
+                    PlayerCheckAdjacentTiles("y", x, y, -1, requestIndex);
                     break;
 
                 case ActionEnums.Down:
-                    PlayerCheckAdjacentTiles(x, y + 1,requestIndex);
+                    PlayerCheckAdjacentTiles("y", x, y, 1, requestIndex);
                     break;
 
                 case ActionEnums.Right:
-                    PlayerCheckAdjacentTiles(x + 1, y, requestIndex);
+                    PlayerCheckAdjacentTiles("x", x, y, 1, requestIndex);
                     break;
 
                 case ActionEnums.Left:
-                    PlayerCheckAdjacentTiles(x - 1, y, requestIndex);
+                    PlayerCheckAdjacentTiles("x", x, y, -1, requestIndex);
                     break;
 
                 case ActionEnums.PlaceBomb:
@@ -195,9 +217,13 @@ namespace SignalRWebPack.Logic
             }
         }
 
-        public void PlayerCheckAdjacentTiles(int x, int y, int index)
+        public void PlayerCheckAdjacentTiles(string axis, int x, int y, int increment, int index)
         {
+            Bomb bombCheck;
+            Powerup powerupCheck;
+            Explosion explosionCheck;
             int movementIndex = 0;
+
             //Collision playerCollision = new Collision();
 
             //converting player coordinates to map tile index
@@ -230,58 +256,8 @@ namespace SignalRWebPack.Logic
                 players[index].SetCollisionStrategy(new ExplosionCollision());
                 players[index].ResolvePlayerCollision(players[index], explosionCheck, new List<Powerup>());
             }
-            else if (gameMap.tiles[movementIndex] is EmptyTile)
-            {
-                players[index].SetCollisionStrategy(new EmptyTileCollision());
-                players[index].ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>());
-            }
         }
 
-
-        //public void PlaceBomb(int requestIndex)
-        //{
-        //    int x = players[requestIndex].x;
-        //    int y = players[requestIndex].y;
-        //    Bomb bomb = new Bomb(x, y, players[requestIndex]);
-        //    bombs.Add(bomb);
-        //}
-
-        //method for resolving bomb explosions
-        //public void BombExplosion(int bombIndex)
-        //{
-        //    int x = bombs[bombIndex].x;
-        //    int y = bombs[bombIndex].y;
-        //    Player playerReference = bombs[bombIndex].placedBy;
-        //    bombs.RemoveAt(bombIndex);
-        //    playerReference.activeBombCount--;
-        //    SpawnExplosions(x, y, playerReference);
-        //}
-
-        //public int GetBombIndex(Bomb bomb)
-        //{
-        //    for (int i = 0; i < bombs.Count; i++)
-        //    {
-        //        if(bombs[i] == bomb)
-        //        {
-        //            return i;
-        //        }
-        //    }
-        //    return 404; //not found
-        //}
-
-        //public int GetPowerupIndex(Powerup powerup)
-        //{
-        //    for (int i = 0; i < powerups.Count; i++)
-        //    {
-        //        if (powerups[i] == powerup)
-        //        {
-        //            return i;
-        //        }
-        //    }
-        //    return 404; //not found
-        //}
-
-        //spawns gunpowder with the center of the explosion being the coordinates x and y (where the bomb was initially placed)
         //public void SpawnExplosions(int x, int y, Player playerReference)
         //{
         //    DateTime explodedAt = DateTime.Now;
@@ -376,6 +352,7 @@ namespace SignalRWebPack.Logic
         //    }
         //    return explosionStopped;
         //}
+
 
         public int ConvertCoordsToIndex(int x, int y)
         {
@@ -480,6 +457,7 @@ namespace SignalRWebPack.Logic
                 }
             }
         }
+
 
         private async Task StoreDrawData(string[] playerIDs, Map _map, List<Player> _players, List<Bomb> _bombs, List<Powerup> _powerups, List<ExplosionCell> _explosions, List<Message> _messages)
         {

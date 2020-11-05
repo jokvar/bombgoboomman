@@ -8,7 +8,6 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class PowerupCollision : CollisionStrategy
     {
-
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             var powerup = collisionTarget as Powerup;
@@ -17,7 +16,7 @@ namespace SignalRWebPack.Patterns.Strategy
             collisionList.RemoveAt(GetPowerupIndex(powerup, collisionList));
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<GameObject> collisionList)
         {
             var powerup = collisionTarget as Powerup;
             player.x = powerup.x;
@@ -26,7 +25,7 @@ namespace SignalRWebPack.Patterns.Strategy
             collisionList.RemoveAt(GetPowerupIndex(powerup, collisionList));
         }
 
-        private int GetPowerupIndex(Powerup powerup, List<Powerup> powerups)
+        private int GetPowerupIndex(Powerup powerup, List<GameObject> powerups)
         {
             for (int i = 0; i < powerups.Count; i++)
             {
@@ -42,7 +41,6 @@ namespace SignalRWebPack.Patterns.Strategy
         {
             switch (powerup.type)
             {
-                //playerReference
                 case Powerup_type.AdditionalBomb:
                     if (playerReference.maxBombs < 8)
                     {
