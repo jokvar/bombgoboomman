@@ -35,7 +35,7 @@ namespace SignalRWebPack.Models
             this.id = id;
             invulnerable = false;
             speedMultiplier = 1;
-            texture = "images/player.jpg";
+            texture = "player";
             ready = false;
             invulnerableSince = DateTime.Now;
             invulnerableUntil = DateTime.MinValue;
@@ -50,16 +50,16 @@ namespace SignalRWebPack.Models
             switch(name)
             {
                 case ("player1"):
-                texture = "images/player.jpg";
+                texture = "player";
                 break;
                 case ("player2"):
-                texture = "images/playerTwo.jpg";
+                texture = "playerTwo";
                 break;
                 case ("player3"):
-                texture = "images/playerThree.jpg";
+                texture = "playerThree";
                 break;
                 case ("player4"):
-                texture = "images/playerFour.jpg";
+                texture = "playerFour";
                 break;
             }
         }
