@@ -55,11 +55,11 @@ export namespace Renderer {
             //temp data, probably delete later?
             //temp data, delete later
             this.map = new GameMap.Map();
-            this.playerOne = new Player.Player(3, "images/player.jpg", false, 1, 1);
-            this.playerTwo = new Player.Player(3, "images/playerTwo.jpg", false, 13, 13);
-            this.bomb = new GameObjects.Bomb(7, 7, "images/bomb.jpg", 3, new Date("2019-01-16"), "#0d0d0d");
-            this.powerup = new GameObjects.Powerup(8, 8, "images/powerup.jpg", GameObjects.Powerup_type.BombDamage, 10, new Date("2019-01-16"));
-            this.explosion = new GameObjects.Explosion(9, 9, "images/explosion.jpg", 3, 2, 3, new Date("2019-01-16"));
+            this.playerOne = new Player.Player(3, "player", false, 1, 1);
+            this.playerTwo = new Player.Player(3, "playerTwo", false, 13, 13);
+            this.bomb = new GameObjects.Bomb(7, 7, "bomb", 3, new Date("2019-01-16"), "#0d0d0d");
+            this.powerup = new GameObjects.Powerup(8, 8, "powerup", GameObjects.Powerup_type.BombDamage, 10, new Date("2019-01-16"));
+            this.explosion = new GameObjects.Explosion(9, 9, "explosion", 3, 2, 3, new Date("2019-01-16"));
             this.players = [this.playerOne, this.playerTwo];
             this.bombs = [this.bomb];
             this.powerups = [this.powerup];
@@ -108,10 +108,8 @@ export namespace Renderer {
             while (y < this.mapH) {
                 x = 0;
                 while (x < this.mapW) {
-                    let texture = this.map.GetTile(x, y).texture
-                    let img = new Image();
-                    console.log(texture);
-                    img.src = texture;
+                    let texture = this.map.GetTile(x, y).texture;
+                    var img = document.getElementById(texture) as HTMLCanvasElement;
                     this.canvas.drawImage(img, x * this.tileW, y * this.tileH);
                     x++;
                 }
@@ -120,29 +118,22 @@ export namespace Renderer {
 
             for (let p of this.players) {
                 let t = p.texture;
-                let img = new Image();
-                img.src = t;
+                var img = document.getElementById(t) as HTMLCanvasElement;
                 this.canvas.drawImage(img, p.x * this.tileW, p.y * this.tileH);
             }
 
             for (let b of this.bombs) {
-                let t = b.texture;
-                let img = new Image();
-                img.src = t;
+                var img = document.getElementById("bomb") as HTMLCanvasElement;
                 this.canvas.drawImage(img, b.x * this.tileW, b.y * this.tileH);
             }
 
             for (let pow of this.powerups) {
-                let t = pow.texture;
-                let img = new Image();
-                img.src = t;
+                var img = document.getElementById("powerup") as HTMLCanvasElement;
                 this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
             }
 
             for (let e of this.explosions) {
-                let t = e.texture;
-                let img = new Image();
-                img.src = t;
+                var img = document.getElementById("explosion") as HTMLCanvasElement;
                 this.canvas.drawImage(img, e.x * this.tileW, e.y * this.tileH);
             }
             this.canvas.fillStyle = "#ff0000";
