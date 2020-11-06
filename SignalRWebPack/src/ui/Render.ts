@@ -83,22 +83,9 @@ export namespace Renderer {
             explosions: Array<GameObjects.Explosion>,
             messages: Array<ChatHub.Message>): void {
 
-            //init or update map
-            if (this.firstDraw == false) {
-                this.map = new GameMap.Map();
-                this.firstDraw = true;
-            }
-            else {
-                for (let tile of map.tiles) {
-                    this.map.UpdateTile(tile);
-                }
-            }
+            this.oldRenderer.StoreData(map, players, bombs, powerups, explosions, messages, this);
 
-            this.players = players;
-            this.bombs = bombs;
-            this.powerups = powerups;
-            this.explosions = explosions;
-            this.messages = messages;
+            
         }
 
         rand(max: number) {
