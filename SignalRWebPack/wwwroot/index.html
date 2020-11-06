@@ -2,17 +2,38 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>ASP.NET Core SignalR</title>
-<link href="/css/main.f69be9a0dce852e2be70.css" rel="stylesheet"></head>
+    <title>Bomb go Boom Man</title>
+<link href="/css/main.7ef2bf5a8a3cde519a7e.css" rel="stylesheet"></head>
 <body>
-    <div id="divMessages" class="messages">
+    <div class="container" style="height: 343px;">
+        <div id="divMessages" class="border border-primary" style="overflow: auto; width: 100%; height: 294px;">
+            <table class="table">
+                <tbody id="tbodyMessages">
+                    <tr class="table-success">
+                        <td><b>Welcome!</b> Type 'join' to join a session, or 'create' to create a new one!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="input-group mb-12">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Message: </span>
+            </div>
+            <input id="tbMessage" type="text" class="form-control">
+        </div>
     </div>
-    <div class="input-zone">
-        <label id="lblMessage" for="tbMessage">Message:</label>
-        <input id="tbMessage" class="input-zone-input" type="text" />
-        <button id="btnSend">Send</button>
+    <div class="container">
+        <div class="col-md">
+            <canvas id="game" width="450" height="450" style="border:1px solid #000000;"></canvas>
+        </div>
     </div>
-    <canvas id="game" width="400" height="400" style="border:1px solid #000000;"></canvas>
-    
-<script type="text/javascript" src="/main.f69be9a0dce852e2be70.js"></script></body>
+    <div id="version"></div>
+    <img id="player" src="images/player.jpg" width="40" height="40">
+    <img id="blank" src="images/blank.jpg" width="40" height="40">
+    <img id="wall" src="images/wall.jpg" width="40" height="40">
+    <img id="box" src="images/box.jpg" width="40" height="40">
+    <img id="bomb" src="images/bomb.jpg" width="40" height="40">
+    <img id="powerup" src="images/powerup.jpg" width="40" height="40">
+    <img id="explosion" src="images/explosion.jpg" width="40" height="40">
+<script type="text/javascript" src="/main.js"></script></body>
 </html>

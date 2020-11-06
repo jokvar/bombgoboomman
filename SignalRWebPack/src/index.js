@@ -1,29 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("./css/main.css");
-var signalR = require("@microsoft/signalr");
-var divMessages = document.querySelector("#divMessages");
-var tbMessage = document.querySelector("#tbMessage");
-var btnSend = document.querySelector("#btnSend");
-var username = new Date().getTime();
-var connection = new signalR.HubConnectionBuilder()
-    .withUrl("/hub")
-    .build();
-connection.on("messageReceived", function (username, message) {
-    var m = document.createElement("div");
-    m.innerHTML =
-        "<div class=\"message-author\">" + username + "</div><div>" + message + "</div>";
-    divMessages.appendChild(m);
-    divMessages.scrollTop = divMessages.scrollHeight;
-});
-connection.start().catch(function (err) { return document.write(err); });
-tbMessage.addEventListener("keyup", function (e) {
-    if (e.key === "Enter") {
-        send();
-    }
-});
-btnSend.addEventListener("click", send);
-function send() {
-    connection.send("newMessage", username, tbMessage.value)
-        .then(function () { return tbMessage.value = ""; });
-}
+//import "./css/main.css";
+require("./images/wall.jpg");
+require("./images/box.jpg");
+require("./images/blank.jpg");
+require("./images/bomb.jpg");
+require("./images/explosion.jpg");
+require("./images/player.jpg");
+require("./images/powerup.jpg");
+var ChatHub_1 = require("./chathub/ChatHub");
+var Render_1 = require("./ui/Render");
+var Input_1 = require("./ui/Input");
+require("bootstrap/dist/css/bootstrap.min.css");
+var version = "v0.5";
+window.onload = function () {
+    var canvas = document.getElementById('game').getContext("2d");
+    document.getElementById('version').textContent = version;
+    canvas.font = "bold 10pt sans-serif";
+    var renderer = new Render_1.Renderer.Renderer(canvas);
+    var chathub = new ChatHub_1.ChatHub.Hub(renderer);
+    chathub.connection.start();
+    var input = new Input_1.Input.EventListener(chathub.server);
+    renderer.drawGame();
+    console.log("requtested frame");
+};
