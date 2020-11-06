@@ -17,14 +17,14 @@ namespace SignalRWebPack.Models
             this.y = y;
             existDuration = 10; //seconds
             plantedAt = DateTime.Now;
-            texture = "powerup";
+            texture = "images/powerup.jpg";
         }
 
         public Powerup()
         {
             existDuration = 10; //seconds
             plantedAt = DateTime.Now;
-            texture = "powerup";
+            texture = "images/powerup.jpg";
         }
 
         public void SetValues(Powerup_type type, int x, int y)
