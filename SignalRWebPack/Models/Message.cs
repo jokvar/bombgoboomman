@@ -9,13 +9,8 @@ namespace SignalRWebPack.Models
     public class Message
     {
         [JsonProperty("content")]
-        public string content { get; set; }
-        [JsonProperty("code")]
-        public double code { get; set; }
-        public Message(string content, double code)
-        {
-            this.content = content;
-            this.code = code;
-        }
+        public string Content { get; set; }
+        [JsonProperty("class")]
+        public string Class { get; set; }
     }
 }

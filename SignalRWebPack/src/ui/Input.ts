@@ -8,19 +8,17 @@ export namespace Input {
         tbMessage: HTMLInputElement;
         btnSend: HTMLButtonElement;
         server: ChatHub.Server;
-        username: string
         constructor(server: ChatHub.Server) {
             this.canvas = document.querySelector('#game');
             this.divMessages = document.querySelector("#divMessages");
             this.tbMessage = document.querySelector("#tbMessage");
             this.btnSend = document.querySelector("#btnSend");
             this.server = server;
-            this.username = "temp";
             this.tbMessage.addEventListener("keyup", (e: KeyboardEvent) => {
                 if (e.key === "Enter") {
-                    console.log("eventEnter: " + this.username + "- " + this.tbMessage.value);
-                    var message = new ChatHub.Message(this.tbMessage.value, 0);
-                    server.NewMessage(this.username, message);
+                    var message = new ChatHub.Message(this.tbMessage.value);
+                    this.tbMessage.value = "";
+                    server.NewMessage(message);
                 }
             });
 
