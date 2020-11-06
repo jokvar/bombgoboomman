@@ -123,12 +123,6 @@ export namespace Renderer {
                 let img = new Image();
                 img.src = t;
                 this.canvas.drawImage(img, p.x * this.tileW, p.y * this.tileH);
-                //img = new Image();
-                //img.src = p.textureTwo;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
-                //img = new Image();
-                //img.src = p.textureThree;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
             }
 
             for (let b of this.bombs) {
@@ -136,12 +130,6 @@ export namespace Renderer {
                 let img = new Image();
                 img.src = t;
                 this.canvas.drawImage(img, b.x * this.tileW, b.y * this.tileH);
-                //img = new Image();
-                //img.src = b.textureTwo;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
-                //img = new Image();
-                //img.src = b.textureThree;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
             }
 
             for (let pow of this.powerups) {
@@ -149,12 +137,6 @@ export namespace Renderer {
                 let img = new Image();
                 img.src = t;
                 this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
-                //img = new Image();
-                //img.src = pow.textureTwo;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
-                //img = new Image();
-                //img.src = pow.textureThree;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
             }
 
             for (let e of this.explosions) {
@@ -162,12 +144,6 @@ export namespace Renderer {
                 let img = new Image();
                 img.src = t;
                 this.canvas.drawImage(img, e.x * this.tileW, e.y * this.tileH);
-                //img = new Image();
-                //img.src = e.textureTwo;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
-                //img = new Image();
-                //img.src = e.textureThree;
-                //this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
             }
             this.canvas.fillStyle = "#ff0000";
             this.canvas.fillText("FPS: " + this.framesLastSecond, 10, 20);
