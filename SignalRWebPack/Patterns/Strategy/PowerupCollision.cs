@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.Command;
+using Microsoft.Extensions.Logging;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
     class PowerupCollision : CollisionStrategy
     {
-
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             var powerup = collisionTarget as Powerup;
@@ -16,13 +18,12 @@ namespace SignalRWebPack.Patterns.Strategy
             explosions.Add(exp1);
             collisionList.RemoveAt(GetPowerupIndex(powerup, collisionList));
         }
-
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
             var powerup = collisionTarget as Powerup;
             player.x = powerup.x;
             player.y = powerup.y;
-            ResolvePowerup(player, powerup);
+            ResolvePowerup(player, powerup, powerupInvoker);
             collisionList.RemoveAt(GetPowerupIndex(powerup, collisionList));
         }
 
@@ -38,36 +39,41 @@ namespace SignalRWebPack.Patterns.Strategy
             return 404; //not found
         }
 
-        public void ResolvePowerup(Player playerReference, Powerup powerup)
+        public void ResolvePowerup(Player playerReference, Powerup powerup, PowerupInvoker powerupInvoker)
         {
+            //0 - BombTickDuration - DecreaseBombTickDuration
+            //1 - ExplosionSize - IncreaseExplosionSize
+            //2 - AdditionalBomb - IncreaseBombCount
+            //3 - PowerDown - Undo(1)
+            //4 - PowerDownX3 - Undo(3)
+            Console.WriteLine("Resolving powerup {0}", powerup.type);
+            PowerupCommand powerupCommand = null;
             switch (powerup.type)
             {
-                //playerReference
-                case Powerup_type.AdditionalBomb:
-                    if (playerReference.maxBombs < 8)
-                    {
-                        playerReference.maxBombs++;
-                    }
-                    break;
-
-                case Powerup_type.ExplosionSize:
-                    playerReference.explosionSizeMultiplier++;
-                    break;
-
                 case Powerup_type.BombTickDuration:
-                    if (playerReference.bombTickDuration > 2)
-                    {
-                        playerReference.bombTickDuration--;
-                    }
+                    powerupCommand = new DecreaseBombTickDuration(playerReference);
                     break;
-
-                //TODO: possibly reconsider use cases for these
-                case Powerup_type.ExplosionDamage:
+                case Powerup_type.ExplosionSize:
+                    powerupCommand = new IncreaseExplosionSize(playerReference);
                     break;
-
-                case Powerup_type.PlayerSpeed:
+                case Powerup_type.AdditionalBomb:
+                    powerupCommand = new IncreaseBombCount(playerReference);
+                    break;
+                case Powerup_type.PowerDown:
+                    powerupInvoker.Undo(1);
+                    break;
+                case Powerup_type.PowerDownX3:
+                    powerupInvoker.Undo(3);
+                    break;
+                default:
+                    powerupCommand = new IncreaseExplosionSize(playerReference);
                     break;
             }
+            if (powerupCommand == null)
+            {
+                return;
+            }
+            powerupInvoker.ExecuteCommand(powerupCommand);
         }
     }
 }
