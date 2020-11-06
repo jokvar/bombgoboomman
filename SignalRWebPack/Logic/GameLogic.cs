@@ -14,6 +14,7 @@ using SignalRWebPack.Patterns.FactoryMethod;
 using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.Decorator;
 
 namespace SignalRWebPack.Logic
 {
@@ -79,6 +80,14 @@ namespace SignalRWebPack.Logic
                     }
                 }
             }
+            GameObject powerup = new Powerup(Powerup_type.AdditionalBomb, 1, 2);
+            powerup.setvalue(2, 5);
+            //var sth = new BackgroundDecorator(powerup);
+            //sth.PowerupDecoration();
+
+            GameObject something = new MiscDecorator(new ForegroundDecorator(new BackgroundDecorator(powerup)));
+            //something.PowerupDecoration(Powerup_type.AdditionalBomb);
+
             powerupInvoker = session.powerupInvoker;
             List<Message> messages = new List<Message>();
             gameMap = session.Map;
