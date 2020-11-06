@@ -1,4 +1,5 @@
 ﻿using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace SignalRWebPack.Patterns.Strategy
             //do nothing
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
             //do nothing
         }

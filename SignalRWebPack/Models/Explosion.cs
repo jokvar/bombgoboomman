@@ -77,7 +77,19 @@ namespace SignalRWebPack.Models
             }
 
             //checking whether an explosion already exists at the given coordinates
-            ExplosionCell explosionCheck = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            ExplosionCell explosionCheck = null;// = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
+
+            for (int i = 0; i < players.Count; i++)
+            {
+                for (int j = 0; j < players[i].bombs.Count; j++)
+                {
+                    if (explosionCheck == null && players[i].bombs[j].explosion != null)
+                    {
+                        explosionCheck = players[i].bombs[j].explosion.GetExplosionCells().Where(e => e.x == x && e.y == y).FirstOrDefault();
+                    }
+                    //players[i].bombs[j].explosion.GetExplosionCells
+                }
+            }
 
             //checking whether an explosion already exists at the given coordinates
             Bomb bombCheck = null;

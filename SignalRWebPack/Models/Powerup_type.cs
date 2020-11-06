@@ -8,9 +8,9 @@ namespace SignalRWebPack.Models
     public enum Powerup_type
     {
         BombTickDuration,
-        PlayerSpeed,
-        ExplosionDamage,
         ExplosionSize,
-        AdditionalBomb
+        AdditionalBomb,
+        PowerDown,
+        PowerDownX3
     }
 }
