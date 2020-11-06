@@ -23,6 +23,7 @@ export namespace Renderer {
         messages: Array<ChatHub.Message>;
 
         divMessages: HTMLDivElement;
+        tbodyMessages: HTMLTableSectionElement;
         tbMessage: HTMLInputElement;
 
         //temp data, delete later
@@ -45,6 +46,7 @@ export namespace Renderer {
             this.canvas = canvas;
 
             this.divMessages = document.querySelector("#divMessages");
+            this.tbodyMessages = document.querySelector("#tbodyMessages");
             this.tbMessage = document.querySelector("#tbMessage");
 
             //temp data, probably delete later?
@@ -61,11 +63,22 @@ export namespace Renderer {
             this.explosions = [this.explosion];
         }
 
-        DisplayMessage = (username: string, message: string) => {
+        _DisplayMessage = (username: string, message: string) => {
             var m = document.createElement("div");
             m.innerHTML =
                 "<div class=\"message-author\">" + username + "</div><div>" + message + "</div>";
             this.divMessages.appendChild(m);
+            this.divMessages.scrollTop = this.divMessages.scrollHeight;
+            this.tbMessage.value = "";
+        }
+
+        DisplayMessage = (username: string, message: string) => {
+            console.log("new style message arrived");
+            var row = document.createElement("tr");
+            row.classList.add("table-info");
+            row.innerHTML =
+                "<td><b>" + username + "</b> : " + message + "</td>";
+            this.tbodyMessages.appendChild(row);
             this.divMessages.scrollTop = this.divMessages.scrollHeight;
             this.tbMessage.value = "";
         }

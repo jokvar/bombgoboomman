@@ -2,14 +2,25 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>ASP.NET Core SignalR</title>
+    <title>Bomb go Boom Man</title>
 </head>
 <body>
-    <div id="divMessages" class="messages">
-    </div>
-    <div class="input-zone">
-        <label id="lblMessage" for="tbMessage">Message:</label>
-        <input id="tbMessage" class="input-zone-input" type="text" />
+    <div class="container" style="height: 350px;">
+        <div id="divMessages" class="card card-outline-primary text-left" style="overflow: auto; width: 100%; height: 300px;">
+            <table class="table">
+                <tbody id="tbodyMessages">
+                    <tr class="table-success">
+                        <td><b>Welcome!</b> Type 'join' to join a session, or 'create' to create a new one!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="input-group mb-12">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Message: </span>
+            </div>
+            <input id="tbMessage" type="text" class="form-control">
+        </div>
     </div>
     <canvas id="game" width="450" height="450" style="border:1px solid #000000;"></canvas>
     <div id="version"></div>
