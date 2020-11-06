@@ -12,7 +12,7 @@ import { Input } from "./ui/Input";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-const version = "v0.5";
+const version = "v0.4512212";
 
 window.onload = function () {
     var canvas = (document.getElementById('game') as HTMLCanvasElement).getContext("2d");
