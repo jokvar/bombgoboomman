@@ -23,14 +23,14 @@ namespace SignalRWebPack.Models
             expiresAt = explodedAt.AddSeconds(explosionDuration);
             this.x = x;
             this.y = y;
-            texture = "explosion";
+            texture = "images/explosion.jpg";
         }
 
         public ExplosionCell()
         {
             damage = 1;
             explosionDuration = 3; //explosion persists for 3 seconds
-            texture = "explosion";
+            texture = "images/explosion.jpg";
         }
 
         public void SetValues(DateTime explodedAt, int x, int y)

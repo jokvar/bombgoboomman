@@ -219,7 +219,7 @@ namespace SignalRWebPack.Logic
                 players[index].ResolvePlayerCollision(players[index], gameMap.tiles[movementIndex], new List<Powerup>(), null);
             }
         }
-
+        
         public int ConvertCoordsToIndex(int x, int y)
         {
             return 15 * y + x;

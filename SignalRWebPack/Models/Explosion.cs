@@ -142,7 +142,7 @@ namespace SignalRWebPack.Models
                 explosion.SetCollisionStrategy(new BoxCollision());
                 explosion.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
                 explosionStopped = true;
-                gameMap.tiles[explosionIndex] = new EmptyTile { x = x, y = y, texture = "blank" };
+                gameMap.tiles[explosionIndex] = new EmptyTile { x = x, y = y, texture = "images/blank.jpg" };
             }
             else if (gameMap.tiles[explosionIndex] is EmptyTile && !explosionStopped)
             {

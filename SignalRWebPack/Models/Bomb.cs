@@ -20,8 +20,8 @@ namespace SignalRWebPack.Models
             this.tickDuration = tickDuration; //seconds
             plantedAt = DateTime.Now;
             explodesAt = plantedAt.AddSeconds(tickDuration);
-            preExplodeTexture = "wall";
-            this.texture = "bomb";
+            preExplodeTexture = "images/wall.jpg";
+            this.texture = "images/bomb.jpg";
             this.x = x;
             this.y = y;
             explosionSizeMultiplier = sizeMultiplier;
@@ -31,7 +31,7 @@ namespace SignalRWebPack.Models
         {
             plantedAt = DateTime.Now;
             explodesAt = plantedAt.AddSeconds(tickDuration);
-            preExplodeTexture = "bomb";
+            preExplodeTexture = "images/bomb.jpg";
         }
 
         public Explosion GetExplosion()

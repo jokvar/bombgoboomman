@@ -20,15 +20,15 @@ export namespace GameMap {
                 var y = Math.floor(this.index / 15);
 
                 if (value == 0) {
-                    let tile = new EmptyTile(x, y, "blank");
+                    let tile = new EmptyTile(x, y, "images/blank.jpg");
                     this.tiles[this.index] = tile;
                 }
                 if (value == 1) {
-                    let tile = new Wall(x, y, "wall");
+                    let tile = new Wall(x, y, "images/wall.jpg");
                     this.tiles[this.index] = tile;
                 }
                 if (value == 2) {
-                    let tile = new Box(x, y, "box");
+                    let tile = new Box(x, y, "images/box.jpg");
                     this.tiles[this.index] = tile;
                 }
                 this.index++;
