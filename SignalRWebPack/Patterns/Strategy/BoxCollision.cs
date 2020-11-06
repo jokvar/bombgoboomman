@@ -1,4 +1,5 @@
 ﻿using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.Command;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace SignalRWebPack.Patterns.Strategy
             //no empty tile reinitilization
         }
 
-        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList)
+        public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
             //do nothing
         }
@@ -36,25 +37,23 @@ namespace SignalRWebPack.Patterns.Strategy
                         powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
                         powerups.Add(powerup);
                         break;
-
-                    case 1:
-                        powerup = new Powerup(Powerup_type.PlayerSpeed, x, y);
-                        powerups.Add(powerup);
-                        break;
-
                     case 2:
-                        powerup = new Powerup(Powerup_type.ExplosionDamage, x, y);
+                        powerup = new Powerup(Powerup_type.PowerDownX3, x, y);
                         powerups.Add(powerup);
                         break;
-
+                    case 1:
+                        powerup = new Powerup(Powerup_type.PowerDown, x, y);
+                        powerups.Add(powerup);
+                        break;
                     case 3:
                         powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
                         powerups.Add(powerup);
                         break;
-
                     case 4:
                         powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
                         powerups.Add(powerup);
+                        break;
+                    default:
                         break;
 
                 }

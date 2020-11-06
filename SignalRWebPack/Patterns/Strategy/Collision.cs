@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.Command;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
@@ -21,9 +22,9 @@ namespace SignalRWebPack.Patterns.Strategy
             _collisionStrategy.ExplosionCollisionStrategy(collisionTarget, explosions, explodedAt, collisionList);
         }
 
-        public void ResolvePlayerCollision(Player player, object collisionTarget, List<Powerup> collisionList)
+        public void ResolvePlayerCollision(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
-            _collisionStrategy.PlayerCollisionStrategy(player, collisionTarget, collisionList);
+            _collisionStrategy.PlayerCollisionStrategy(player, collisionTarget, collisionList, powerupInvoker);
         }
     }
 }
