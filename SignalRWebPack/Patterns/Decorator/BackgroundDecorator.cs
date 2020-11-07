@@ -41,6 +41,7 @@ namespace SignalRWebPack.Patterns.Decorator
                         break;
 
                     default:
+                        Console.WriteLine("HELLO - BackgroundDecorator context");
                         throw new NotImplementedException();
                 }
             }

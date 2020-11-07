@@ -30,6 +30,12 @@ namespace SignalRWebPack.Patterns.Decorator
                     textures.Add("powerup_time");
                     break;
 
+                case "powerup_powerdown":
+                    break;
+
+                case "powerup_powerdownX3":
+                    break;
+
                 default:
                     throw new NotImplementedException();
             }
