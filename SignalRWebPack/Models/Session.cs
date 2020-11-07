@@ -16,7 +16,9 @@ namespace SignalRWebPack.Models
         public Player Host { get; set; }
         public Player LastPlayerDamaged { get; set; }
         public Map Map { get; set; }
+        public List<Tuple<string, Message>> Messages { get; set; }
         public bool GameLoopEnabled { get { return Players.Count == 4; } }
+        public bool HasGameEnded = false;
         //-------Command (Invoker)--------------
         public PowerupInvoker powerupInvoker;
         public string[] PlayerIDs
@@ -36,19 +38,17 @@ namespace SignalRWebPack.Models
         private List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
-
             powerups = new List<Powerup>();
-            Players = new List<Player>();// { new Player("vardas", "lol koks dar id", 1, 1) };
+            Players = new List<Player>();
             powerupInvoker = new PowerupInvoker();
             MapDirector director = new MapDirector();
             //MapBuilder b1 = new ClassicBuilder();
             MapBuilder b1 = new MLGBuilder();
             director.Construct(b1);
             Map = b1.GetResult();
-
-            //commented out because right now, session has no player array, unless hard coded
+            Messages = new List<Tuple<string, Message>>();
             var livesObserver = new LivesObserver();
-            this.Attach(livesObserver);
+            Attach(livesObserver);
 
         }
 
@@ -84,7 +84,6 @@ namespace SignalRWebPack.Models
                 return Players.Count >= 4;
             }
         }
-
         public int MatchId(string id) => Players.IndexOf(Players.FirstOrDefault(p => p.id == id));
 
         public string Username(string id)
@@ -116,5 +115,31 @@ namespace SignalRWebPack.Models
             }
         }
 
+        public void AddMessage(string username, Message message)
+        {
+            Messages.Add(new Tuple<string, Message>(username, message));
+        }
+
+        public Tuple<string, Message> ReadOneMessage()
+        {      
+            if (Messages.Count == 0) //if empty
+            {
+                return null;
+            }
+            Tuple<string, Message> message = Messages[0];
+            Messages.RemoveAt(0);
+            return message;
+        }
+
+        public List<Tuple<string, Message>> ReadAllMessages()
+        {
+            if (Messages.Count == 0) //if empty
+            {
+                return null;
+            }
+            List<Tuple<string, Message>> messages = new List<Tuple<string, Message>> (Messages);
+            Messages.Clear();
+            return messages;
+        }
     }
 }

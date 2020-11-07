@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRWebPack.Logic;
 using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Patterns.Singleton
@@ -19,11 +20,14 @@ namespace SignalRWebPack.Patterns.Singleton
 
         public void AddToInputQueue(string _connectionId, PlayerAction _action)
         {
-            Input input = new Input(_connectionId, _action);
-            lock (queueLock)
+            if (SessionManager.Instance.IsPlayerAlive(_connectionId))
             {
-                inputQueue.Add(input);
-            }          
+                Input input = new Input(_connectionId, _action);
+                lock (queueLock)
+                {
+                    inputQueue.Add(input);
+                }
+            }         
         }
 
         public Tuple<string, PlayerAction> ReadOne()
