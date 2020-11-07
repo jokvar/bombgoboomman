@@ -1,5 +1,6 @@
 ﻿using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.AbstractFactory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class BoxCollision : CollisionStrategy
     {
+        ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             var box = collisionTarget as Box;
@@ -29,29 +31,39 @@ namespace SignalRWebPack.Patterns.Strategy
             //will be true 50% of the time
             if (rand.Next(100) < 50)
             {
+                Powerup pow = oFactory.GetObject("powerup") as Powerup;
                 int powerupIndex = rand.Next(0, 6);
-                Powerup powerup;
                 switch (powerupIndex)
                 {
                     case 0:
-                        powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
-                        powerups.Add(powerup);
+                        pow.x = x;
+                        pow.y = y;
+                        pow.type = Powerup_type.BombTickDuration;
+                        powerups.Add(pow);
                         break;
                     case 2:
-                        powerup = new Powerup(Powerup_type.PowerDownX3, x, y);
-                        powerups.Add(powerup);
+                        pow.x = x;
+                        pow.y = y;
+                        pow.type = Powerup_type.PowerDownX3;
+                        powerups.Add(pow);
                         break;
                     case 1:
-                        powerup = new Powerup(Powerup_type.PowerDown, x, y);
-                        powerups.Add(powerup);
+                        pow.x = x;
+                        pow.y = y;
+                        pow.type = Powerup_type.PowerDown;
+                        powerups.Add(pow);
                         break;
                     case 3:
-                        powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
-                        powerups.Add(powerup);
+                        pow.x = x;
+                        pow.y = y;
+                        pow.type = Powerup_type.ExplosionSize;
+                        powerups.Add(pow);
                         break;
                     case 4:
-                        powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
-                        powerups.Add(powerup);
+                        pow.x = x;
+                        pow.y = y;
+                        pow.type = Powerup_type.AdditionalBomb;
+                        powerups.Add(pow);
                         break;
                     default:
                         break;

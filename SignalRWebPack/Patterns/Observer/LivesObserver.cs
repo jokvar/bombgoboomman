@@ -11,12 +11,6 @@ namespace SignalRWebPack.Patterns.Observer
 {
     public class LivesObserver : IObserver
     {
-        private readonly IHubContext<ChatHub> _hub;
-        public LivesObserver(IHubContext<ChatHub> hub)
-        {
-            _hub = hub;
-        }
-
         public void Update(ISubject subject)
         {
             Player p = (subject as Session).LastPlayerDamaged;

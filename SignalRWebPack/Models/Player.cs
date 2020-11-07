@@ -4,13 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Strategy;
+using SignalRWebPack.Patterns.AbstractFactory;
 
 namespace SignalRWebPack.Models
 {
     class Player : GameObject
     {
         private CollisionStrategy _collisionStrategy;
-
+        private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
         public DefaultPowerupValues Defaults = new DefaultPowerupValues();
 
         public int lives { get; set; }
@@ -79,8 +80,14 @@ namespace SignalRWebPack.Models
             if (activeBombCount + 1 <= maxBombs)
             {
                 activeBombCount++;
-                Bomb bomb = new Bomb(x, y, bombTickDuration, explosionSizeMultiplier);
-                bombs.Add(bomb);
+                Bomb b = oFactory.GetObject("bomb") as Bomb;
+                b.x = x;
+                b.y = y;
+                b.tickDuration = bombTickDuration;
+                b.explodesAt = b.plantedAt.AddSeconds(b.tickDuration);
+                b.explosionSizeMultiplier = explosionSizeMultiplier;
+                b.texture = "bomb";
+                bombs.Add(b);
             }
         }
 
