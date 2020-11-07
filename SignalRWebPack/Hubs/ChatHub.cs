@@ -40,6 +40,26 @@ namespace SignalRWebPack.Hubs
                     await Clients.Client(id).SendAsync("messageReceived", username, response);
                 }
             }
+            else if (messageContainer.Content.Split(' ')[0] == "setname")
+            {
+                string[] newName = messageContainer.Content.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                if (newName.Length == 2)
+                {
+                    string sessionCode = SessionManager.Instance.ActiveSessionCode;
+                    if (sessionCode != null)
+                    {
+                        Session session = SessionManager.Instance.GetSession(sessionCode);
+                        username = session.Username(Context.ConnectionId);
+                        session.SetUsername(Context.ConnectionId, newName[1]);
+                        Message response = new Message() { Content = username + "has changed their name to '" + newName[1] + "'.", Class = "table-warning" };
+                        foreach (string id in session.PlayerIDs)
+                        {
+                            await Clients.Client(id).SendAsync("messageReceived", "System", response);
+                        }
+                    }
+                }
+                
+            }
             else if (messageContainer.Content == "dump")
             {
                 await Clients.All.SendAsync("messageReceived", username, new Message() { Content = "this is where diagnostic information would be dumped - if we HAD any", Class = "table-danger" });

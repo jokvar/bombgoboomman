@@ -96,6 +96,14 @@ namespace SignalRWebPack.Models
             return "Anonymous";
         }
 
+        public void SetUsername(string id, string username)
+        {
+            int index = MatchId(id);
+            if (index > -1)
+            {
+                Players[index].name = username;
+            }
+        }
         public void Attach(IObserver observer) => Observers.Add(observer);
 
         public void Detach(IObserver observer) => this.Observers.Remove(observer);
