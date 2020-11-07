@@ -33,7 +33,7 @@ namespace SignalRWebPack.Patterns.Strategy
             if (rand.Next(100) < 50)
             {
                 Powerup pow = oFactory.GetObject("powerup") as Powerup;
-                int powerupIndex = rand.Next(0, 6);
+                int powerupIndex = rand.Next(0, 5);
 
                 Powerup powerup;
                 GameObject powerDecorator;
@@ -55,8 +55,7 @@ namespace SignalRWebPack.Patterns.Strategy
                         powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
                         break;
                     default:
-                        powerup = new Powerup();
-                        break;
+                        throw new NotImplementedException();
 
                 }
                 powerDecorator = new MiscDecorator(new ForegroundDecorator(new BackgroundDecorator(powerup)));

@@ -31,8 +31,7 @@ namespace SignalRWebPack.Patterns.Decorator
                     break;
 
                 default:
-                    //textures.Add("undefined misc");
-                    break;
+                    throw new NotImplementedException();
             }
 
         }
