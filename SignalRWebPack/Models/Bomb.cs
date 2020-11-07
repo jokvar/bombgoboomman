@@ -34,6 +34,11 @@ namespace SignalRWebPack.Models
             preExplodeTexture = "bomb";
         }
 
+        public override List<string> GetTextures()
+        {
+            return textures;
+        }
+
         public Explosion GetExplosion()
         {
             

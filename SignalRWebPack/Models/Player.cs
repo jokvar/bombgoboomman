@@ -64,6 +64,11 @@ namespace SignalRWebPack.Models
             }
         }
 
+        public override List<string> GetTextures()
+        {
+            return textures;
+        }
+
         public void SetCollisionStrategy(CollisionStrategy collisionStrategy)
         {
             _collisionStrategy = collisionStrategy;

@@ -31,6 +31,11 @@ namespace SignalRWebPack.Models
             
         }
 
+        public override List<string> GetTextures()
+        {
+            return textures;
+        } 
+
         public List<ExplosionCell> GetExplosionCells()
         {
             return explosions;

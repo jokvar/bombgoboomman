@@ -12,41 +12,28 @@ namespace SignalRWebPack.Patterns.Decorator
         public ForegroundDecorator(GameObject gameObject)
             : base(gameObject)
         {
-            //var cast = gameObject as Powerup;
-            //PowerupDecoration();//(cast.type);
-            //var cast = gameObject as BackgroundDecorator;
-            
-        }
-        public GameObject PowerupDecoration()//(Powerup_type type)
-        {
-            Powerup powerup = (Powerup)gameObject;
-            powerup.foreground = "powerup_bomb_naked";
-            //var powerup = gameObject as Powerup;
-            //switch (powerup.type)
-            //{
-            //    case Powerup_type.AdditionalBomb:
-            //        gameObject.foreground = "powerup_bomb_naked";
-            //        break;
-            //    case Powerup_type.ExplosionSize:
-            //        gameObject.foreground = "powerup_explosion_naked";
-            //        break;
-            //    case Powerup_type.BombTickDuration:
-            //        gameObject.foreground = "powerup_bomb_naked";
-            //        break;
-            //    default:
-            //        gameObject.foreground = null;
-            //        break;
-            //}
-            return powerup;
-        }
+            var cast = (BackgroundDecorator)gameObject;
+            _texture = cast.textures.FirstOrDefault();
+            textures = new List<string>();
 
-        public void PlayerDecoration()
-        {
+            switch (_texture)
+            {
+                case "powerup_bomb_naked":
+                    textures.Add("powerup_plus");
+                    break;
 
-        }
+                case "powerup_explosion_naked":
+                    textures.Add("powerup_plus");
+                    break;
 
-        public void BombDecoration()
-        {
+                case "powerup_bombTick_naked":
+                    textures.Add("powerup_time");
+                    break;
+
+                default:
+                    //textures.Add("undefined misc");
+                    break;
+            }
 
         }
     }

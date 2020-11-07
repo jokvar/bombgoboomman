@@ -9,12 +9,12 @@ namespace SignalRWebPack.Models
     {
         //background image
         public string texture { get; set; }
-        //foreground image (e.g. player object, bomb object etc.)
-        public string foreground { get; set; }
-        //additional image such as a plus image for powerups
-        public string misc { get; set; }
+        //List of textures for decorating gameobjects (limited to powerups for the time being)
+        public List<string> textures { get; set; }
         public int x { get; set; }
         public int y { get; set; }
+
+        public abstract List<string> GetTextures();
 
     }
 }
