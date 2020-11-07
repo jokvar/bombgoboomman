@@ -8,13 +8,18 @@ import "./images/playerTwo.jpg";
 import "./images/playerThree.jpg";
 import "./images/playerFour.jpg";
 import "./images/powerup.jpg";
+import "./images/powerup_bomb_naked.png"
+import "./images/powerup_explosion_naked.png"
+import "./images/powerup_powerdown.png"
+import "./images/powerup_powerdownX3.png"
+import "./images/powerup_plus.png"
+import "./images/powerup_time.png"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ChatHub } from "./chathub/ChatHub";
 import { Renderer } from "./ui/Render";
 import { Input } from "./ui/Input";
 
-
-const version = "v0.46";
+const version = "v0.60";
 
 window.onload = function () {
     var canvas = (document.getElementById('game') as HTMLCanvasElement).getContext("2d");
