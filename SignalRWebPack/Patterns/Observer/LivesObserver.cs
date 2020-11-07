@@ -13,28 +13,28 @@ namespace SignalRWebPack.Patterns.Observer
     {
         public void Update(ISubject subject)
         {
-            Player p = (subject as Session).LastPlayerDamaged;
-
-            if (p.IsAlive)
+            Player player = (subject as Session).LastPlayerDamaged;
+            Session session = (subject as Session);
+            if (player.IsAlive)
             {
-
+                session.AddMessage("Game", new Message() { Content = "<b>" + player.name + "</b> has taken damage! Remaining lives: <b>" + player.lives+ "</b>", Class = "table-warning"});
+            }
+            else
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>" + player.name + "</b> has died!", Class = "table-danger" });
             }
 
-            //List<Player> players = (subject as Session).Players;
+            List<Player> alive = (subject as Session).Players.Where(p => p.IsAlive).ToList();
 
-            //foreach (Player p in players)
-            //{
-            //    if (p.lives == 0)
-            //    {
-            //        (subject as Session).Players.Remove(p);
-            //    }
-            //}
-
-            int count = (subject as Session).Players.Where(p => p.IsAlive).ToList().Count;
-
-            if (count < 2)
+            if (alive.Count == 1)
             {
-                
+                session.AddMessage("Game", new Message() { Content = "<b>" + alive[0].name + "</b> has won!", Class = "table-success" });
+                session.HasGameEnded = true;
+            }
+            else if (alive.Count == 0)
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>Epic draw!</b>", Class = "table-success" });
+                session.HasGameEnded = true;
             }
         }
     }

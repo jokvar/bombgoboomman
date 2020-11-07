@@ -6,7 +6,7 @@ using SignalRWebPack.Models;
 
 namespace SignalRWebPack.Logic
 {
-    class SessionManager //possibly static
+    class SessionManager
     {
         public static SessionManager Instance { get; } = new SessionManager();
         private Dictionary<string, Session> Sessions;
@@ -23,6 +23,12 @@ namespace SignalRWebPack.Logic
         public Session GetPlayerSession(string id)
         {
             return Sessions.Values.Where(s => s.PlayerIDs.Contains(id)).FirstOrDefault();
+        }
+
+        public bool IsPlayerAlive(string id)
+        {
+            Session __session = GetPlayerSession(id);
+            return __session == null ? false : __session.Players[__session.MatchId(id)].IsAlive;
         }
 
         public SessionManager()
