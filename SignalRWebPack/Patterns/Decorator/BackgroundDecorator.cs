@@ -30,7 +30,7 @@ namespace SignalRWebPack.Patterns.Decorator
                         break;
 
                     case Powerup_type.BombTickDuration:
-                        textures.Add("powerup_bombTick_naked");
+                        textures.Add("powerup_bomb_naked");
                         break;
 
                     case Powerup_type.PowerDown:

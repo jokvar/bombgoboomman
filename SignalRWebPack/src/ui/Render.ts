@@ -23,9 +23,9 @@ export namespace Renderer {
         powerups: Array<GameObjects.Powerup>;
         explosions: Array<GameObjects.Explosion>;
         messages: Array<ChatHub.Message>;
+        textures: Array<String>;
         oldRenderer: oldRenderer.oldRenderer;
         
-
         divMessages: HTMLDivElement;
         tbodyMessages: HTMLTableSectionElement;
 
@@ -52,13 +52,15 @@ export namespace Renderer {
             this.divMessages = document.querySelector("#divMessages");
             this.tbodyMessages = document.querySelector("#tbodyMessages");
 
+            this.textures = ["powerup", "powerup_bomb_naked", "powerup_plus"];
+
             //temp data, delete later
             this.map = new GameMap.Map();
             this.playerOne = new Player.Player(3, "player", false, 1, 1);
             this.playerTwo = new Player.Player(3, "playerTwo", false, 13, 13);
-            this.bomb = new GameObjects.Bomb(7, 7, "bomb", 3, new Date("2019-01-16"), "#0d0d0d");
-            this.powerup = new GameObjects.Powerup(8, 8, "powerup", GameObjects.Powerup_type.BombDamage, 10, new Date("2019-01-16"));
-            this.explosion = new GameObjects.Explosion(9, 9, "explosion", 3, 2, 3, new Date("2019-01-16"));
+            this.bomb = new GameObjects.Bomb(7, 7, "bomb", 3, new Date("2019-01-16"), "#0d0d0d", this.textures);
+            this.powerup = new GameObjects.Powerup(8, 8, "powerup", GameObjects.Powerup_type.BombDamage, 10, new Date("2019-01-16"), this.textures);
+            this.explosion = new GameObjects.Explosion(9, 9, "explosion", 3, 2, 3, new Date("2019-01-16"), this.textures);
             this.players = [this.playerOne, this.playerTwo];
             this.bombs = [this.bomb];
             this.powerups = [this.powerup];
@@ -143,8 +145,22 @@ export namespace Renderer {
             }
 
             for (let pow of this.powerups) {
-                var img = document.getElementById("powerup") as HTMLCanvasElement;
+                var background = pow.textures[0];
+                var foreground = pow.textures[1];
+                var top = pow.textures[2];
+                var img = document.getElementById(background as string) as HTMLCanvasElement;
                 this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
+                if (foreground != null)
+                {
+                    var imgaa = document.getElementById(foreground as string) as HTMLCanvasElement;
+                    this.canvas.drawImage(imgaa, pow.x * this.tileW, pow.y * this.tileH);
+                }
+                if (top != null)
+                {
+                    var imgaa = document.getElementById(top as string) as HTMLCanvasElement;
+                    this.canvas.drawImage(imgaa, pow.x * this.tileW, pow.y * this.tileH);
+                }
+                
             }
 
             for (let e of this.explosions) {
