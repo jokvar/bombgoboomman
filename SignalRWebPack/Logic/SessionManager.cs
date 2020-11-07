@@ -19,6 +19,12 @@ namespace SignalRWebPack.Logic
             get { lock (_sessionLock) { return _activeSessionCode; } }
             set { lock (_sessionLock) { _activeSessionCode = value; } }
         }
+
+        public Session GetPlayerSession(string id)
+        {
+            return Sessions.Values.Where(s => s.PlayerIDs.Contains(id)).FirstOrDefault();
+        }
+
         public SessionManager()
         {
             Sessions = new Dictionary<string, Session>();

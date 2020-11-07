@@ -1,4 +1,5 @@
-﻿using SignalRWebPack.Models;
+﻿using SignalRWebPack.Logic;
+using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Command;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace SignalRWebPack.Patterns.Strategy
             if (!player.invulnerable)
             {
                 player.lives--;
+                Session s = SessionManager.Instance.GetPlayerSession(player.id);
+                s.LastPlayerDamaged = player;
+                s.Notify();
                 player.invulnerableSince = DateTime.Now;
                 player.invulnerableUntil = player.invulnerableSince.AddSeconds(player.invulnerabilityDuration);
                 player.invulnerable = true;
