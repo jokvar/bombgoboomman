@@ -1,5 +1,4 @@
-﻿using SignalRWebPack.Logic;
-using SignalRWebPack.Models;
+﻿using SignalRWebPack.Models;
 using SignalRWebPack.Models.TransportModels;
 using System;
 using System.Collections.Generic;
@@ -99,8 +98,7 @@ namespace SignalRWebPack.Logic
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                //_logger.LogInformation("iteration");
-
+                Task delay = Task.Delay(60); // 😎😎😎😎
                 //example action dequeing
                 Tuple<string, PlayerAction> tuple;
                 while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
@@ -109,13 +107,8 @@ namespace SignalRWebPack.Logic
                     PlayerAction action = tuple.Item2;
                     ProcessAction(action, playerId);
                 }
-                //end example
-                //explosions[0].x = (i++ % 5) + 1;
-                //_logger.LogInformation("sending draw data");
-
                 FormDrawingObjectLists();
-                await StoreDrawData(session.PlayerIDs, gameMap, players, bombs, session.powerups, explosions, messages);
-                await Task.Delay(60); // 😎😎😎😎
+                Task sendData = StoreDrawData(session.PlayerIDs, gameMap, players, bombs, session.powerups, explosions, messages);
                 explosions = new List<ExplosionCell>();
                 bombs = new List<Bomb>();
                 for (int i = 0; i < players.Count; i++)
@@ -134,15 +127,13 @@ namespace SignalRWebPack.Logic
                         }
                     }
                 }
-
-
-
-                //CheckExplosionTimers();
-                //CheckInvulnerabilityPeriods();
-                //CheckPowerupTimers();
-                //client.StoreDrawData(session.PlayerIDs, gameMap, players, bombs, powerups, explosions, messages);
-                
-                //await Broadcast(new Message("ligma lol", 1)); 
+                Tuple<string, Message> messageContainer;
+                while ((messageContainer = session.ReadOneMessage()) != null) //deleted when read
+                {
+                    Broadcast(messageContainer);
+                }
+                await sendData;
+                await delay;
             }
 
             throw new NotImplementedException("Reached end of game loop");
@@ -339,9 +330,9 @@ namespace SignalRWebPack.Logic
             await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StartPlaying");
         }
 
-        public async Task Broadcast(Message message)
+        public void Broadcast(Tuple<string, Message> messageContainer)
         {
-            await _hub.Clients.All.SendAsync("messageReceived", "admin", message);
+            _hub.Clients.All.SendAsync("messageReceived", messageContainer.Item1, messageContainer.Item2);
         }
 
     }
