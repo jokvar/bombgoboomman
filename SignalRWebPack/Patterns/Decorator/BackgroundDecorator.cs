@@ -22,7 +22,6 @@ namespace SignalRWebPack.Patterns.Decorator
                 {
                     case Powerup_type.AdditionalBomb:
                         textures.Add("powerup_bomb_naked");
-                        //foreground = "powerup_bomb_naked";
                         break;
 
                     case Powerup_type.ExplosionSize:
@@ -30,7 +29,7 @@ namespace SignalRWebPack.Patterns.Decorator
                         break;
 
                     case Powerup_type.BombTickDuration:
-                        textures.Add("powerup_bomb_naked");
+                        textures.Add("powerup_bombTick_naked");
                         break;
 
                     case Powerup_type.PowerDown:
@@ -42,33 +41,12 @@ namespace SignalRWebPack.Patterns.Decorator
                         break;
 
                     default:
-                        //textures.Add("undefined foreground");
-                        break;
+                        throw new NotImplementedException();
                 }
             }
             
             
         }
-
-        //public GameObject PowerupDecoration()
-        //{
-        //    //gameObject.texture = "powerup";
-        //    _type = "powerup";
-        //    Powerup powerup = (Powerup)gameObject;
-        //    powerup.foreground = "TEST";
-        //    return powerup;
-
-        //}
-
-        //public void PlayerDecoration()
-        //{
-
-        //}
-
-        //public void BombDecoration()
-        //{
-
-        //}
 
 
     }

@@ -19,9 +19,12 @@ namespace SignalRWebPack.Patterns.Decorator
 
         public override List<string> GetTextures()
         {
-            if (!gameObject.GetTextures().Contains(_texture) && _texture != null)
+            if(gameObject.GetTextures() != null)
             {
-                gameObject.GetTextures().Add(_texture);
+                if (!gameObject.GetTextures().Contains(_texture) && _texture != null)
+                {
+                    gameObject.GetTextures().Add(_texture);
+                }
             }
             return gameObject.GetTextures();
         }
