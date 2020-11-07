@@ -51,7 +51,7 @@ namespace SignalRWebPack.Hubs
                         Session session = SessionManager.Instance.GetSession(sessionCode);
                         username = session.Username(Context.ConnectionId);
                         session.SetUsername(Context.ConnectionId, newName[1]);
-                        Message response = new Message() { Content = username + "has changed their name to '" + newName[1] + "'.", Class = "table-warning" };
+                        Message response = new Message() { Content = "<b>" + username + "</b> has changed their name to <b>" + newName[1] + "</b>.", Class = "table-warning" };
                         foreach (string id in session.PlayerIDs)
                         {
                             await Clients.Client(id).SendAsync("messageReceived", "System", response);
