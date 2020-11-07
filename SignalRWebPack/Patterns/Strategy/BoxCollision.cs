@@ -1,5 +1,6 @@
-﻿using SignalRWebPack.Models;
+using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.AbstractFactory;
 using SignalRWebPack.Patterns.Decorator;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class BoxCollision : CollisionStrategy
     {
+        ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             var box = collisionTarget as Box;
@@ -30,10 +32,11 @@ namespace SignalRWebPack.Patterns.Strategy
             //will be true 50% of the time
             if (rand.Next(100) < 50)
             {
+                Powerup pow = oFactory.GetObject("powerup") as Powerup;
                 int powerupIndex = rand.Next(0, 6);
+
                 Powerup powerup;
                 GameObject powerDecorator;
-
                 switch (powerupIndex)
                 {
                     case 0:

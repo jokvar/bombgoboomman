@@ -14,6 +14,7 @@ namespace SignalRWebPack.Models
         public List<Player> Players { get; set; }
         public List<Powerup> powerups { get; set; }
         public Player Host { get; set; }
+        public Player LastPlayerDamaged { get; set; }
         public Map Map { get; set; }
         public bool GameLoopEnabled { get { return Players.Count == 4; } }
         //-------Command (Invoker)--------------
@@ -46,8 +47,8 @@ namespace SignalRWebPack.Models
             Map = b1.GetResult();
 
             //commented out because right now, session has no player array, unless hard coded
-            //var livesObserver = new LivesObserver();
-            //this.Attach(livesObserver);
+            var livesObserver = new LivesObserver();
+            this.Attach(livesObserver);
 
         }
 

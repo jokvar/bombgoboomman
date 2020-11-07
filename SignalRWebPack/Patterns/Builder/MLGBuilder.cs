@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Models;
+using SignalRWebPack.Patterns;
+using SignalRWebPack.Patterns.AbstractFactory;
 
 namespace SignalRWebPack.Patterns.Builder
 {
     class MLGBuilder : MapBuilder
     {
         private Map _map = new Map();
+        TileFactory tFactory = FactoryProducer.getFactory("TileFactory") as TileFactory;
 
         public override void BuildWalls()
         {
@@ -22,7 +25,11 @@ namespace SignalRWebPack.Patterns.Builder
                     //populating border walls
                     if (y == 0 || y == 14 || x == 0 || x == 14)
                     {
-                        _map.tiles[index] = new Wall() { x = x, y = y, texture = "wall" };
+                        Wall w = tFactory.GetObject("wall") as Wall;
+                        w.x = x;
+                        w.y = y;
+                        w.texture = "wall";
+                        _map.tiles[index] = w;
                     }
 
                 }
@@ -58,7 +65,11 @@ namespace SignalRWebPack.Patterns.Builder
                         var rand = new Random();
                         if (rand.Next(100) < 70)
                         {
-                            _map.tiles[index] = new Box() { x = x, y = y, texture = "box" };
+                            Box b = tFactory.GetObject("box") as Box;
+                            b.x = x;
+                            b.y = y;
+                            b.texture = "box";
+                            _map.tiles[index] = b;
                         }
                     }
 
@@ -75,7 +86,11 @@ namespace SignalRWebPack.Patterns.Builder
                     int index = 15 * y + x;
                     if (_map.tiles[index] == null)
                     {
-                        _map.tiles[index] = new EmptyTile() { x = x, y = y, texture = "blank" };
+                        EmptyTile e = tFactory.GetObject("empty") as EmptyTile;
+                        e.x = x;
+                        e.y = y;
+                        e.texture = "blank";
+                        _map.tiles[index] = e;
                     }
                 }
             }
