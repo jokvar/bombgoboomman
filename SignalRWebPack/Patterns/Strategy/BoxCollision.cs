@@ -1,5 +1,6 @@
 ﻿using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.Decorator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,32 +32,33 @@ namespace SignalRWebPack.Patterns.Strategy
             {
                 int powerupIndex = rand.Next(0, 6);
                 Powerup powerup;
+                GameObject powerDecorator;
+
                 switch (powerupIndex)
                 {
                     case 0:
                         powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
-                        powerups.Add(powerup);
                         break;
                     case 2:
                         powerup = new Powerup(Powerup_type.PowerDownX3, x, y);
-                        powerups.Add(powerup);
                         break;
                     case 1:
                         powerup = new Powerup(Powerup_type.PowerDown, x, y);
-                        powerups.Add(powerup);
                         break;
                     case 3:
                         powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
-                        powerups.Add(powerup);
                         break;
                     case 4:
                         powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
-                        powerups.Add(powerup);
                         break;
                     default:
+                        powerup = new Powerup();
                         break;
 
                 }
+                powerDecorator = new MiscDecorator(new ForegroundDecorator(new BackgroundDecorator(powerup)));
+                powerDecorator.GetTextures();
+                powerups.Add(powerup);
             }
 
         }

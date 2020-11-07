@@ -7,6 +7,9 @@ namespace SignalRWebPack.Models
 {
     public class Tile : GameObject
     {
-
+        public override List<string> GetTextures()
+        {
+            return textures;
+        }
     }
 }

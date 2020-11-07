@@ -33,6 +33,11 @@ namespace SignalRWebPack.Models
             texture = "explosion";
         }
 
+        public override List<string> GetTextures()
+        {
+            return textures;
+        }
+
         public void SetValues(DateTime explodedAt, int x, int y)
         {
             this.explodedAt = explodedAt;
