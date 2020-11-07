@@ -6,7 +6,7 @@ import { ChatHub } from "../chathub/ChatHub";
 export namespace ITarget
 {
     export interface ITarget {
-        DisplayMessage(username: string, message: string);
+        DisplayMessage(username: string, content: string, _class: string);
         StoreDrawData(map: GameMap.Map, players: Array<Player.Player>, bombs: Array<GameObjects.Bomb>, powerups: Array<GameObjects.Powerup>, explosions: Array<GameObjects.Explosion>, messages: Array<ChatHub.Message>);
         drawGame();
         rand(max: number);
