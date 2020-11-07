@@ -18,6 +18,8 @@ namespace SignalRWebPack.Models
             existDuration = 10; //seconds
             plantedAt = DateTime.Now;
             texture = "powerup";
+            textures = new List<string>();
+            //textures.Add(texture);
         }
 
         public Powerup()
@@ -33,5 +35,11 @@ namespace SignalRWebPack.Models
             this.x = x;
             this.y = y;
         }
+
+        public override List<string> GetTextures()
+        {
+            return textures;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
-﻿using SignalRWebPack.Models;
+using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.AbstractFactory;
+using SignalRWebPack.Patterns.Decorator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,42 +34,34 @@ namespace SignalRWebPack.Patterns.Strategy
             {
                 Powerup pow = oFactory.GetObject("powerup") as Powerup;
                 int powerupIndex = rand.Next(0, 6);
+
+                Powerup powerup;
+                GameObject powerDecorator;
                 switch (powerupIndex)
                 {
                     case 0:
-                        pow.x = x;
-                        pow.y = y;
-                        pow.type = Powerup_type.BombTickDuration;
-                        powerups.Add(pow);
+                        powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
                         break;
                     case 2:
-                        pow.x = x;
-                        pow.y = y;
-                        pow.type = Powerup_type.PowerDownX3;
-                        powerups.Add(pow);
+                        powerup = new Powerup(Powerup_type.PowerDownX3, x, y);
                         break;
                     case 1:
-                        pow.x = x;
-                        pow.y = y;
-                        pow.type = Powerup_type.PowerDown;
-                        powerups.Add(pow);
+                        powerup = new Powerup(Powerup_type.PowerDown, x, y);
                         break;
                     case 3:
-                        pow.x = x;
-                        pow.y = y;
-                        pow.type = Powerup_type.ExplosionSize;
-                        powerups.Add(pow);
+                        powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
                         break;
                     case 4:
-                        pow.x = x;
-                        pow.y = y;
-                        pow.type = Powerup_type.AdditionalBomb;
-                        powerups.Add(pow);
+                        powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
                         break;
                     default:
+                        powerup = new Powerup();
                         break;
 
                 }
+                powerDecorator = new MiscDecorator(new ForegroundDecorator(new BackgroundDecorator(powerup)));
+                powerDecorator.GetTextures();
+                powerups.Add(powerup);
             }
 
         }

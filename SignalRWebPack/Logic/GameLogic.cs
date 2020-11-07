@@ -14,6 +14,7 @@ using SignalRWebPack.Patterns.FactoryMethod;
 using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.Decorator;
 
 namespace SignalRWebPack.Logic
 {
@@ -91,6 +92,7 @@ namespace SignalRWebPack.Logic
                     }
                 }
             }
+
             powerupInvoker = session.powerupInvoker;
             List<Message> messages = new List<Message>();
             gameMap = session.Map;
