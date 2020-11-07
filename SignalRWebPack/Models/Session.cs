@@ -15,6 +15,7 @@ namespace SignalRWebPack.Models
         public List<Powerup> powerups { get; set; }
         public Player Host { get; set; }
         public Map Map { get; set; }
+        public bool GameLoopEnabled { get { return Players.Count == 4; } }
         //-------Command (Invoker)--------------
         public PowerupInvoker powerupInvoker;
         public string[] PlayerIDs
@@ -83,10 +84,26 @@ namespace SignalRWebPack.Models
             }
         }
 
-        public int MatchId(string id) => Players.IndexOf(Players.Where(p => p.id == id).First());
+        public int MatchId(string id) => Players.IndexOf(Players.FirstOrDefault(p => p.id == id));
 
-        //public void SetMap(string mapName) => Map = new Map(mapName);
+        public string Username(string id)
+        {
+            int index = MatchId(id);
+            if (index > -1)
+            {
+                return Players[index].name;
+            }
+            return "Anonymous";
+        }
 
+        public void SetUsername(string id, string username)
+        {
+            int index = MatchId(id);
+            if (index > -1)
+            {
+                Players[index].name = username;
+            }
+        }
         public void Attach(IObserver observer) => Observers.Add(observer);
 
         public void Detach(IObserver observer) => this.Observers.Remove(observer);

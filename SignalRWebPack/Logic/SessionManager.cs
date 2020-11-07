@@ -22,6 +22,7 @@ namespace SignalRWebPack.Logic
         public SessionManager()
         {
             Sessions = new Dictionary<string, Session>();
+            _activeSessionCode = null;
         }
 
         public Session GetSession(string code)
@@ -31,12 +32,16 @@ namespace SignalRWebPack.Logic
                 if (code == null)
                 {
                     code = GenerateRoomCode();
-                    Session session = new Session();
-                    session.roomCode = code;
-                    Sessions.Add(code, session);
-                    return session;
                 }
-                return Sessions[code];
+                if (Sessions.ContainsKey(code))
+                {
+                    return Sessions[code];
+                }
+                Session session = new Session();
+                session.roomCode = code;
+                ActiveSessionCode = code;
+                Sessions.Add(code, session);
+                return session;
             }
         }
 

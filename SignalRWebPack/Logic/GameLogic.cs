@@ -68,11 +68,23 @@ namespace SignalRWebPack.Logic
 
         public async Task GameLoop(CancellationToken cancellationToken)
         {
+            string ActiveSessionCode;
             while (true)
             {
                 lock (_sessionLock)
                 {
                     if (SessionManager.Instance.ActiveSessionCode != null)
+                    {
+                        ActiveSessionCode = SessionManager.Instance.ActiveSessionCode;
+                        break;
+                    }
+                }
+            }
+            while (true)
+            {
+                lock (_sessionLock)
+                {
+                    if (SessionManager.Instance.GetSession(ActiveSessionCode).GameLoopEnabled)
                     {
                         session = SessionManager.Instance.GetSession(SessionManager.Instance.ActiveSessionCode);
                         break;

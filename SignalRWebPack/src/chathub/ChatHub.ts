@@ -21,27 +21,25 @@ export namespace ChatHub {
                 (map: GameMap.Map, players: Array<Player.Player>,
                     bombs: Array<GameObjects.Bomb>, powerups: Array<GameObjects.Powerup>,
                     explosions: Array<GameObjects.Explosion>, messages: Array<Message>) => {
-                    console.log("StoreDrawData");
-                    console.log(map, players, bombs, powerups, explosions, messages);
+                    //console.log("StoreDrawData");
+                    //console.log(map, players, bombs, powerups, explosions, messages);
                     renderer.StoreDrawData(map, players, bombs, powerups, explosions, messages);
             });
             this.connection.on("StartPlaying", () => {
-                console.log("StartPlaying");
                 this.start = true;
             });
             this.connection.on("messageReceived", (username: string, message: Message) => {
-                console.log(message);
-                renderer.DisplayMessage(username, message.content);
+                renderer.DisplayMessage(username, message.content, message.class);
             });
         }
     }
     export class Message {
         content: string;
-        code: number;
-        constructor(content: string, code: number) {
+        class: string;
+        constructor(content: string) {
             this.content = content;
-            this.code = code;
-        }
+            this.class = "irrelevant";
+        }       
     }
     export class Server {
         connection: signalRlib.HubConnection;
@@ -51,21 +49,16 @@ export namespace ChatHub {
             this.username = username;
         }
         CreateSession(mapName: string): void {
-            this.connection.send("CreateSession", mapName)
-                .then(() => console.log("mapName sent"));
+            this.connection.send("CreateSession", mapName);
         }
         JoinSession(roomCode: string): void {
-            this.connection.send("JoinSession", roomCode)
-                .then(() => console.log("roomCode sent"));
+            this.connection.send("JoinSession", roomCode);
         }
         SendInput(input: Player.PlayerAction): void {
-            this.connection.send("SendInput", input)
-                .then(() => console.log("input sent"));
+            this.connection.send("SendInput", input);
         }
-        NewMessage(username: string, message: ChatHub.Message): void {
-            console.log(username + " " + message.content);
-            this.connection.send("NewMessage", username as string, message as ChatHub.Message)
-                .then(() => console.log("input sent"));
+        NewMessage(message: ChatHub.Message): void {
+            this.connection.send("NewMessage", message);
         }
     }
 }

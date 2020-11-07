@@ -27,7 +27,7 @@ export namespace Renderer {
         
 
         divMessages: HTMLDivElement;
-        tbMessage: HTMLInputElement;
+        tbodyMessages: HTMLTableSectionElement;
 
         //temp data, delete later
         playerOne: Player.Player;
@@ -50,9 +50,8 @@ export namespace Renderer {
             this.oldRenderer = new oldRenderer.oldRenderer();
 
             this.divMessages = document.querySelector("#divMessages");
-            this.tbMessage = document.querySelector("#tbMessage");
+            this.tbodyMessages = document.querySelector("#tbodyMessages");
 
-            //temp data, probably delete later?
             //temp data, delete later
             this.map = new GameMap.Map();
             this.playerOne = new Player.Player(3, "player", false, 1, 1);
@@ -66,13 +65,29 @@ export namespace Renderer {
             this.explosions = [this.explosion];
         }
 
-        DisplayMessage = (username: string, message: string) => {
-            var m = document.createElement("div");
-            m.innerHTML =
-                "<div class=\"message-author\">" + username + "</div><div>" + message + "</div>";
-            this.divMessages.appendChild(m);
+        //ResolveMessageType = (messageType: number) => {
+        //    switch (messageType) {
+        //        case 0:
+        //            return "table-info";
+        //        case 1:
+        //            return "table-warning";
+        //        case 2:
+        //            return "table-danger";
+        //        case 3:
+        //            return "table-success";
+        //        default:
+        //            return "table-secondary";
+        //    }
+        //}
+
+        DisplayMessage(username: string, content: string, _class: string) : void {
+            var row = document.createElement("tr");
+            //row.classList.add(this.ResolveMessageType(message.Type));
+            row.classList.add(_class);
+            row.innerHTML =
+                "<td><b>" + username + "</b> : " + content + "</td>";
+            this.tbodyMessages.appendChild(row);
             this.divMessages.scrollTop = this.divMessages.scrollHeight;
-            this.tbMessage.value = "";
         }
 
         StoreDrawData(
