@@ -126,7 +126,7 @@ export namespace Renderer {
                 x = 0;
                 while (x < this.mapW) {
                     let texture = this.map.GetTile(x, y).texture;
-                    var img = document.getElementById(texture) as HTMLCanvasElement;
+                    var img = document.getElementById(texture) as HTMLImageElement;
                     this.canvas.drawImage(img, x * this.tileW, y * this.tileH);
                     x++;
                 }
@@ -135,12 +135,12 @@ export namespace Renderer {
 
             for (let p of this.players) {
                 let t = p.texture;
-                var img = document.getElementById(t) as HTMLCanvasElement;
+                var img = document.getElementById(t) as HTMLImageElement;
                 this.canvas.drawImage(img, p.x * this.tileW, p.y * this.tileH);
             }
 
             for (let b of this.bombs) {
-                var img = document.getElementById("bomb") as HTMLCanvasElement;
+                var img = document.getElementById("bomb") as HTMLImageElement;
                 this.canvas.drawImage(img, b.x * this.tileW, b.y * this.tileH);
             }
 
@@ -148,23 +148,23 @@ export namespace Renderer {
                 var background = pow.textures[0];
                 var foreground = pow.textures[1];
                 var top = pow.textures[2];
-                var img = document.getElementById(background as string) as HTMLCanvasElement;
+                var img = document.getElementById(background as string) as HTMLImageElement;
                 this.canvas.drawImage(img, pow.x * this.tileW, pow.y * this.tileH);
                 if (foreground != null)
                 {
-                    var imgaa = document.getElementById(foreground as string) as HTMLCanvasElement;
+                    var imgaa = document.getElementById(foreground as string) as HTMLImageElement;
                     this.canvas.drawImage(imgaa, pow.x * this.tileW, pow.y * this.tileH);
                 }
                 if (top != null)
                 {
-                    var imgaa = document.getElementById(top as string) as HTMLCanvasElement;
+                    var imgaa = document.getElementById(top as string) as HTMLImageElement;
                     this.canvas.drawImage(imgaa, pow.x * this.tileW, pow.y * this.tileH);
                 }
                 
             }
 
             for (let e of this.explosions) {
-                var img = document.getElementById("explosion") as HTMLCanvasElement;
+                var img = document.getElementById("explosion") as HTMLImageElement;
                 this.canvas.drawImage(img, e.x * this.tileW, e.y * this.tileH);
             }
             this.canvas.fillStyle = "#ff0000";
