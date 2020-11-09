@@ -15,7 +15,7 @@ namespace SignalRWebPack.Patterns.Strategy
             var player = collisionObject as Player;
             ExplosionCell exp1 = new ExplosionCell(explodedAt, player.x, player.y);
             explosions.Add(exp1);
-            if (!player.invulnerable)
+            if (!player.invulnerable && player.IsAlive)
             {
                 player.lives--;
                 Session s = SessionManager.Instance.GetPlayerSession(player.id);
