@@ -16,7 +16,7 @@ namespace SignalRWebPack.Hubs
         public async Task NewMessage(Message messageContainer)
         {
             string username = "System";
-            if (messageContainer.Content == "create")
+            if (messageContainer.Content == "/create")
             {
                 await CreateSession("test");
                 string sessionCode = SessionManager.Instance.ActiveSessionCode;
@@ -28,7 +28,7 @@ namespace SignalRWebPack.Hubs
                     await Clients.Client(id).SendAsync("messageReceived", username, response);
                 }
             }
-            else if (messageContainer.Content == "join")
+            else if (messageContainer.Content == "/join")
             {
                 await JoinSession("test");
                 string sessionCode = SessionManager.Instance.ActiveSessionCode;
@@ -40,7 +40,7 @@ namespace SignalRWebPack.Hubs
                     await Clients.Client(id).SendAsync("messageReceived", username, response);
                 }
             }
-            else if (messageContainer.Content.Split(' ')[0] == "setname")
+            else if (messageContainer.Content.Split(' ')[0] == "/setname")
             {
                 string[] newName = messageContainer.Content.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
                 if (newName.Length == 2)
@@ -60,7 +60,7 @@ namespace SignalRWebPack.Hubs
                 }
                 
             }
-            else if (messageContainer.Content == "dump")
+            else if (messageContainer.Content == "/dump")
             {
                 await Clients.All.SendAsync("messageReceived", username, new Message() { Content = "this is where diagnostic information would be dumped - if we HAD any", Class = "table-danger" });
             }
