@@ -97,14 +97,28 @@ namespace SignalRWebPack.Logic
             gameMap = session.Map;
             players = session.Players;
             powerups = session.powerups;
-
+            DateTime now = DateTime.Now;
             while (!cancellationToken.IsCancellationRequested)
             {
+                DateTime _now = DateTime.Now;
+                _logger.LogInformation((_now - now).ToString());
+                now = _now;
                 Task delay = Task.Delay(60); // 😎😎😎😎
                 //example action dequeing
                 Tuple<string, PlayerAction> tuple;
-                while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
+                //while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
+                //{
+                //    string playerId = tuple.Item1;
+                //    PlayerAction action = tuple.Item2;
+                //    ProcessAction(action, playerId);
+                //}
+                for (int i = 0; i < 10; i++)
                 {
+                    tuple = InputQueueManager.Instance.ReadOne();
+                    if (tuple == null)
+                    {
+                        break;
+                    }
                     string playerId = tuple.Item1;
                     PlayerAction action = tuple.Item2;
                     ProcessAction(action, playerId);
@@ -130,8 +144,17 @@ namespace SignalRWebPack.Logic
                     }
                 }
                 Tuple<string, Message> messageContainer;
-                while ((messageContainer = session.ReadOneMessage()) != null) //deleted when read
+                //while ((messageContainer = session.ReadOneMessage()) != null) //deleted when read
+                //{
+                //    Broadcast(messageContainer);
+                //}
+                for (int i = 0; i < 10; i++)
                 {
+                    messageContainer = session.ReadOneMessage();
+                    if (messageContainer == null)
+                    {
+                        break;
+                    }
                     Broadcast(messageContainer);
                 }
                 await sendData;
