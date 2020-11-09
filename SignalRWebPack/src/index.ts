@@ -14,12 +14,13 @@ import "./images/powerup_powerdown.png"
 import "./images/powerup_powerdownX3.png"
 import "./images/powerup_plus.png"
 import "./images/powerup_time.png"
+import "./images/title.png"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ChatHub } from "./chathub/ChatHub";
 import { Renderer } from "./ui/Render";
 import { Input } from "./ui/Input";
 
-const version = "v0.60";
+const version = "v1.0.0";
 
 window.onload = function () {
     var canvas = (document.getElementById('game') as HTMLCanvasElement).getContext("2d");
