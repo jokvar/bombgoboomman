@@ -21,6 +21,7 @@ namespace SignalRWebPack.Patterns.Observer
             }
             else
             {
+                player.texture = "blank";
                 session.AddMessage("Game", new Message() { Content = "<b>" + player.name + "</b> has died!", Class = "table-danger" });
             }
 
