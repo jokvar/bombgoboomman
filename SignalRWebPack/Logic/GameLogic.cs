@@ -91,14 +91,14 @@ namespace SignalRWebPack.Logic
                     }
                 }
             }
-
+            InputQueueManager.Instance.FlushInputQueue();
             powerupInvoker = session.powerupInvoker;
             List<Message> messages = new List<Message>();
             gameMap = session.Map;
             players = session.Players;
             powerups = session.powerups;
             DateTime now = DateTime.Now;
-            while (!cancellationToken.IsCancellationRequested)
+            while (!session.HasGameEnded)
             {
                 DateTime _now = DateTime.Now;
                 _logger.LogInformation((_now - now).ToString());
@@ -203,18 +203,21 @@ namespace SignalRWebPack.Logic
             //converting player coordinates to map tile index
             movementIndex = ConvertCoordsToIndex(x, y);
             //retrieving every type of gameobject that could exist on the tile the player is trying to move towards
-            Bomb bombCheck = bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            Bomb bombCheck = null;
             Powerup powerupCheck = powerups.Where(e => e.x == x && e.y == y).FirstOrDefault();
             ExplosionCell explosionCheck = null;// = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
             for (int i = 0; i < players.Count; i++)
             {
+                if (bombCheck == null)
+                {
+                    bombCheck = players[i].bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
+                }
                 for (int j = 0; j < players[i].bombs.Count; j++)
                 {
                     if (explosionCheck == null && players[i].bombs[j].explosion != null)
                     {
                         explosionCheck = players[i].bombs[j].explosion.GetExplosionCells().Where(e => e.x == x && e.y == y).FirstOrDefault();
                     }
-                    //players[i].bombs[j].explosion.GetExplosionCells
                 }
             }
             if (gameMap.tiles[movementIndex] is Wall)
@@ -224,7 +227,8 @@ namespace SignalRWebPack.Logic
             }
             else if (bombCheck != null)
             {
-                //I sleep
+                players[index].SetCollisionStrategy(new BombCollision());
+                players[index].ResolvePlayerCollision(players[index], bombCheck, new List<Powerup>(), null);
             }
             else if (gameMap.tiles[movementIndex] is Box)
             {

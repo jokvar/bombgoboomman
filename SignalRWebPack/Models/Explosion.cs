@@ -56,7 +56,7 @@ namespace SignalRWebPack.Models
 
             //calculating explosion coordinates
             //replacing the initial bomb with an explosion tile
-            explosions.Add(explosion);
+            ExplodeFirstTile(x, y, explodedAt, explosion);
             int explosionSize = size * explosionSizeMultiplier;
             for (int i = 1; i <= explosionSize; i++)
             {
@@ -69,6 +69,22 @@ namespace SignalRWebPack.Models
 
                 yMinusStopped = ExplosionCheckAdjacentTiles(x, y - i, yMinusStopped, explodedAt, explosion);
             }
+        }
+        private void ExplodeFirstTile(int x, int y, DateTime explodedAt, ExplosionCell explosion)
+        {
+            int explosionIndex = ConvertCoordsToIndex(x, y);
+            Player playerCheck = players.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            if (playerCheck != null)
+            {
+                explosion.SetCollisionStrategy(new PlayerCollision());
+                explosion.ResolveExplosionCollision(playerCheck, explosions, explodedAt, powerups);
+            }
+            else
+            {
+                explosion.SetCollisionStrategy(new EmptyTileCollision());
+                explosion.ResolveExplosionCollision(gameMap.tiles[explosionIndex], explosions, explodedAt, powerups);
+            }
+
         }
 
         bool ExplosionCheckAdjacentTiles(int x, int y, bool explosionStopped, DateTime explodedAt, ExplosionCell explosion)
@@ -124,7 +140,7 @@ namespace SignalRWebPack.Models
             {
                 explosion.SetCollisionStrategy(new ExplosionCollision());
                 explosion.ResolveExplosionCollision(explosionCheck, explosions, explodedAt, powerups);
-                explosionStopped = true;
+                //explosionStopped = true;
             }
             else if (bombCheck != null)
             {

@@ -1,4 +1,5 @@
-﻿using SignalRWebPack.Models;
+﻿using SignalRWebPack.Logic;
+using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Command;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,22 @@ namespace SignalRWebPack.Patterns.Strategy
 
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
-            throw new NotImplementedException();
+            var bomb = collisionTarget as Bomb;
+            if (bomb.hasExploded)
+            {
+                player.x = bomb.x;
+                player.y = bomb.y;
+                if (!player.invulnerable)
+                {
+                    player.lives--;
+                    Session s = SessionManager.Instance.GetPlayerSession(player.id);
+                    s.LastPlayerDamaged = player;
+                    s.Notify();
+                    player.invulnerableSince = DateTime.Now;
+                    player.invulnerableUntil = player.invulnerableSince.AddSeconds(player.invulnerabilityDuration);
+                    player.invulnerable = true;
+                }
+            }
         }
     }
 }
