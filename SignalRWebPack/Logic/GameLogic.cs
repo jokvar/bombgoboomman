@@ -91,20 +91,34 @@ namespace SignalRWebPack.Logic
                     }
                 }
             }
-
+            InputQueueManager.Instance.FlushInputQueue();
             powerupInvoker = session.powerupInvoker;
             List<Message> messages = new List<Message>();
             gameMap = session.Map;
             players = session.Players;
             powerups = session.powerups;
-
-            while (!cancellationToken.IsCancellationRequested)
+            DateTime now = DateTime.Now;
+            while (!session.HasGameEnded)
             {
+                DateTime _now = DateTime.Now;
+                _logger.LogInformation((_now - now).ToString());
+                now = _now;
                 Task delay = Task.Delay(60); // 😎😎😎😎
                 //example action dequeing
                 Tuple<string, PlayerAction> tuple;
-                while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
+                //while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
+                //{
+                //    string playerId = tuple.Item1;
+                //    PlayerAction action = tuple.Item2;
+                //    ProcessAction(action, playerId);
+                //}
+                for (int i = 0; i < 10; i++)
                 {
+                    tuple = InputQueueManager.Instance.ReadOne();
+                    if (tuple == null)
+                    {
+                        break;
+                    }
                     string playerId = tuple.Item1;
                     PlayerAction action = tuple.Item2;
                     ProcessAction(action, playerId);
@@ -130,8 +144,17 @@ namespace SignalRWebPack.Logic
                     }
                 }
                 Tuple<string, Message> messageContainer;
-                while ((messageContainer = session.ReadOneMessage()) != null) //deleted when read
+                //while ((messageContainer = session.ReadOneMessage()) != null) //deleted when read
+                //{
+                //    Broadcast(messageContainer);
+                //}
+                for (int i = 0; i < 10; i++)
                 {
+                    messageContainer = session.ReadOneMessage();
+                    if (messageContainer == null)
+                    {
+                        break;
+                    }
                     Broadcast(messageContainer);
                 }
                 await sendData;
@@ -180,18 +203,21 @@ namespace SignalRWebPack.Logic
             //converting player coordinates to map tile index
             movementIndex = ConvertCoordsToIndex(x, y);
             //retrieving every type of gameobject that could exist on the tile the player is trying to move towards
-            Bomb bombCheck = bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
+            Bomb bombCheck = null;
             Powerup powerupCheck = powerups.Where(e => e.x == x && e.y == y).FirstOrDefault();
             ExplosionCell explosionCheck = null;// = explosions.Where(e => e.x == x && e.y == y).FirstOrDefault();
             for (int i = 0; i < players.Count; i++)
             {
+                if (bombCheck == null)
+                {
+                    bombCheck = players[i].bombs.Where(e => e.x == x && e.y == y).FirstOrDefault();
+                }
                 for (int j = 0; j < players[i].bombs.Count; j++)
                 {
                     if (explosionCheck == null && players[i].bombs[j].explosion != null)
                     {
                         explosionCheck = players[i].bombs[j].explosion.GetExplosionCells().Where(e => e.x == x && e.y == y).FirstOrDefault();
                     }
-                    //players[i].bombs[j].explosion.GetExplosionCells
                 }
             }
             if (gameMap.tiles[movementIndex] is Wall)
@@ -201,7 +227,8 @@ namespace SignalRWebPack.Logic
             }
             else if (bombCheck != null)
             {
-                //I sleep
+                players[index].SetCollisionStrategy(new BombCollision());
+                players[index].ResolvePlayerCollision(players[index], bombCheck, new List<Powerup>(), null);
             }
             else if (gameMap.tiles[movementIndex] is Box)
             {

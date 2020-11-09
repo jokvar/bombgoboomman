@@ -45,6 +45,11 @@ namespace SignalRWebPack.Patterns.Singleton
             return input;
         }
 
+        public void FlushInputQueue()
+        {
+            inputQueue = new List<Input>();
+        }
+
         protected class Input
         {
             string connectionId;

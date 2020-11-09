@@ -51,7 +51,7 @@ export namespace Renderer {
 
             this.divMessages = document.querySelector("#divMessages");
             this.tbodyMessages = document.querySelector("#tbodyMessages");
-
+            
             this.textures = ["powerup", "powerup_bomb_naked", "powerup_plus"];
 
             //temp data, delete later
@@ -110,7 +110,7 @@ export namespace Renderer {
         }
 
         drawGame = () => {
-            if (this.canvas == null) { return; }
+            if (this.canvas == null) { return; }           
             var sec = Math.floor(Date.now() / 1000);
 
             if (sec != this.currentSecond) {
@@ -168,6 +168,12 @@ export namespace Renderer {
                 this.canvas.drawImage(img, e.x * this.tileW, e.y * this.tileH);
             }
             this.canvas.fillStyle = "#ff0000";
+
+            if (!this.firstDraw) {
+                //<img id="title_screen" src="images/title.png" width="450" height="450" hidden>
+                var titleScreen = document.getElementById("title_screen") as HTMLImageElement;
+                this.canvas.drawImage(titleScreen, 0, 0);
+            }
             this.canvas.fillText("FPS: " + this.framesLastSecond, 10, 20);
             requestAnimationFrame(this.drawGame);
         }
