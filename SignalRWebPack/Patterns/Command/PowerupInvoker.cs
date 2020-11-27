@@ -9,6 +9,7 @@ namespace SignalRWebPack.Patterns.Command
     public class PowerupInvoker
     {
         List<PowerupCommand> commandStack;
+        public int StackSize { get { return commandStack.Count; } }
 
         public PowerupInvoker()
         {

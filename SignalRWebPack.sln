@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRWebPack", "SignalRWebPack\SignalRWebPack.csproj", "{3EA6F814-741C-403F-88B3-3B27A0F6D0B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalRWebPackTests", "SignalRWebPackTests\SignalRWebPackTests.csproj", "{F3B10AFD-C3EF-4C1D-B169-35E37607442D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SignalRWebPackTests", "SignalRWebPackTests\SignalRWebPackTests.csproj", "{F3B10AFD-C3EF-4C1D-B169-35E37607442D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
