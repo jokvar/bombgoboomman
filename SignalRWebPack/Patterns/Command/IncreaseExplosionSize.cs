@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Command
 {
-    class IncreaseExplosionSize : PowerupCommand
+    public class IncreaseExplosionSize : PowerupCommand
     {
         public IncreaseExplosionSize(Player _player) : base(_player) { }
 

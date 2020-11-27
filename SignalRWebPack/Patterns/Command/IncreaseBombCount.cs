@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Command
 {
-    internal class IncreaseBombCount : PowerupCommand
+    public class IncreaseBombCount : PowerupCommand
     {
         public IncreaseBombCount(Player _player) : base(_player) { }
 

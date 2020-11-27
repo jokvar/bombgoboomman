@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using SignalRWebPack.Models;
 
-namespace SignalRWebPackTests1.Patterns.FactoryMethod
+namespace SignalRWebPackTests.Patterns.FactoryMethod
 {
     public class ExplosionTransportCreatorTests
     {
