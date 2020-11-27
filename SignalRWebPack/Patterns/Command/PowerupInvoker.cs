@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Command
 {
-    class PowerupInvoker
+    public class PowerupInvoker
     {
         List<PowerupCommand> commandStack;
 

@@ -6,7 +6,7 @@ using SignalRWebPack.Patterns.Strategy;
 
 namespace SignalRWebPack.Models
 {
-    class ExplosionCell : GameObject
+    public class ExplosionCell : GameObject
     {
         private CollisionStrategy _collisionStrategy { get; set; }
         public int damage { get; set; }

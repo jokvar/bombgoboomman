@@ -12,7 +12,6 @@ namespace SignalRWebPack.Hubs
 {
     public class ChatHub : Hub
     {
-
         public async Task NewMessage(Message messageContainer)
         {
             string username = "System";

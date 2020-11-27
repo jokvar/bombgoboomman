@@ -7,7 +7,7 @@ using SignalRWebPack.Patterns.Strategy;
 
 namespace SignalRWebPack.Models
 {
-    class Explosion : GameObject
+    public class Explosion : GameObject
     {
         private List<ExplosionCell> explosions { get; set; }
         private static Session session = SessionManager.Instance.GetSession(SessionManager.Instance.ActiveSessionCode);

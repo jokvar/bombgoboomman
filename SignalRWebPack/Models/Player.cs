@@ -8,7 +8,7 @@ using SignalRWebPack.Patterns.AbstractFactory;
 
 namespace SignalRWebPack.Models
 {
-    class Player : GameObject
+    public class Player : GameObject
     {
         private CollisionStrategy _collisionStrategy;
         private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;

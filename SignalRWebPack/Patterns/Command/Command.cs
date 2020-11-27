@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Command
 {
-    abstract class PowerupCommand
+    public abstract class PowerupCommand
     {
         protected readonly Player _player;
         public abstract void Execute();

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Models
 {
-    class Bomb : GameObject
+    public class Bomb : GameObject
     {
         public int tickDuration { get; set; }
         public DateTime plantedAt { get; set; }

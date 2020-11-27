@@ -9,7 +9,7 @@ using SignalRWebPack.Patterns.Command;
 
 namespace SignalRWebPack.Models
 {
-    class Session : ISubject
+    public class Session : ISubject
     {
         public List<Player> Players { get; set; }
         public List<Powerup> powerups { get; set; }

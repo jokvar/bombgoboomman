@@ -8,7 +8,7 @@ using SignalRWebPack.Patterns.Command;
 namespace SignalRWebPack.Patterns.Strategy
 {
     //Strategy abstract class
-    abstract class CollisionStrategy
+    public abstract class CollisionStrategy
     {
         //How explosion collision with collisionTarget is resolved
         public abstract void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> powerupList);
