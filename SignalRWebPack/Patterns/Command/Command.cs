@@ -15,6 +15,10 @@ namespace SignalRWebPack.Patterns.Command
 
         public PowerupCommand(Player player)
         {
+            if (player == null)
+            {
+                throw new ArgumentNullException("Player was null");
+            }
             _player = player;
         }
     }

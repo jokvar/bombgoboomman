@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Command
 {
-    class DecreaseBombTickDuration : PowerupCommand
+    public class DecreaseBombTickDuration : PowerupCommand
     {
         public DecreaseBombTickDuration(Player _player) : base(_player) { }
 
