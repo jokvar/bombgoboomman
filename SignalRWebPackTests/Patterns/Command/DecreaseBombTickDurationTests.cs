@@ -15,7 +15,7 @@ namespace SignalRWebPackTests.Patterns.Command
         {
             __player = new Player("TestValue1865647587", "TestValue2131367710", 199764800, 1372910220) { bombTickDuration = 2 };
             _testClass = new DecreaseBombTickDuration(__player);
-            SessionManager.Instance.GetSession(null).RegisterPlayer(__player.id, true);
+            SessionManager.Instance.GetSession(null).RegisterPlayer(__player, true);
         }
 
         [Fact]

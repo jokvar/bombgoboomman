@@ -14,7 +14,7 @@ namespace SignalRWebPackTests.Patterns.Command
         public IncreaseExplosionSizeTests()
         {
             __player = new Player("TestValue1649814934", "TestValue1393875115", 1432929387, 2084644688) { explosionSizeMultiplier = 3};            _testClass = new IncreaseExplosionSize(__player);
-            SessionManager.Instance.GetSession(null).RegisterPlayer(__player.id, true);
+            SessionManager.Instance.GetSession(null).RegisterPlayer(__player, true);
         }
 
         [Fact]

@@ -11,6 +11,7 @@ namespace SignalRWebPack.Patterns.Singleton
     {
         private List<Input> inputQueue;
         private readonly object queueLock = new object();
+        public int StackSize { get { lock (queueLock) { return inputQueue.Count; } } }
         private InputQueueManager()
         {
             inputQueue = new List<Input>();
@@ -20,6 +21,14 @@ namespace SignalRWebPack.Patterns.Singleton
 
         public void AddToInputQueue(string _connectionId, PlayerAction _action)
         {
+            if (string.IsNullOrWhiteSpace(_connectionId))
+            {
+                throw new ArgumentNullException("Invalid connection id");
+            }
+            if (_action == null)
+            {
+                throw new ArgumentNullException("Invalid PlayerAction");
+            }
             if (SessionManager.Instance.IsPlayerAlive(_connectionId))
             {
                 Input input = new Input(_connectionId, _action);

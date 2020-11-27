@@ -15,7 +15,7 @@ namespace SignalRWebPackTests.Patterns.Command
         {
             __player = new Player("TestValue1143607526", "TestValue157478733", 458037480, 2128707886) { maxBombs = 2};
             _testClass = new IncreaseBombCount(__player);
-            SessionManager.Instance.GetSession(null).RegisterPlayer(__player.id, true);
+            SessionManager.Instance.GetSession(null).RegisterPlayer(__player, true);
         }
 
         [Fact]

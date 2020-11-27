@@ -15,7 +15,7 @@ namespace SignalRWebPackTests.Patterns.Command
         {
             _testClass = new PowerupInvoker();
             __player = new Player("TestValue1893646907", "TestValue1977100354", 233697183, 365252170) { explosionSizeMultiplier = 3 };
-            SessionManager.Instance.GetSession(null).RegisterPlayer(__player.id, true);
+            SessionManager.Instance.GetSession(null).RegisterPlayer(__player, true);
         }
 
         [Fact]
