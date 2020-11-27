@@ -28,6 +28,7 @@ namespace SignalRWebPack
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseUrls("https://0.0.0.0:5000");
                 })
                 .ConfigureServices(services =>
                     services.AddHostedService<BackgroundGameLoop>());
