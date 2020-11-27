@@ -11,6 +11,10 @@ namespace SignalRWebPack.Patterns.Strategy
     {
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
+            if (collisionTarget.GetType() != typeof(EmptyTile))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'EmptyTile'");
+            }
             var emptyTile = collisionTarget as EmptyTile;
             ExplosionCell exp1 = new ExplosionCell(explodedAt, emptyTile.x, emptyTile.y);
             explosions.Add(exp1);
@@ -18,6 +22,10 @@ namespace SignalRWebPack.Patterns.Strategy
 
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
+            if (collisionTarget.GetType() != typeof(EmptyTile))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'EmptyTile'");
+            }
             var emptyTile = collisionTarget as EmptyTile;
             player.x = emptyTile.x;
             player.y = emptyTile.y;

@@ -14,6 +14,10 @@ namespace SignalRWebPack.Patterns.Strategy
         ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
+            if(collisionTarget.GetType() != typeof(Box))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Box'");
+            }
             var box = collisionTarget as Box;
             ExplosionCell exp1 = new ExplosionCell(explodedAt, box.x, box.y);
             explosions.Add(exp1);

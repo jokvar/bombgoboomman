@@ -12,12 +12,20 @@ namespace SignalRWebPack.Patterns.Strategy
     {
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> powerupList)
         {
+            if(collisionTarget.GetType() != typeof(Bomb))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Bomb'");
+            }
             var bomb = collisionTarget as Bomb;
             bomb.Explode();
         }
 
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
+            if (collisionTarget.GetType() != typeof(Bomb))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Bomb'");
+            }
             var bomb = collisionTarget as Bomb;
             if (bomb.hasExploded)
             {

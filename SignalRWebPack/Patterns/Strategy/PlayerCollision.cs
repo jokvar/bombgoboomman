@@ -10,9 +10,13 @@ namespace SignalRWebPack.Patterns.Strategy
 {
     class PlayerCollision : CollisionStrategy
     {
-        public override void ExplosionCollisionStrategy(object collisionObject, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
+        public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
-            var player = collisionObject as Player;
+            if (collisionTarget.GetType() != typeof(Player))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Player'");
+            }
+            var player = collisionTarget as Player;
             ExplosionCell exp1 = new ExplosionCell(explodedAt, player.x, player.y);
             explosions.Add(exp1);
             if (!player.invulnerable && player.IsAlive)
