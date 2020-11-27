@@ -53,6 +53,20 @@ namespace SignalRWebPack.Models
         }
 
         private object _playerRegistryLock = new object();
+
+        //only for development
+        public bool RegisterPlayer(Player player, bool isHost = false)
+        {
+            lock (_playerRegistryLock)
+            {
+                Players.Add(player);
+                if (isHost)
+                {
+                    Host = player;
+                }
+                return Players.Count >= 4;
+            }  
+        }
         public bool RegisterPlayer(string id, bool isHost = false)
         {
             lock (_playerRegistryLock)

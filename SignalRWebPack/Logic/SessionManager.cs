@@ -22,11 +22,19 @@ namespace SignalRWebPack.Logic
 
         public Session GetPlayerSession(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentNullException("this will never happen");
+            }
             return Sessions.Values.Where(s => s.PlayerIDs.Contains(id)).FirstOrDefault();
         }
 
         public bool IsPlayerAlive(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentNullException("this will never happen");
+            }
             Session __session = GetPlayerSession(id);
             return __session == null ? false : __session.Players[__session.MatchId(id)].IsAlive;
         }
@@ -41,7 +49,7 @@ namespace SignalRWebPack.Logic
         {
             lock (_sessionLock)
             {
-                if (code == null)
+                if (string.IsNullOrWhiteSpace(code))
                 {
                     code = GenerateRoomCode();
                 }
@@ -57,7 +65,11 @@ namespace SignalRWebPack.Logic
             }
         }
 
-
+        public void FlushSessions()
+        {
+            Sessions = new Dictionary<string, Session>();
+            _activeSessionCode = null;
+        }
         public static string GenerateRoomCode()
         {
             return "6969";
