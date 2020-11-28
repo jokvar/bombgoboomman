@@ -10,19 +10,26 @@ namespace SignalRWebPack.Patterns.AbstractFactory
     {
         public override GameObject GetObject(String type)
         {
-            if (type.Equals("wall"))
+            if(type != null)
             {
-                return new Wall();
+                if (type.Equals("wall"))
+                {
+                    return new Wall();
+                }
+                if (type.Equals("box"))
+                {
+                    return new Box();
+                }
+                if (type.Equals("empty"))
+                {
+                    return new EmptyTile();
+                }
+                throw new ArgumentNullException();
             }
-            if (type.Equals("box"))
+            else
             {
-                return new Box();
+                throw new ArgumentNullException();
             }
-            if (type.Equals("empty"))
-            {
-                return new EmptyTile();
-            }
-            return null;
         }
     }
 }

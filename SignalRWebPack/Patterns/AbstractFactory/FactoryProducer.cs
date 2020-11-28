@@ -9,15 +9,22 @@ namespace SignalRWebPack.Patterns.AbstractFactory
     {
         public static AbstractFactory getFactory(string FactoryType)
         {
-            if (FactoryType.Equals("ObjectFactory"))
+            if(FactoryType != null)
             {
-                return new ObjectFactory();
+                if (FactoryType.Equals("ObjectFactory"))
+                {
+                    return new ObjectFactory();
+                }
+                else if (FactoryType.Equals("TileFactory"))
+                {
+                    return new TileFactory();
+                }
+                throw new ArgumentNullException();
             }
-            else if (FactoryType.Equals("TileFactory"))
+            else
             {
-                return new TileFactory();
+                throw new ArgumentNullException();
             }
-            return null;
         }
     }
 }
