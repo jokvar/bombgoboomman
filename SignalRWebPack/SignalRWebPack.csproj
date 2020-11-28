@@ -5,9 +5,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\images\box.png" />
+    <Content Remove="wwwroot\images\explosion.png" />
+    <Content Remove="wwwroot\images\powerup_bomb_naked.png" />
+    <Content Remove="wwwroot\images\wall.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Docs\readme.txt" />
     <None Remove="src\models\GameMap.ts" />
     <None Remove="src\models\GameObjects.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\images\box.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\images\explosion.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\images\box.png" />
+    <None Include="wwwroot\images\explosion.png" />
+    <None Include="wwwroot\images\powerup_bomb_naked.png" />
+    <None Include="wwwroot\images\wall.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,10 +52,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

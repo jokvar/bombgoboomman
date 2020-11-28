@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("./css/main.css");
 require("./images/wall.jpg");
 require("./images/box.jpg");
 require("./images/blank.jpg");
@@ -11,10 +10,17 @@ require("./images/playerTwo.jpg");
 require("./images/playerThree.jpg");
 require("./images/playerFour.jpg");
 require("./images/powerup.jpg");
+require("./images/powerup_bomb_naked.png");
+require("./images/powerup_explosion_naked.png");
+require("./images/powerup_powerdown.png");
+require("./images/powerup_powerdownX3.png");
+require("./images/powerup_plus.png");
+require("./images/powerup_time.png");
+require("bootstrap/dist/css/bootstrap.min.css");
 var ChatHub_1 = require("./chathub/ChatHub");
 var Render_1 = require("./ui/Render");
 var Input_1 = require("./ui/Input");
-var version = "v0.21";
+var version = "v0.60";
 window.onload = function () {
     var canvas = document.getElementById('game').getContext("2d");
     document.getElementById('version').textContent = version;
