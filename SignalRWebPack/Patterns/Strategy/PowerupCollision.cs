@@ -9,29 +9,55 @@ using Microsoft.Extensions.Logging;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
-    class PowerupCollision : CollisionStrategy
+    public class PowerupCollision : CollisionStrategy
     {
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
-            if (collisionTarget.GetType() != typeof(Powerup))
+            if (collisionTarget == null || collisionTarget.GetType() != typeof(Powerup))
             {
                 throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Powerup'");
             }
+
+            if(explosions == null)
+            {
+                throw new ArgumentNullException("This method cannot be called when the list 'explosions' is null");
+            }
+
             var powerup = collisionTarget as Powerup;
             ExplosionCell exp1 = new ExplosionCell(explodedAt, powerup.x, powerup.y);
             explosions.Add(exp1);
+
+            if (collisionList == null)
+            {
+                throw new ArgumentNullException("Powerup list cannot be null in this context");
+            }
+
             collisionList.RemoveAt(GetPowerupIndex(powerup, collisionList));
         }
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
-            if (collisionTarget.GetType() != typeof(Powerup))
+            if (collisionTarget == null || collisionTarget.GetType() != typeof(Powerup))
             {
                 throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Powerup'");
             }
+
+            if(player == null)
+            {
+                throw new ArgumentNullException("This method cannot be called when 'player' is null");
+            }
+
+            if (collisionList == null)
+            {
+                throw new ArgumentNullException("Powerup list cannot be null in this context");
+            }
+
             var powerup = collisionTarget as Powerup;
             player.x = powerup.x;
             player.y = powerup.y;
             ResolvePowerup(player, powerup, powerupInvoker);
+
+            
+
             collisionList.RemoveAt(GetPowerupIndex(powerup, collisionList));
         }
 
@@ -44,11 +70,15 @@ namespace SignalRWebPack.Patterns.Strategy
                     return i;
                 }
             }
-            return 404; //not found
+            return -1; //not found
         }
 
         public void ResolvePowerup(Player playerReference, Powerup powerup, PowerupInvoker powerupInvoker)
         {
+            if(powerup == null)
+            {
+                throw new ArgumentNullException("Cannot call this method when 'powerup' is null");
+            }
             //0 - BombTickDuration - DecreaseBombTickDuration
             //1 - ExplosionSize - IncreaseExplosionSize
             //2 - AdditionalBomb - IncreaseBombCount

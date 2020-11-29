@@ -68,6 +68,11 @@ namespace SignalRWebPack.Models
                 yPlusStopped = ExplosionCheckAdjacentTiles(x, y + i, yPlusStopped, explodedAt, explosion);
 
                 yMinusStopped = ExplosionCheckAdjacentTiles(x, y - i, yMinusStopped, explodedAt, explosion);
+
+                if(xPlusStopped && xMinusStopped && yPlusStopped && yMinusStopped)
+                {
+                    break;
+                }
             }
         }
         private void ExplodeFirstTile(int x, int y, DateTime explodedAt, ExplosionCell explosion)
@@ -86,6 +91,7 @@ namespace SignalRWebPack.Models
             }
 
         }
+
 
         bool ExplosionCheckAdjacentTiles(int x, int y, bool explosionStopped, DateTime explodedAt, ExplosionCell explosion)
         {
