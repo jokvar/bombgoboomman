@@ -7,16 +7,32 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
-    class WallCollision : CollisionStrategy
+    public class WallCollision : CollisionStrategy
     {
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
-            //do nothing
+            if (collisionTarget == null || collisionTarget.GetType() != typeof(Wall))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Wall'");
+            }
+
+            if(explosions == null)
+            {
+                throw new ArgumentNullException("This method cannot be called if 'explosions' is null");
+            }
         }
 
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
-            //do nothing
+            if (collisionTarget == null || collisionTarget.GetType() != typeof(Wall))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Wall'");
+            }
+
+            if(player == null)
+            {
+                throw new ArgumentNullException("This method cannot be called when 'player' is null");
+            }
         }
     }
 }

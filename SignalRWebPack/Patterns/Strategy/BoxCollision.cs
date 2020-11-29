@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
-    class BoxCollision : CollisionStrategy
+    public class BoxCollision : CollisionStrategy
     {
         ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
-            if(collisionTarget.GetType() != typeof(Box))
+            if(collisionTarget == null || collisionTarget.GetType() != typeof(Box))
             {
                 throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Box'");
             }
@@ -27,11 +27,22 @@ namespace SignalRWebPack.Patterns.Strategy
 
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
-            //do nothing
+            if (collisionTarget == null || collisionTarget.GetType() != typeof(Box))
+            {
+                throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Box'");
+            }
+            if(player == null)
+            {
+                throw new ArgumentNullException("This method cannot be called when 'player' is null");
+            }
         }
 
         public void GeneratePowerup(int x, int y, List<Powerup> powerups)
         {
+            if(powerups == null)
+            {
+                throw new ArgumentNullException("This method cannot be called when 'powerups' is null");
+            }
             var rand = new Random();
             //will be true 50% of the time
             if (rand.Next(100) < 50)

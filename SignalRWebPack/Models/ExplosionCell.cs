@@ -47,12 +47,21 @@ namespace SignalRWebPack.Models
 
         public void SetCollisionStrategy(CollisionStrategy collisionStrategy)
         {
+            if (collisionStrategy == null)
+            {
+                throw new ArgumentNullException("'collisionStrategy' cannot be null.");
+            }
             _collisionStrategy = collisionStrategy;
         }
 
         public void ResolveExplosionCollision(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> collisionList)
         {
             _collisionStrategy.ExplosionCollisionStrategy(collisionTarget, explosions, explodedAt, collisionList);
+        }
+
+        public CollisionStrategy GetCollisionStrategy()
+        {
+            return _collisionStrategy;
         }
     }
 }

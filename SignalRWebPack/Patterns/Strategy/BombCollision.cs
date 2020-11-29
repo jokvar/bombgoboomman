@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
-    class BombCollision : CollisionStrategy
+    public class BombCollision : CollisionStrategy
     {
         public override void ExplosionCollisionStrategy(object collisionTarget, List<ExplosionCell> explosions, DateTime explodedAt, List<Powerup> powerupList)
         {
-            if(collisionTarget.GetType() != typeof(Bomb))
+            if(collisionTarget == null || collisionTarget.GetType() != typeof(Bomb))
             {
                 throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Bomb'");
             }
@@ -22,9 +22,13 @@ namespace SignalRWebPack.Patterns.Strategy
 
         public override void PlayerCollisionStrategy(Player player, object collisionTarget, List<Powerup> collisionList, PowerupInvoker powerupInvoker)
         {
-            if (collisionTarget.GetType() != typeof(Bomb))
+            if (collisionTarget == null || collisionTarget.GetType() != typeof(Bomb))
             {
                 throw new InvalidOperationException("This method cannot be called when the type of collisionTarget is not 'Bomb'");
+            }
+            if (player == null)
+            {
+                throw new ArgumentNullException("This method cannot be called when 'player' is null");
             }
             var bomb = collisionTarget as Bomb;
             if (bomb.hasExploded)

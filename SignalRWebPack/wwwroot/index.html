@@ -2,26 +2,55 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>ASP.NET Core SignalR</title>
-<link href="/css/main.91c171862bbbff43ef49.css" rel="stylesheet"></head>
+    <title>Bomb go Boom Man</title>
+<link href="/css/main.4d49427e8a23cc33319c.css" rel="stylesheet"></head>
 <body>
-    <div id="divMessages" class="messages">
+    <div class="container" style="height: 340px;">
+        <div id="divMessages" class="card card-outline-primary text-left" style="overflow: auto; width: 100%; height: 290px;">
+            <table class="table">
+                <tbody id="tbodyMessages">
+                    <tr class="table-success">
+                        <td><b>Welcome!</b> Type 'join' to join a session, or 'create' to create a new one!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="input-group mb-12">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Message: </span>
+            </div>
+            <input id="tbMessage" type="text" class="form-control">
+        </div>
     </div>
-    <div class="input-zone">
-        <label id="lblMessage" for="tbMessage">Message:</label>
-        <input id="tbMessage" class="input-zone-input" type="text" />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <canvas id="game" width="450" height="450" style="border:1px solid #000000;"></canvas>
+                <div id="version"></div>
+            </div>
+        </div>
     </div>
-    <canvas id="game" width="450" height="450" style="border:1px solid #000000;"></canvas>
-    <div id="version"></div>
     <img id="player" src="images/player.jpg" width="40" height="30" hidden>
     <img id="playerTwo" src="images/playerTwo.jpg" width="30" height="30" hidden>
     <img id="playerThree" src="images/playerThree.jpg" width="30" height="30" hidden>
     <img id="playerFour" src="images/playerFour.jpg" width="30" height="30" hidden>
     <img id="blank" src="images/blank.jpg" width="30" height="30" hidden>
-    <img id="wall" src="images/wall.jpg" width="30" height="30" hidden>
-    <img id="box" src="images/box.jpg" width="30" height="30" hidden>
-    <img id="bomb" src="images/bomb.jpg" width="30" height="30" hidden>
+    <img id="wall" src="images/wall.png" width="30" height="30" hidden>
+    <img id="box" src="images/box.png" width="30" height="30" hidden>
+    <img id="bomb" src="images/powerup_bomb_naked.png" width="30" height="30" hidden>
+
+    <!--powerup backgrounds (1st layer)-->
     <img id="powerup" src="images/powerup.jpg" width="30" height="30" hidden>
-    <img id="explosion" src="images/explosion.jpg" width="30" height="30" hidden>
+    <!--powerup foregrounds (2nd layer)-->
+    <img id="powerup_bomb_naked" src="images/powerup_bomb_naked.png" width="30" height="30" hidden>
+    <img id="powerup_bombTick_naked" src="images/powerup_bomb_naked.png" width="30" height="30" hidden>
+    <img id="powerup_explosion_naked" src="images/powerup_explosion_naked.png" width="30" height="30" hidden>
+    <img id="powerup_powerdown" src="images/powerup_powerdown.png" width="30" height="30" hidden>
+    <img id="powerup_powerdownX3" src="images/powerup_powerdownX3.png" width="30" height="30" hidden>
+    <!--powerup misc (3rd layer)-->
+    <img id="powerup_plus" src="images/powerup_plus.png" width="30" height="30" hidden>
+    <img id="powerup_time" src="images/powerup_time.png" width="30" height="30" hidden>
+
+    <img id="explosion" src="images/explosion.png" width="30" height="30" hidden>
 <script type="text/javascript" src="/main.js"></script></body>
 </html>
