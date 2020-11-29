@@ -14,9 +14,16 @@ namespace SignalRWebPack.Models
         }
         public void SetValues(int x, int y, string texture)
         {
-            this.x = x;
-            this.y = y;
-            this.texture = texture;
+            if (texture != null)
+            {
+                this.x = x;
+                this.y = y;
+                this.texture = texture;
+            }
+            else
+            {
+                throw new ArgumentNullException(texture);
+            }
         }
     }
 }
