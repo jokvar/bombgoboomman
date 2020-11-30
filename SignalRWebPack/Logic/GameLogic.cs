@@ -45,6 +45,10 @@ namespace SignalRWebPack.Logic
  
         public GameLogic(IHubContext<ChatHub> hub, ILogger<GameLogic> logger)
         {
+            if (hub == null || logger == null)
+            {
+                throw new ArgumentNullException();
+            }
             _hub = hub;
             _logger = logger;
             bombCreator = new BombTransportCreator();
@@ -166,6 +170,14 @@ namespace SignalRWebPack.Logic
 
         public void ProcessAction(PlayerAction playerAction, string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new ArgumentNullException();
+            }
+            if (playerAction == null)
+            {
+                throw new ArgumentNullException();
+            }
             int requestIndex = session.MatchId(id);
             //storing current coordinates
             int x = players[requestIndex].x;
@@ -356,11 +368,19 @@ namespace SignalRWebPack.Logic
 
         public async Task StartPlaying(string[] playerIDs)
         {
+            if (playerIDs == null || playerIDs.Contains(string.Empty) || playerIDs.Contains(null))
+            {
+                throw new ArgumentNullException();
+            }
             await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StartPlaying");
         }
 
         public void Broadcast(Tuple<string, Message> messageContainer)
         {
+            if (messageContainer == null)
+            {
+                throw new ArgumentNullException();
+            }
             _hub.Clients.All.SendAsync("messageReceived", messageContainer.Item1, messageContainer.Item2);
         }
 
