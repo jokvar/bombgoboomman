@@ -7,13 +7,17 @@ using SignalRWebPack.Models;
 namespace SignalRWebPack.Patterns.Decorator
 {
     //Decorator class
-    abstract class TextureDecorator : GameObject
+    public abstract class TextureDecorator : GameObject
     {
         protected GameObject gameObject;
 
         protected string _texture = "undefined texture";
         public TextureDecorator(GameObject gameObject)
         {
+            if (gameObject == null)
+            {
+                throw new ArgumentNullException();
+            }
             this.gameObject = gameObject;
         }
 

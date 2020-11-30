@@ -86,4 +86,44 @@ namespace SignalRWebPackTests.Patterns.FactoryMethod
             Assert.Throws<ArgumentException>(() => transportObject.Pack(invalidGameObject));
         }
     }
+    public class TransportObjectCreatorTests
+    {
+        private class TestTransportObjectCreator : TransportObjectCreator
+        {
+            public override ITransportObject FactoryMethod()
+            {
+                return new PowerupTransport();
+            }
+        }
+
+        private TestTransportObjectCreator _testClass;
+
+        public TransportObjectCreatorTests()
+        {
+            _testClass = new TestTransportObjectCreator();
+        }
+
+        [Fact]
+        public void CanConstruct()
+        {
+            var instance = new TestTransportObjectCreator();
+            Assert.NotNull(instance);
+        }
+
+        [Fact]
+        public void CannotCallPackWithNullGameObject()
+        {
+            Assert.Throws<ArgumentNullException>(() => _testClass.Pack(default(GameObject)));
+        }
+
+        [Fact]
+        public void PackPerformsMapping()
+        {
+            var gameObject = new Powerup(Powerup_type.AdditionalBomb, 1, 1);
+            var result = _testClass.Pack(gameObject);
+            Assert.Equal(gameObject.texture, result.texture);
+            Assert.Equal(gameObject.x, result.x);
+            Assert.Equal(gameObject.y, result.y);
+        }
+    }
 }

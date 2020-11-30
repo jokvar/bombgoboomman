@@ -7,7 +7,7 @@ using SignalRWebPack.Models;
 namespace SignalRWebPack.Patterns.Decorator
 {
     //Concrete decorator class
-    class BackgroundDecorator : TextureDecorator
+    public class BackgroundDecorator : TextureDecorator
     {
         public BackgroundDecorator(GameObject gameObject)
             : base(gameObject)

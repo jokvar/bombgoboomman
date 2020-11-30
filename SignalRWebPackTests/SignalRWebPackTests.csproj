@@ -19,8 +19,4 @@
     <ProjectReference Include="..\SignalRWebPack\SignalRWebPack.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Patterns\FactoryMethod\" />
-  </ItemGroup>
-
 </Project>

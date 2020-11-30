@@ -42,8 +42,12 @@ namespace SignalRWebPack.Models
             Players = new List<Player>();
             powerupInvoker = new PowerupInvoker();
             MapDirector director = new MapDirector();
+            //testing
+            MapBuilder b2 = new MLGBuilder();
+            director.Construct(b2);
+            _ = b2.GetResult();
+            //
             MapBuilder b1 = new ClassicBuilder();
-            //MapBuilder b1 = new MLGBuilder();
             director.Construct(b1);
             Map = b1.GetResult();
             Messages = new List<Tuple<string, Message>>();
