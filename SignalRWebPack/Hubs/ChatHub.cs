@@ -29,14 +29,14 @@ namespace SignalRWebPack.Hubs
             }
             else if (messageContainer.Content == "/join")
             {
-                await JoinSession("test");
+                JoinSession("test");
                 string sessionCode = SessionManager.Instance.ActiveSessionCode;
                 Session session = SessionManager.Instance.GetSession(sessionCode);
                 username = session.Username(Context.ConnectionId);
                 Message response = new Message() { Content = "has connected to Session [" + sessionCode + "].", Class = "table-info" };
                 foreach (string id in session.PlayerIDs)
                 {
-                    await Clients.Client(id).SendAsync("messageReceived", username, response);
+                    await Clients.Client(id).SendAsync("messageReceived", username, response).ConfigureAwait(false);
                 }
             }
             else if (messageContainer.Content.Split(' ')[0] == "/setname")
@@ -53,7 +53,7 @@ namespace SignalRWebPack.Hubs
                         Message response = new Message() { Content = "<b>" + username + "</b> has changed their name to <b>" + newName[1] + "</b>.", Class = "table-warning" };
                         foreach (string id in session.PlayerIDs)
                         {
-                            await Clients.Client(id).SendAsync("messageReceived", "System", response);
+                            await Clients.Client(id).SendAsync("messageReceived", "System", response).ConfigureAwait(false);
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace SignalRWebPack.Hubs
                     username = SessionManager.Instance.GetSession(sessionCode).Username(Context.ConnectionId);
                 }            
                 Message response = new Message() { Content = messageContainer.Content, Class = "table-secondary" };
-                await Clients.All.SendAsync("messageReceived", username, response);
+                await Clients.All.SendAsync("messageReceived", username, response).ConfigureAwait(false);
             }  
         }
 
@@ -85,7 +85,7 @@ namespace SignalRWebPack.Hubs
             session.RegisterPlayer(Context.ConnectionId, true);
         }
 
-        public async Task JoinSession(string roomCode)
+        public void JoinSession(string roomCode)
         {
             //hardcode
             roomCode = SessionManager.GenerateRoomCode();

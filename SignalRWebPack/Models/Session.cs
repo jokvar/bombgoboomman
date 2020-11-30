@@ -35,7 +35,7 @@ namespace SignalRWebPack.Models
         public string roomCode { get; set; }
         public string id { get; set; }
 
-        private List<IObserver> Observers = new List<IObserver>();
+        private readonly List<IObserver> Observers = new List<IObserver>();
         public Session()
         {
             powerups = new List<Powerup>();
@@ -56,7 +56,7 @@ namespace SignalRWebPack.Models
 
         }
 
-        private object _playerRegistryLock = new object();
+        private readonly object _playerRegistryLock = new object();
 
         //only for development
         public bool RegisterPlayer(Player player, bool isHost = false)

@@ -10,8 +10,8 @@ namespace SignalRWebPack.Patterns.Builder
 {
     class MLGBuilder : MapBuilder
     {
-        private Map _map = new Map();
-        TileFactory tFactory = FactoryProducer.getFactory("TileFactory") as TileFactory;
+        private readonly Map _map = new Map();
+        readonly TileFactory tFactory = FactoryProducer.getFactory("TileFactory") as TileFactory;
 
         public override void BuildWalls()
         {

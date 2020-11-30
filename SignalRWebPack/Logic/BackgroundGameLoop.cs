@@ -13,16 +13,12 @@ namespace SignalRWebPack.Logic
 
         public BackgroundGameLoop(IGameLogic gameLogic)
         {
-            if (gameLogic == null)
-            {
-                throw new ArgumentNullException();
-            }
-            this.gameLogic = gameLogic;
+            this.gameLogic = gameLogic ?? throw new ArgumentNullException(nameof(gameLogic));
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await gameLogic.GameLoop(cancellationToken);
+            await gameLogic.GameLoop(cancellationToken).ConfigureAwait(false);
         }
     }
 }

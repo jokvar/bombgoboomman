@@ -36,7 +36,7 @@ namespace SignalRWebPack.Logic
 
         //-------FactoryMethod--------------
         // Creators: 
-        BombTransportCreator bombCreator;
+        readonly BombTransportCreator bombCreator;
         PowerupTransportCreator powerupCreator; 
         ExplosionTransportCreator explosionCreator;
         //-------Command (Invoker)--------------
@@ -47,7 +47,7 @@ namespace SignalRWebPack.Logic
         {
             if (hub == null || logger == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(paramName: nameof(hub));
             }
             _hub = hub;
             _logger = logger;
@@ -172,7 +172,7 @@ namespace SignalRWebPack.Logic
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(id));
             }
             if (playerAction == null)
             {
@@ -358,7 +358,7 @@ namespace SignalRWebPack.Logic
             Message[] messages = _messages.ToArray();
             if (playerIDs.Length == 4)
             {
-                await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages);
+                await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StoreDrawData", map, players, bombs, powerups, explosions, messages).ConfigureAwait(false);
             }
             else
             {
@@ -370,7 +370,7 @@ namespace SignalRWebPack.Logic
         {
             if (playerIDs == null || playerIDs.Contains(string.Empty) || playerIDs.Contains(null))
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(playerIDs));
             }
             await _hub.Clients.Clients(playerIDs[0], playerIDs[1], playerIDs[2], playerIDs[3]).SendAsync("StartPlaying");
         }

@@ -7,7 +7,7 @@ namespace SignalRWebPackTests.Patterns.Decorator
 
     public class BackgroundDecoratorTests
     {
-        private GameObject Powerup_additionalType;
+        private readonly GameObject Powerup_additionalType;
         private GameObject Powerup_bombTickType;
 
         public BackgroundDecoratorTests()

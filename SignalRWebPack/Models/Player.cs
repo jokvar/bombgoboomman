@@ -120,12 +120,9 @@ namespace SignalRWebPack.Models
                             bombs[i].Explode();
                             bombs[i].hasExploded = true;
                         }
-                        
-                        //activeBombCount--;
                     }
                 }
             }
-
         }
 
         public void CheckInvulnerabilityPeriods()
