@@ -13,6 +13,10 @@ namespace SignalRWebPack.Logic
 
         public BackgroundGameLoop(IGameLogic gameLogic)
         {
+            if (gameLogic == null)
+            {
+                throw new ArgumentNullException();
+            }
             this.gameLogic = gameLogic;
         }
 
