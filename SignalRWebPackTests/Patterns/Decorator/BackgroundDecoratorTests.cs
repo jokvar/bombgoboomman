@@ -9,11 +9,13 @@ namespace SignalRWebPackTests.Patterns.Decorator
     {
         private readonly GameObject Powerup_additionalType;
         private GameObject Powerup_bombTickType;
+        private Powerup Powerup_powerDownType;
 
         public BackgroundDecoratorTests()
         {
             Powerup_additionalType = new Powerup(Powerup_type.AdditionalBomb,0, 0);
             Powerup_bombTickType = new Powerup(Powerup_type.BombTickDuration, 0, 0);
+            Powerup_powerDownType = new Powerup(Powerup_type.PowerDown, 0, 0);
         }
 
         [Fact]
@@ -25,6 +27,8 @@ namespace SignalRWebPackTests.Patterns.Decorator
             instance = new BackgroundDecorator(Powerup_bombTickType);
             Assert.NotNull(instance);
             Assert.Contains("powerup_bombTick_naked", instance.textures);
+            instance = new BackgroundDecorator(Powerup_powerDownType);
+            Assert.Single(instance.textures);
         }
 
         [Fact]

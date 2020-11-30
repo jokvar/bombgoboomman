@@ -45,63 +45,43 @@ namespace SignalRWebPack.Patterns.Strategy
             }
             var rand = new Random();
             //will be true 50% of the time
-            if (rand.Next(100) < 50)
+            Powerup pow = oFactory.GetObject("powerup") as Powerup;
+            int powerupIndex = rand.Next(0, 100);
+
+            Powerup powerup;
+            GameObject powerDecorator;
+            if (powerupIndex < 35)
             {
-                Powerup pow = oFactory.GetObject("powerup") as Powerup;
-                int powerupIndex = rand.Next(0, 100);
-
-                Powerup powerup;
-                GameObject powerDecorator;
-                //switch (powerupIndex)
-                //{
-                //    case 0:
-                //        powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
-                //        break;
-                //    case 2:
-                //        powerup = new Powerup(Powerup_type.PowerDownX3, x, y);
-                //        break;
-                //    case 1:
-                //        powerup = new Powerup(Powerup_type.PowerDown, x, y);
-                //        break;
-                //    case 3:
-                //        powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
-                //        break;
-                //    case 4:
-                //        powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
-                //        break;
-                //    default:
-                //        throw new NotImplementedException();
-
-                //}
-                if (powerupIndex > 50)
-                {
-                    powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
-                }
-                else if (powerupIndex > 65)
-                {                   
-                    powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
-                }
-                else if (powerupIndex > 80)
-                {
-                    powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
-                }
-                else if (powerupIndex > 90)
-                {
-                    powerup = new Powerup(Powerup_type.PowerDown, x, y);
-                }
-                else if (powerupIndex > 97)
-                {
-                    powerup = new Powerup(Powerup_type.PowerDownX3, x, y);
-                }
-                else
-                {
-                    return;
-                }
-
-                powerDecorator = new MiscDecorator(new ForegroundDecorator(new BackgroundDecorator(powerup)));
-                powerDecorator.GetTextures();
-                powerups.Add(powerup);
+                return;
             }
+            else if (powerupIndex < 50)
+            {
+                powerup = new Powerup(Powerup_type.BombTickDuration, x, y);
+            }
+            else if (powerupIndex < 65)
+            {
+                powerup = new Powerup(Powerup_type.ExplosionSize, x, y);
+            }
+            else if (powerupIndex < 80)
+            {
+                powerup = new Powerup(Powerup_type.AdditionalBomb, x, y);
+            }
+            else if (powerupIndex < 90)
+            {
+                powerup = new Powerup(Powerup_type.PowerDown, x, y);
+            }
+            else if (powerupIndex < 97)
+            {
+                powerup = new Powerup(Powerup_type.PowerDownX3, x, y);
+            }
+            else
+            {
+                return;
+            }
+
+            powerDecorator = new MiscDecorator(new ForegroundDecorator(new BackgroundDecorator(powerup)));
+            powerDecorator.GetTextures();
+            powerups.Add(powerup);
 
         }
     }
