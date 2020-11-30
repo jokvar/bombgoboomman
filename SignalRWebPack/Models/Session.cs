@@ -53,7 +53,6 @@ namespace SignalRWebPack.Models
             Messages = new List<Tuple<string, Message>>();
             var livesObserver = new LivesObserver();
             Attach(livesObserver);
-
         }
 
         private readonly object _playerRegistryLock = new object();
@@ -155,7 +154,7 @@ namespace SignalRWebPack.Models
             {
                 return null;
             }
-            List<Tuple<string, Message>> messages = new List<Tuple<string, Message>> (Messages);
+            List<Tuple<string, Message>> messages = new List<Tuple<string, Message>>(Messages);
             Messages.Clear();
             return messages;
         }
