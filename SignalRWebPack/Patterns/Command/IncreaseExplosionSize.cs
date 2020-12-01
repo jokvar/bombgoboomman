@@ -14,7 +14,7 @@ namespace SignalRWebPack.Patterns.Command
         public override void Execute()
         {
             Session session = SessionManager.Instance.GetPlayerSession(_player.id);
-            if (_player.explosionSizeMultiplier < _player.Defaults.MaxExplosionSize)
+            if (_player.explosionSizeMultiplier < DefaultPowerupValues.MaxExplosionSize)
             {
                 _player.explosionSizeMultiplier++;
                 session.AddMessage("Game", new Message() { Content = "<b>" + _player.name + "</b> has picked up a <b>Increase Explosion Size</b> powerup!", Class = "table-info" });
@@ -27,7 +27,7 @@ namespace SignalRWebPack.Patterns.Command
         public override void Undo()
         {
             Session session = SessionManager.Instance.GetPlayerSession(_player.id);
-            if (_player.explosionSizeMultiplier > _player.Defaults.MinExplosionSize)
+            if (_player.explosionSizeMultiplier > DefaultPowerupValues.MinExplosionSize)
             {
                 session.AddMessage("Game", new Message() { Content = "<b>" + _player.name + "</b> has had their <b>Increase Explosion Size</b> powerup <b>undone</b>!", Class = "table-warning" });
                 _player.explosionSizeMultiplier--;

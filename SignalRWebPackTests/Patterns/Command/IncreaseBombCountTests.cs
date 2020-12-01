@@ -37,7 +37,7 @@ namespace SignalRWebPackTests.Patterns.Command
             var expected = __player.maxBombs + 1;
             _testClass.Execute();
             Assert.Equal(expected, __player.maxBombs);
-            var max = __player.Defaults.MaxBombs;
+            var max = DefaultPowerupValues.MaxBombs;
             __player.maxBombs = max;
             _testClass.Execute();
             Assert.Equal(max, __player.maxBombs);
@@ -49,7 +49,7 @@ namespace SignalRWebPackTests.Patterns.Command
             var expected = __player.maxBombs - 1;
             _testClass.Undo();
             Assert.Equal(expected, __player.maxBombs);
-            var min = __player.Defaults.MinBombs;
+            var min = DefaultPowerupValues.MinBombs;
             __player.maxBombs = min;
             _testClass.Undo();
             Assert.Equal(min, __player.maxBombs);

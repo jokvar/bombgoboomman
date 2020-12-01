@@ -14,7 +14,7 @@ namespace SignalRWebPack.Patterns.Command
         public override void Execute()
         {
             Session session = SessionManager.Instance.GetPlayerSession(_player.id);
-            if (_player.maxBombs < _player.Defaults.MaxBombs)
+            if (_player.maxBombs < DefaultPowerupValues.MaxBombs)
             {
                 _player.maxBombs++;
                 session.AddMessage("Game", new Message() { Content = "<b>" + _player.name + "</b> has picked up a <b>Increase Bomb Count</b> powerup!", Class = "table-info" });
@@ -27,7 +27,7 @@ namespace SignalRWebPack.Patterns.Command
         public override void Undo()
         {
             Session session = SessionManager.Instance.GetPlayerSession(_player.id);
-            if (_player.maxBombs > _player.Defaults.MinBombs)
+            if (_player.maxBombs > DefaultPowerupValues.MinBombs)
             {
                 session.AddMessage("Game", new Message() { Content = "<b>" + _player.name + "</b> has had their <b>Increase Bomb Count</b> powerup <b>undone</b>!", Class = "table-warning" });
                 _player.maxBombs--;

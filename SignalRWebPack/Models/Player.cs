@@ -8,11 +8,10 @@ using SignalRWebPack.Patterns.AbstractFactory;
 
 namespace SignalRWebPack.Models
 {
-    public class Player : GameObject
+    public partial class Player : GameObject
     {
         private CollisionStrategy _collisionStrategy;
         private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
-        public DefaultPowerupValues Defaults = new DefaultPowerupValues();
 
         public int lives { get; set; }
         public string name { get; set; }
@@ -146,23 +145,5 @@ namespace SignalRWebPack.Models
         }
 
         public Bomb GetBomb(int x, int y) => bombs.Where(bomb => bomb.x == x && bomb.y == y).FirstOrDefault();
-
-        public class DefaultPowerupValues
-        {
-            public readonly int MaxBombTickDuration = 3;
-            public readonly int MinBombTickDuration = 1;
-
-            public readonly int MaxPlayerSpeed = 1;
-            public readonly int MinPlayerSpeed = 1;
-
-            public readonly int MaxExplosionDamageBombs = 2;
-            public readonly int MinExplosionDamageBombs = 1;
-
-            public readonly int MaxExplosionSize = 8;
-            public readonly int MinExplosionSize = 2;
-
-            public readonly int MaxBombs = 8;
-            public readonly int MinBombs = 1;
-        }
     }
 }
