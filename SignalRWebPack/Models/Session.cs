@@ -6,10 +6,11 @@ using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns;
 using SignalRWebPack.Patterns.Observer;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.Iterator;
 
 namespace SignalRWebPack.Models
 {
-    public class Session : ISubject
+    public class Session : ISubject, IIterable
     {
         public List<Player> Players { get; set; }
         public List<Powerup> powerups { get; set; }
