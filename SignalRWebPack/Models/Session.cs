@@ -6,6 +6,7 @@ using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns;
 using SignalRWebPack.Patterns.Observer;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.ChainOfResponsibility;
 
 namespace SignalRWebPack.Models
 {
@@ -35,7 +36,7 @@ namespace SignalRWebPack.Models
         public string roomCode { get; set; }
         public string id { get; set; }
 
-        private readonly List<IObserver> Observers = new List<IObserver>();
+        private readonly List<Handler> Observers = new List<Handler>();
         public Session()
         {
             powerups = new List<Powerup>();
@@ -51,7 +52,16 @@ namespace SignalRWebPack.Models
             director.Construct(b1);
             Map = b1.GetResult();
             Messages = new List<Tuple<string, Message>>();
+            
             var livesObserver = new LivesObserver();
+            var livesObserverChainTwo = new LivesObserverChainTwo();
+            var livesObserverChainThree = new LivesObserverChainThree();
+            var livesObserverChainFour = new LivesObserverChainFour();
+
+            livesObserver.SetNext(livesObserverChainTwo);
+            livesObserverChainTwo.SetNext(livesObserverChainThree);
+            livesObserverChainThree.SetNext(livesObserverChainFour);
+
             Attach(livesObserver);
         }
 
@@ -121,9 +131,9 @@ namespace SignalRWebPack.Models
                 Players[index].name = username;
             }
         }
-        public void Attach(IObserver observer) => Observers.Add(observer);
+        public void Attach(Handler observer) => Observers.Add(observer);
 
-        public void Detach(IObserver observer) => this.Observers.Remove(observer);
+        public void Detach(Handler observer) => this.Observers.Remove(observer);
         public void Notify()
         {
             foreach (var observer in Observers)
