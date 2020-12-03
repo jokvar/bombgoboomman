@@ -7,11 +7,13 @@ using SignalRWebPack.Patterns;
 using SignalRWebPack.Patterns.Observer;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.ChainOfResponsibility;
+using SignalRWebPack.Patterns.Mediator;
 
 namespace SignalRWebPack.Models
 {
     public class Session : ISubject
     {
+        protected IMediator _mediator;
         public List<Player> Players { get; set; }
         public List<Powerup> powerups { get; set; }
         public Player Host { get; set; }
@@ -107,6 +109,9 @@ namespace SignalRWebPack.Models
                 {
                     Host = player;
                 }
+                PowerupSpawner spawner = new PowerupSpawner();
+                PlayerMediator mediator = new PlayerMediator(player, this, spawner);
+                player.SetMediator(mediator);
                 Players.Add(player);
                 return Players.Count >= 4;
             }
@@ -158,6 +163,10 @@ namespace SignalRWebPack.Models
             return message;
         }
 
+        public void SetMediator(IMediator mediator)
+        {
+            this._mediator = mediator;
+        }
         public List<Tuple<string, Message>> ReadAllMessages()
         {
             if (Messages.Count == 0) //if empty

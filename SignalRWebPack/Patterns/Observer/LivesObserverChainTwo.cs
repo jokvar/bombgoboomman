@@ -17,7 +17,8 @@ namespace SignalRWebPack.Patterns.Observer
             {
                 player.texture = "blank";
                 session.AddMessage("Game", new Message() { Content = "<b>" + player.name + "</b> has died!", Class = "table-danger" });
-               
+                player._mediator.Notify("PlayerDied");
+
                 if (next != null)
                 {
                     next.Update(subject);

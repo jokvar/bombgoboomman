@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.AbstractFactory;
+using SignalRWebPack.Patterns.Mediator;
 
 namespace SignalRWebPack.Models
 {
@@ -14,6 +15,7 @@ namespace SignalRWebPack.Models
         private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
         public DefaultPowerupValues Defaults = new DefaultPowerupValues();
 
+        public IMediator _mediator;
         public int lives { get; set; }
         public string name { get; set; }
         public string id { get; set; }
@@ -146,6 +148,11 @@ namespace SignalRWebPack.Models
         }
 
         public Bomb GetBomb(int x, int y) => bombs.Where(bomb => bomb.x == x && bomb.y == y).FirstOrDefault();
+
+        public void SetMediator(IMediator mediator)
+        {
+            this._mediator = mediator;
+        }
 
         public class DefaultPowerupValues
         {
