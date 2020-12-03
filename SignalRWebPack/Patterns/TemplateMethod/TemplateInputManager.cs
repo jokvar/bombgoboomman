@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.TemplateMethod
 {
-    public class TemplateInputManager : TemplateClass<PlayerAction>
+    public class TemplateInputManager<T> : TemplateClass<PlayerAction> where T : PlayerAction
     {
-        public static TemplateInputManager Instance { get; } = new TemplateInputManager();
-        public int StackSize { get { return queue.Count; } }
+        public static TemplateInputManager<PlayerAction> Instance { get; } = new TemplateInputManager<PlayerAction>();
+        public int StackSize { get { return queue.GetCount(); } }
         public TemplateInputManager()
         {
             queue = new InputIterator();
@@ -61,6 +61,32 @@ namespace SignalRWebPack.Patterns.TemplateMethod
         public override void Unlock()
         {
             Monitor.Exit(queue.GetLock());
+        }
+
+        public override PlayerAction Find(string connectionId)
+        {
+            Lock();
+            for (InputIterator i = queue.InputIterator(); i.HasNext;)
+            {
+                PlayerAction action = i.Next();
+                if (action == null)
+                {
+                    break;
+                }
+                var id = action.PlayerId;
+                if (connectionId == id)
+                {
+                    Unlock();
+                    return action;
+                }
+            }
+            Unlock();
+            return null;
+        }
+
+        public override IIterator<PlayerAction> Iterator()
+        {
+            return queue.InputIterator();
         }
     }
 }

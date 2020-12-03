@@ -20,14 +20,14 @@ namespace SignalRWebPack.Patterns.TemplateMethod
 
         public virtual bool IdIsValid(string connectionId)
         {
-            return SessionManager.Instance.GetPlayerSession(connectionId) != default;
+            return SessionManager.Instance.GetPlayerSession(connectionId) != null;
         }
         public abstract bool ItemIsValid(T item);
         public abstract void Log(bool idIsValid, bool itemIsValid);
         public abstract void InjectConnectionIntoItem(string connectionId, T item);
         public abstract void Lock();
         public abstract void Unlock();
-
+        public abstract IIterator<T> Iterator();
         public sealed override void AddById(string connectionId, T item, bool forceThreadSafe = true, bool logResult = false)
         {
             bool idIsValid = IdIsValid(connectionId);
@@ -63,6 +63,28 @@ namespace SignalRWebPack.Patterns.TemplateMethod
                 }
             }
             Unlock();
+        }
+
+        public abstract T Find(string connectionId);
+
+        public T FindById(string connectionId)
+        {
+            bool idIsValid = IdIsValid(connectionId);
+            if (idIsValid)
+            {
+                try
+                {
+                    Lock();
+                    T result = Find(connectionId);
+                    return result;
+                }
+                catch (Exception) {}
+                finally
+                {
+                    Unlock();
+                }
+            }
+            return default;
         }
     }
 }

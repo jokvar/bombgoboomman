@@ -11,17 +11,14 @@ namespace SignalRWebPack.Patterns.Iterator
     {
         private List<PlayerAction> _queue;
         private int index;
+        private bool nextReturnsCurrent;
         private readonly object __lock = new object();
+        public bool HasNext => Peek() != null;
         public InputIterator()
         {
             _queue = new List<PlayerAction>();
             index = 0;
-        }
-
-        public InputIterator Iterator()
-        {
-            index = 0;
-            return this;
+            nextReturnsCurrent = true;
         }
 
         public object GetLock() => __lock;
@@ -50,18 +47,20 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        //for(Iterator i=var.iterator(); i.hasNext(); ) {
-        //    Object obj = i.next();
-        //}
         public PlayerAction Next()
         {
             lock (__lock)
             {
+                if (nextReturnsCurrent)
+                {
+                    nextReturnsCurrent = false;
+                    return _queue[index];
+                }
                 index++;
                 if (index >= _queue.Count)
                 {
                     index = 0;
-                    return null;
+                    return default;
                 }
                 return _queue[index];
             }
@@ -74,7 +73,7 @@ namespace SignalRWebPack.Patterns.Iterator
                 if (index + 1 >= _queue.Count)
                 {
                     index = 0;
-                    return null;
+                    return default;
                 }
                 return _queue[index + 1];
             }
@@ -92,8 +91,11 @@ namespace SignalRWebPack.Patterns.Iterator
         {
             lock (__lock)
             {
-                _queue.Remove(item);
-                return item;
+                if (_queue.Remove(item))
+                {
+                    return item;
+                }
+                return default;
             }
         }
 
@@ -103,6 +105,28 @@ namespace SignalRWebPack.Patterns.Iterator
             {
                 _queue.Clear();
             }
+        }
+
+        public PlayerAction RemoveFirst()
+        {
+            return Remove(First());
+        }
+
+        public PlayerAction RemoveLast()
+        {
+            return Remove(Last());
+        }
+
+        public InputIterator Iterator()
+        {
+            index = 0;
+            nextReturnsCurrent = true;
+            return this;
+        }
+
+        InputIterator IIterator<PlayerAction>.InputIterator()
+        {
+            return Iterator();
         }
     }
 }
