@@ -57,6 +57,9 @@ export namespace ChatHub {
         SendInput(input: Player.PlayerAction): void {
             this.connection.send("SendInput", input);
         }
+        ReviveInput(input: Player.PlayerAction): void {
+            this.connection.send("ReviveInput", input);
+        }
         NewMessage(message: ChatHub.Message): void {
             this.connection.send("NewMessage", message);
         }

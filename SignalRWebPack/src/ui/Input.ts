@@ -43,6 +43,10 @@ export namespace Input {
                     var action = new Player.PlayerAction(Player.ActionEnum.PlaceBomb)
                     server.SendInput(action);
                 }
+                if (e.key === "Shift" || e.key === "ShiftLeft" || e.keyCode === 16) {
+                    var action = new Player.PlayerAction(Player.ActionEnum.Revive)
+                    server.ReviveInput(action);
+                }
             });
         }
     }
