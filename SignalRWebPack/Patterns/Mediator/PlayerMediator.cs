@@ -28,7 +28,7 @@ namespace SignalRWebPack.Patterns.Mediator
         {
             if (ev == "PowerupSpawned")
             {
-                Session.AddMessage("Game", new Message() { Content = "Powerup has spawned in the player's place!", Class = "table-info" });
+                Session.AddMessage("Game", new Message() { Content = "Powerup has spawned in the players place!", Class = "table-info" });
             }
             if (ev == "PlayerDied")
             {

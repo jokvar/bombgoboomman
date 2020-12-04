@@ -104,5 +104,16 @@ namespace SignalRWebPack.Hubs
         {
             InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
         }
+
+        public async Task ReviveInput(PlayerAction input)
+        {
+            Session __session = SessionManager.Instance.GetPlayerSession(Context.ConnectionId);
+            if (!SessionManager.Instance.IsPlayerAlive(Context.ConnectionId))
+            {
+                Player p = __session.Players[__session.MatchId(Context.ConnectionId)];
+                __session.AddMessage("Game", new Message() { Content = "<b>" + p.name + "</b> has cheated! ", Class = "table-danger" });
+                p.RestoreMemento();
+            }
+        }
     }
 }

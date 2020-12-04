@@ -6,6 +6,7 @@ using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.AbstractFactory;
 using SignalRWebPack.Patterns.Mediator;
+using SignalRWebPack.Patterns.Memento;
 
 namespace SignalRWebPack.Models
 {
@@ -31,6 +32,8 @@ namespace SignalRWebPack.Models
         public int bombTickDuration { get; set; }
         public List<Bomb> bombs { get; set; }
         public bool IsAlive { get { return lives > 0; } }
+
+        private Memento memento;
         public Player(string name, string id, int x, int y)
         {
             lives = 3;
@@ -49,7 +52,6 @@ namespace SignalRWebPack.Models
             this.y = y;
             explosionSizeMultiplier = 2;
             bombs = new List<Bomb>();
-
             switch(name)
             {
                 case ("player1"):
@@ -65,6 +67,7 @@ namespace SignalRWebPack.Models
                 texture = "playerFour";
                 break;
             }
+            memento = new Memento(this.lives, this.texture);
         }
 
         public override List<string> GetTextures()
@@ -152,6 +155,17 @@ namespace SignalRWebPack.Models
         public void SetMediator(IMediator mediator)
         {
             this._mediator = mediator;
+        }
+
+        public void SaveMemento()
+        {
+            this.memento = new Memento(this.lives, this.texture);
+        }
+
+        public void RestoreMemento()
+        {
+            this.lives = memento.Lives;
+            this.texture = memento.Texture;
         }
 
         public class DefaultPowerupValues

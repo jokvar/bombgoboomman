@@ -19,6 +19,7 @@ namespace SignalRWebPack.Patterns.Observer
             Session session = (subject as Session);
             if (player.IsAlive)
             {
+                player.SaveMemento();
                 session.AddMessage("Game", new Message() { Content = "<b>" + player.name + "</b> has taken damage! Remaining lives: <b>" + player.lives + "</b>", Class = "table-warning" });
                 if (next != null)
                 {
