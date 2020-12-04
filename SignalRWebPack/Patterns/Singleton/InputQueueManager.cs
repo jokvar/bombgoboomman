@@ -16,7 +16,6 @@ namespace SignalRWebPack.Patterns.Singleton
         {
             inputQueue = new List<Input>();
         }
-
         public static InputQueueManager Instance { get; } = new InputQueueManager();
 
         public void AddToInputQueue(string _connectionId, PlayerAction _action)

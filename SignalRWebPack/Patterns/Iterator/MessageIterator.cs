@@ -1,27 +1,47 @@
 ﻿using SignalRWebPack.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Iterator
 {
-    public class InputIterator : IIterator<PlayerAction>
+    public class MessageIterator : IIterator<Message>
     {
-        private List<PlayerAction> _queue;
+        private List<Message> _queue;
         private int index;
         private bool nextReturnsCurrent;
         private readonly object __lock = new object();
         public bool HasNext => Peek() != null;
-        public InputIterator()
+        public MessageIterator()
         {
-            _queue = new List<PlayerAction>();
+            _queue = new List<Message>();
             index = 0;
             nextReturnsCurrent = true;
         }
+        public void Add(Message item)
+        {
+            lock (__lock)
+            {
+                _queue.Add(item);
+            }
+        }
 
-        public object GetLock() => __lock;
+        public void Empty()
+        {
+            lock (__lock)
+            {
+                _queue.Clear();
+            }
+        }
+
+        public Message First()
+        {
+            lock (__lock)
+            {
+                return _queue.FirstOrDefault();
+            }
+        }
 
         public int GetCount()
         {
@@ -31,15 +51,9 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction First()
-        {
-            lock (__lock)
-            {
-                return _queue.FirstOrDefault();
-            }
-        }
+        public object GetLock() => __lock;
 
-        public PlayerAction Last()
+        public Message Last()
         {
             lock (__lock)
             {
@@ -47,7 +61,7 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction Next()
+        public Message Next()
         {
             lock (__lock)
             {
@@ -66,28 +80,12 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction Peek()
+        public Message Peek()
         {
-            lock (__lock)
-            {
-                if (index + 1 >= _queue.Count)
-                {
-                    index = 0;
-                    return default;
-                }
-                return _queue[index + 1];
-            }
+            return First();
         }
 
-        public void Add(PlayerAction item)
-        {
-            lock (__lock)
-            {
-                _queue.Add(item);
-            }
-        }
-
-        public PlayerAction Remove(PlayerAction item)
+        public Message Remove(Message item)
         {
             lock (__lock)
             {
@@ -99,42 +97,30 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public void Empty()
-        {
-            lock (__lock)
-            {
-                _queue.Clear();
-            }
-        }
-
-        public PlayerAction RemoveFirst()
+        public Message RemoveFirst()
         {
             return Remove(First());
         }
 
-        public PlayerAction RemoveLast()
+        public Message RemoveLast()
         {
             return Remove(Last());
         }
-
-        public InputIterator Iterator()
+        public MessageIterator Iterator()
         {
             index = 0;
             nextReturnsCurrent = true;
             return this;
         }
-
-        InputIterator IIterator<PlayerAction>.InputIterator()
+        MessageIterator IIterator<Message>.MessageIterator()
         {
             return Iterator();
         }
-
         public SessionIterator SessionIterator()
         {
             throw new NotImplementedException();
         }
-
-        public MessageIterator MessageIterator()
+        public InputIterator InputIterator()
         {
             throw new NotImplementedException();
         }

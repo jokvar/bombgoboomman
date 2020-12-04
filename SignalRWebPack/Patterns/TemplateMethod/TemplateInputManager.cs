@@ -12,9 +12,11 @@ namespace SignalRWebPack.Patterns.TemplateMethod
     {
         public static TemplateInputManager<PlayerAction> Instance { get; } = new TemplateInputManager<PlayerAction>();
         public int StackSize { get { return queue.GetCount(); } }
+        private readonly object __lock;
         public TemplateInputManager()
         {
             queue = new InputIterator();
+            __lock = queue.GetLock();
         }
 
         public override bool ItemIsValid(PlayerAction item)
@@ -40,6 +42,10 @@ namespace SignalRWebPack.Patterns.TemplateMethod
             {
                 Console.WriteLine($"PlayerAction action was invalid.");
             }
+            if (idIsValid && itemIsValid)
+            {
+                Console.WriteLine($"Added to input queue.");
+            }
         }
 
         public override PlayerAction ReadOne()
@@ -47,6 +53,7 @@ namespace SignalRWebPack.Patterns.TemplateMethod
             Lock();
             if (StackSize == 0)
             {
+                Unlock();
                 return null;
             }
             PlayerAction input = queue.RemoveFirst();
@@ -55,12 +62,13 @@ namespace SignalRWebPack.Patterns.TemplateMethod
         }
         public override void Lock()
         {
-            Monitor.Enter(queue.GetLock());
+            Monitor.Enter(__lock);
         }
 
         public override void Unlock()
         {
-            Monitor.Exit(queue.GetLock());
+            Monitor.PulseAll(__lock);
+            Monitor.Exit(__lock);
         }
 
         public override PlayerAction Find(string connectionId)

@@ -1,22 +1,21 @@
 ﻿using SignalRWebPack.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.Iterator
 {
-    public class InputIterator : IIterator<PlayerAction>
+    public class SessionIterator : IIterator<Session>
     {
-        private List<PlayerAction> _queue;
+        private List<Session> _queue;
         private int index;
         private bool nextReturnsCurrent;
         private readonly object __lock = new object();
         public bool HasNext => Peek() != null;
-        public InputIterator()
+        public SessionIterator()
         {
-            _queue = new List<PlayerAction>();
+            _queue = new List<Session>();
             index = 0;
             nextReturnsCurrent = true;
         }
@@ -31,7 +30,7 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction First()
+        public Session First()
         {
             lock (__lock)
             {
@@ -39,7 +38,7 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction Last()
+        public Session Last()
         {
             lock (__lock)
             {
@@ -47,7 +46,7 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction Next()
+        public Session Next()
         {
             lock (__lock)
             {
@@ -66,7 +65,7 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction Peek()
+        public Session Peek()
         {
             lock (__lock)
             {
@@ -79,7 +78,7 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public void Add(PlayerAction item)
+        public void Add(Session item)
         {
             lock (__lock)
             {
@@ -87,7 +86,7 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction Remove(PlayerAction item)
+        public Session Remove(Session item)
         {
             lock (__lock)
             {
@@ -107,33 +106,32 @@ namespace SignalRWebPack.Patterns.Iterator
             }
         }
 
-        public PlayerAction RemoveFirst()
+        public Session RemoveFirst()
         {
             return Remove(First());
         }
 
-        public PlayerAction RemoveLast()
+        public Session RemoveLast()
         {
             return Remove(Last());
         }
 
-        public InputIterator Iterator()
+        public SessionIterator Iterator()
         {
             index = 0;
             nextReturnsCurrent = true;
             return this;
         }
 
-        InputIterator IIterator<PlayerAction>.InputIterator()
+        SessionIterator IIterator<Session>.SessionIterator()
         {
             return Iterator();
         }
 
-        public SessionIterator SessionIterator()
+        public InputIterator InputIterator()
         {
             throw new NotImplementedException();
         }
-
         public MessageIterator MessageIterator()
         {
             throw new NotImplementedException();

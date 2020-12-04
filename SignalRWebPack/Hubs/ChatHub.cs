@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using SignalRWebPack.Patterns.Singleton;
 using System;
+using SignalRWebPack.Patterns.TemplateMethod;
 
 namespace SignalRWebPack.Hubs
 {
@@ -102,7 +103,9 @@ namespace SignalRWebPack.Hubs
 
         public async Task SendInput(PlayerAction input)
         {
-            InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
+            //deprecating inputQueueManager
+            //InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
+            TemplateInputManager<PlayerAction>.Instance.AddById(Context.ConnectionId, input, forceThreadSafe: false, logResult: false);
         }
     }
 }

@@ -11,30 +11,30 @@ namespace SignalRWebPack.Patterns.TemplateMethod
 {
     public abstract class BaseTemplateClass<T> where T : IIterable
     {
-        public virtual void AddById(string connectionId, T item, bool forceThreadSafe = true, bool logResult = false) { }
+        public virtual void AddById(string id, T item, bool forceThreadSafe = true, bool logResult = false) { }
     }
 
     public abstract class TemplateClass<T> : BaseTemplateClass<T> where T : IIterable
     {
         protected IIterator<T> queue;
 
-        public virtual bool IdIsValid(string connectionId)
+        public virtual bool IdIsValid(string id)
         {
-            return SessionManager.Instance.GetPlayerSession(connectionId) != null;
+            return SessionManager.Instance.GetPlayerSession(id) != null;
         }
         public abstract bool ItemIsValid(T item);
         public abstract void Log(bool idIsValid, bool itemIsValid);
-        public abstract void InjectConnectionIntoItem(string connectionId, T item);
+        public abstract void InjectConnectionIntoItem(string id, T item);
         public abstract void Lock();
         public abstract void Unlock();
         public abstract IIterator<T> Iterator();
-        public sealed override void AddById(string connectionId, T item, bool forceThreadSafe = true, bool logResult = false)
+        public sealed override void AddById(string id, T item, bool forceThreadSafe = true, bool logResult = false)
         {
-            bool idIsValid = IdIsValid(connectionId);
+            bool idIsValid = IdIsValid(id);
             bool itemIsValid = ItemIsValid(item);
             if (idIsValid && itemIsValid)
             {
-                InjectConnectionIntoItem(connectionId, item);
+                InjectConnectionIntoItem(id, item);
                 if (forceThreadSafe) Lock();
                 queue.Add(item);
                 if (forceThreadSafe) Unlock();
@@ -65,17 +65,22 @@ namespace SignalRWebPack.Patterns.TemplateMethod
             Unlock();
         }
 
-        public abstract T Find(string connectionId);
+        /// <summary>
+        /// Non-thread safe. Use FindById() instead.
+        /// </summary>
+        /// <param name="connectionId"></param>
+        /// <returns></returns>
+        public abstract T Find(string id);
 
-        public T FindById(string connectionId)
+        public T FindById(string id)
         {
-            bool idIsValid = IdIsValid(connectionId);
+            bool idIsValid = IdIsValid(id);
             if (idIsValid)
             {
                 try
                 {
                     Lock();
-                    T result = Find(connectionId);
+                    T result = Find(id);
                     return result;
                 }
                 catch (Exception) {}

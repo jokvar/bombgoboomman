@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.TemplateMethod;
 
 namespace SignalRWebPack.Logic
 {
     public class SessionManager
     {
-        public static SessionManager Instance { get; } = new SessionManager();
+        //public static SessionManager Instance { get; } = new SessionManager();
+        //public static //public static TemplateSessionManager<Session> Instance { get; } = new TemplateSessionManager<Session>(); Instance { get; } = new TemplateSessionManager<Session>();
+        public static TemplateSessionManager<Session> Instance => TemplateSessionManager<Session>.Instance;
+
         private Dictionary<string, Session> Sessions;
         private readonly object _sessionLock = new object();
         //hardcoded single session
@@ -72,7 +76,7 @@ namespace SignalRWebPack.Logic
         }
         public static string GenerateRoomCode()
         {
-            return "6969";
+            return TemplateSessionManager<Session>.GenerateRoomCode();
         }
 
     }

@@ -17,7 +17,8 @@ namespace SignalRWebPack.Models
         public Player Host { get; set; }
         public Player LastPlayerDamaged { get; set; }
         public Map Map { get; set; }
-        public List<Tuple<string, Message>> Messages { get; set; }
+        //public List<Tuple<string, Message>> Messages { get; set; }
+        private MessageIterator Messages;
         public bool GameLoopEnabled { get { return Players.Count == 4; } }
         public bool HasGameEnded = false;
         //-------Command (Invoker)--------------
@@ -51,7 +52,7 @@ namespace SignalRWebPack.Models
             MapBuilder b1 = new ClassicBuilder();
             director.Construct(b1);
             Map = b1.GetResult();
-            Messages = new List<Tuple<string, Message>>();
+            Messages = new MessageIterator();
             var livesObserver = new LivesObserver();
             Attach(livesObserver);
         }
@@ -135,29 +136,18 @@ namespace SignalRWebPack.Models
 
         public void AddMessage(string username, Message message)
         {
-            Messages.Add(new Tuple<string, Message>(username, message));
+            message.Username = username;
+            Messages.Add(message);
         }
 
-        public Tuple<string, Message> ReadOneMessage()
-        {      
-            if (Messages.Count == 0) //if empty
-            {
-                return null;
-            }
-            Tuple<string, Message> message = Messages[0];
-            Messages.RemoveAt(0);
-            return message;
-        }
-
-        public List<Tuple<string, Message>> ReadAllMessages()
+        public void Remove(Message message)
         {
-            if (Messages.Count == 0) //if empty
-            {
-                return null;
-            }
-            List<Tuple<string, Message>> messages = new List<Tuple<string, Message>>(Messages);
-            Messages.Clear();
-            return messages;
+            Messages.Remove(message);
+        }
+
+        public MessageIterator MessageIterator()
+        {
+            return Messages.Iterator();
         }
     }
 }

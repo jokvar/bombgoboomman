@@ -14,6 +14,7 @@
         public void Empty();
         public object GetLock();
         public abstract InputIterator InputIterator();
-        //public abstract SessionIterator SessionIterator();
+        public abstract SessionIterator SessionIterator();
+        public abstract MessageIterator MessageIterator();
     }
 }
