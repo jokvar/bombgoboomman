@@ -37,7 +37,7 @@ namespace SignalRWebPackTests.Patterns.Command
             var expected = __player.bombTickDuration - 1;
             _testClass.Execute();
             Assert.Equal(expected, __player.bombTickDuration);
-            var min = __player.Defaults.MinBombTickDuration;
+            var min = DefaultPowerupValues.MinBombTickDuration;
             __player.bombTickDuration = min;
             _testClass.Execute();
             Assert.Equal(min, __player.bombTickDuration);
@@ -49,7 +49,7 @@ namespace SignalRWebPackTests.Patterns.Command
             var expected = __player.bombTickDuration + 1;
             _testClass.Undo();
             Assert.Equal(expected, __player.bombTickDuration);
-            var max = __player.Defaults.MaxBombTickDuration;
+            var max = DefaultPowerupValues.MaxBombTickDuration;
             __player.bombTickDuration = max;
             _testClass.Undo();
             Assert.Equal(max, __player.bombTickDuration);

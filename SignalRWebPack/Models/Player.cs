@@ -10,11 +10,10 @@ using SignalRWebPack.Patterns.Memento;
 
 namespace SignalRWebPack.Models
 {
-    public class Player : GameObject
+    public partial class Player : GameObject
     {
         private CollisionStrategy _collisionStrategy;
         private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
-        public DefaultPowerupValues Defaults = new DefaultPowerupValues();
 
         public IMediator _mediator;
         public int lives { get; set; }
