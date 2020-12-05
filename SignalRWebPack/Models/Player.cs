@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +6,8 @@ using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.AbstractFactory;
 using SignalRWebPack.Patterns.Visitor;
+using SignalRWebPack.Patterns.Mediator;
+using SignalRWebPack.Patterns.Memento;
 
 namespace SignalRWebPack.Models
 {
@@ -13,8 +15,8 @@ namespace SignalRWebPack.Models
     {
         private CollisionStrategy _collisionStrategy;
         private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
-        public DefaultPowerupValues Defaults = new DefaultPowerupValues();
 
+        public IMediator _mediator;
         public int lives { get; set; }
         public string name { get; set; }
         public string id { get; set; }
@@ -30,6 +32,8 @@ namespace SignalRWebPack.Models
         public int bombTickDuration { get; set; }
         public List<Bomb> bombs { get; set; }
         public bool IsAlive { get { return lives > 0; } }
+
+        private Memento memento;
         public Player(string name, string id, int x, int y)
         {
             lives = 3;
@@ -48,7 +52,6 @@ namespace SignalRWebPack.Models
             this.y = y;
             explosionSizeMultiplier = 2;
             bombs = new List<Bomb>();
-
             switch(name)
             {
                 case ("player1"):
@@ -64,6 +67,7 @@ namespace SignalRWebPack.Models
                 texture = "playerFour";
                 break;
             }
+            memento = new Memento(this.lives, this.texture);
         }
 
         public override List<string> GetTextures()
@@ -165,6 +169,22 @@ namespace SignalRWebPack.Models
         }
 
         public Bomb GetBomb(int x, int y) => bombs.Where(bomb => bomb.x == x && bomb.y == y).FirstOrDefault();
+
+        public void SetMediator(IMediator mediator)
+        {
+            this._mediator = mediator;
+        }
+
+        public void SaveMemento()
+        {
+            this.memento = new Memento(this.lives, this.texture);
+        }
+
+        public void RestoreMemento()
+        {
+            this.lives = memento.Lives;
+            this.texture = memento.Texture;
+        }
 
         public class DefaultPowerupValues
         {

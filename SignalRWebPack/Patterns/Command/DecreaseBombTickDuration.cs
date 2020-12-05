@@ -14,7 +14,7 @@ namespace SignalRWebPack.Patterns.Command
         public override void Execute()
         {
             Session session = SessionManager.Instance.GetPlayerSession(_player.id);
-            if (_player.bombTickDuration > _player.Defaults.MinBombTickDuration)
+            if (_player.bombTickDuration > DefaultPowerupValues.MinBombTickDuration)
             {
                 _player.bombTickDuration--;               
                 session.AddMessage("Game", new Message() { Content = "<b>" + _player.name + "</b> has picked up a <b>Decrease Bomb Tick Duration</b> powerup!", Class="table-info"});
@@ -28,7 +28,7 @@ namespace SignalRWebPack.Patterns.Command
         public override void Undo()
         {
             Session session = SessionManager.Instance.GetPlayerSession(_player.id);
-            if (_player.bombTickDuration < _player.Defaults.MaxBombTickDuration)
+            if (_player.bombTickDuration < DefaultPowerupValues.MaxBombTickDuration)
             {
                 session.AddMessage("Game", new Message() { Content = "<b>" + _player.name + "</b> has had their <b>Decrease Bomb Tick Duration</b> powerup <b>undone</b>!", Class="table-warning" });
                 _player.bombTickDuration++;

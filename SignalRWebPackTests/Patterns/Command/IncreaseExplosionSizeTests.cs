@@ -36,7 +36,7 @@ namespace SignalRWebPackTests.Patterns.Command
             var expected = __player.explosionSizeMultiplier + 1;
             _testClass.Execute();
             Assert.Equal(expected, __player.explosionSizeMultiplier);
-            var max = __player.Defaults.MaxExplosionSize;
+            var max = DefaultPowerupValues.MaxExplosionSize;
             __player.explosionSizeMultiplier = max;
             _testClass.Execute();
             Assert.Equal(max, __player.explosionSizeMultiplier);
@@ -48,7 +48,7 @@ namespace SignalRWebPackTests.Patterns.Command
             var expected = __player.explosionSizeMultiplier - 1;
             _testClass.Undo();
             Assert.Equal(expected, __player.explosionSizeMultiplier);
-            var min = __player.Defaults.MinExplosionSize;
+            var min = DefaultPowerupValues.MinExplosionSize;
             __player.explosionSizeMultiplier = min;
             _testClass.Undo();
             Assert.Equal(min, __player.explosionSizeMultiplier);
