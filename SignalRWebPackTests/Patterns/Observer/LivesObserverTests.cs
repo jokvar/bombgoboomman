@@ -22,21 +22,21 @@ namespace SignalRWebPackTests.Patterns.Observer
             Assert.NotNull(instance);
         }
 
-        [Fact]
-        public void CanCallUpdate()
-        {
-            Session testSession = new Session();
-            Player p = new Player("test", "id", 2, 2);
-            Player pp = new Player("testtest", "id", 2, 2);
-            testSession.Players.Add(p);
-            testSession.Players.Add(pp);
-            testSession.LastPlayerDamaged = p;
-            testSession.Notify();
-            Tuple<string, Message> message = testSession.ReadOneMessage();
-            Message m = message.Item2;
-            String s = m.Content;
-            Assert.Equal("<b>test</b> has taken damage! Remaining lives: <b>3</b>", s);
-        }
+        //[Fact]
+        //public void CanCallUpdate()
+        //{
+        //    Session testSession = new Session();
+        //    Player p = new Player("test", "id", 2, 2);
+        //    Player pp = new Player("testtest", "id", 2, 2);
+        //    testSession.Players.Add(p);
+        //    testSession.Players.Add(pp);
+        //    testSession.LastPlayerDamaged = p;
+        //    testSession.Notify();
+        //    Tuple<string, Message> message = testSession.ReadOneMessage();
+        //    Message m = message.Item2;
+        //    String s = m.Content;
+        //    Assert.Equal("<b>test</b> has taken damage! Remaining lives: <b>3</b>", s);
+        //}
 
         [Fact]
         public void CannotCallUpdateWithNoPlayers()

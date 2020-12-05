@@ -2,82 +2,75 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SignalRWebPack.Models;
+using SignalRWebPack.Patterns.Proxy;
 using SignalRWebPack.Patterns.TemplateMethod;
 
 namespace SignalRWebPack.Logic
 {
-    public class SessionManager
+    public class SessionManager : ISessionManager
     {
-        //public static SessionManager Instance { get; } = new SessionManager();
-        //public static //public static TemplateSessionManager<Session> Instance { get; } = new TemplateSessionManager<Session>(); Instance { get; } = new TemplateSessionManager<Session>();
-        public static TemplateSessionManager<Session> Instance => TemplateSessionManager<Session>.Instance;
+        public static SessionManager Instance { get; } = new SessionManager();
+        public bool EnableLogging { get; set; } = false;
 
-        private Dictionary<string, Session> Sessions;
-        private readonly object _sessionLock = new object();
-        //hardcoded single session
-        public List<string> AllSessionCodes { get { return new List<string>(Sessions.Keys); } }
-        private string _activeSessionCode;
-        public string ActiveSessionCode
+        private static TemplateSessionManager<Session> _Instance = TemplateSessionManager<Session>.Instance;
+        public string ActiveSessionCode {
+            get
+            {
+                Log($"Accessed {nameof(ActiveSessionCode)}");
+                return _Instance.ActiveSessionCode;
+            }
+            set
+            {
+                Log($"Set {nameof(ActiveSessionCode)}");
+                _Instance.ActiveSessionCode = value;
+            }
+        }
+        
+
+        public List<string> AllSessionCodes()
         {
-            get { lock (_sessionLock) { return _activeSessionCode; } }
-            set { lock (_sessionLock) { _activeSessionCode = value; } }
+            Log($"Accessed {nameof(AllSessionCodes)}");
+            return _Instance.AllSessionCodes();
         }
 
         public Session GetPlayerSession(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentNullException("this will never happen");
-            }
-            return Sessions.Values.Where(s => s.PlayerIDs.Contains(id)).FirstOrDefault();
+            Log($"Accessed {nameof(GetPlayerSession)}");
+            return _Instance.GetPlayerSession(id);
         }
 
         public bool IsPlayerAlive(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                throw new ArgumentNullException("this will never happen");
-            }
-            Session __session = GetPlayerSession(id);
-            return __session == null ? false : __session.Players[__session.MatchId(id)].IsAlive;
+            Log($"Accessed {nameof(IsPlayerAlive)}");
+            return _Instance.IsPlayerAlive(id);
         }
 
-        public SessionManager()
+        public Session GetSession(string code, bool newSession = true)
         {
-            Sessions = new Dictionary<string, Session>();
-            _activeSessionCode = null;
-        }
-
-        public Session GetSession(string code)
-        {
-            lock (_sessionLock)
-            {
-                if (string.IsNullOrWhiteSpace(code))
-                {
-                    code = GenerateRoomCode();
-                }
-                if (Sessions.ContainsKey(code))
-                {
-                    return Sessions[code];
-                }
-                Session session = new Session();
-                session.roomCode = code;
-                ActiveSessionCode = code;
-                Sessions.Add(code, session);
-                return session;
-            }
+            Log($"Accessed {nameof(GetSession)}");
+            return _Instance.GetSession(code, newSession);
         }
 
         public void FlushSessions()
         {
-            Sessions = new Dictionary<string, Session>();
-            _activeSessionCode = null;
+            Log($"Accessed {nameof(FlushSessions)}");
+            _Instance.FlushSessions();
         }
+
         public static string GenerateRoomCode()
         {
             return TemplateSessionManager<Session>.GenerateRoomCode();
         }
 
+        public void Log(string Message)
+        {
+            if (EnableLogging)
+            {
+                //Logger.LogInformation(Message);
+                Console.WriteLine(Message);
+            }
+        }
     }
 }
