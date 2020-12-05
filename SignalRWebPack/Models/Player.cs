@@ -1,16 +1,17 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.AbstractFactory;
+using SignalRWebPack.Patterns.Visitor;
 using SignalRWebPack.Patterns.Mediator;
 using SignalRWebPack.Patterns.Memento;
 
 namespace SignalRWebPack.Models
 {
-    public partial class Player : GameObject
+    public class Player : GameObject, IVisitorElement
     {
         private CollisionStrategy _collisionStrategy;
         private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
@@ -103,6 +104,24 @@ namespace SignalRWebPack.Models
                 b.texture = "bomb";
                 bombs.Add(b);
             }
+        }
+
+        //Specifically used for the visitor pattern
+        public void SpawnBomb()
+        {
+            Bomb b = oFactory.GetObject("bomb") as Bomb;
+            b.x = x;
+            b.y = y;
+            b.tickDuration = bombTickDuration;
+            b.explodesAt = b.plantedAt.AddSeconds(b.tickDuration);
+            b.explosionSizeMultiplier = explosionSizeMultiplier;
+            b.texture = "bomb";
+            bombs.Add(b);
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.Visit(this);
         }
 
         public int GetBombCount()
