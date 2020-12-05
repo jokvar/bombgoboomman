@@ -14,6 +14,7 @@ using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Decorator;
+using SignalRWebPack.Patterns.Visitor;
 
 namespace SignalRWebPack.Logic
 {
@@ -102,6 +103,7 @@ namespace SignalRWebPack.Logic
             players = session.Players;
             powerups = session.powerups;
             DateTime now = DateTime.Now;
+            DateTime eventTimer = DateTime.Now.AddSeconds(10);
             while (!session.HasGameEnded)
             {
                 DateTime _now = DateTime.Now;
@@ -116,6 +118,11 @@ namespace SignalRWebPack.Logic
                 //    PlayerAction action = tuple.Item2;
                 //    ProcessAction(action, playerId);
                 //}
+                if (eventTimer <= now)
+                {
+                    CallRandomEvent();
+                    eventTimer = DateTime.Now.AddSeconds(10);
+                }
                 for (int i = 0; i < 10; i++)
                 {
                     tuple = InputQueueManager.Instance.ReadOne();
@@ -161,11 +168,39 @@ namespace SignalRWebPack.Logic
                     }
                     Broadcast(messageContainer);
                 }
+
                 await sendData;
                 await delay;
             }
 
             throw new NotImplementedException("Reached end of game loop");
+        }
+
+        public void CallRandomEvent()
+        {
+            var rand = new Random();
+            int randIndex = rand.Next(0, 100);
+            PlayersStructure _players = new PlayersStructure();
+
+            foreach (var player in players)
+            {
+                _players.Attach(player);
+            }
+            if (randIndex < 33)
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>Game event started: everyone gets a powerup!</b>", Class = "table-warning" });
+                _players.Accept(new AllPowerupVisitor());
+            }
+            else if (randIndex < 66)
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>Game event started: everyone's health goes up by one!</b>", Class = "table-warning" });
+                _players.Accept(new HealthUpVisitor());
+            }
+            else if (randIndex < 100)
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>Game event started: everyone drops a bomb!</b>", Class = "table-warning" });
+                _players.Accept(new BombDropVisitor());
+            }
         }
 
         public void ProcessAction(PlayerAction playerAction, string id)
@@ -322,9 +357,12 @@ namespace SignalRWebPack.Logic
                         {
                             //if (!explosions.Contains(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]))
                             //{
-                                explosions.Add(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]);
-                           // }
-                            
+                            //if (!explosions.Contains(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]))
+                            // }
+
+                            //{
+                            explosions.Add(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]);
+                            // }
                         }
                     }
                     
