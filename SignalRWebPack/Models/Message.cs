@@ -12,5 +12,8 @@ namespace SignalRWebPack.Models
         public string Content { get; set; }
         [JsonProperty("class")]
         public string Class { get; set; }
+        public bool IsCommand { get; set; }
+        public bool IsGlobal { get; set; } = true;
+        public string Username { get; set; }
     }
 }
