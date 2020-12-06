@@ -8,6 +8,7 @@ using SignalRWebPack.Patterns.AbstractFactory;
 using SignalRWebPack.Patterns.Visitor;
 using SignalRWebPack.Patterns.Mediator;
 using SignalRWebPack.Patterns.Memento;
+using SignalRWebPack.Patterns.State;
 
 namespace SignalRWebPack.Models
 {
@@ -17,6 +18,7 @@ namespace SignalRWebPack.Models
         private ObjectFactory oFactory = FactoryProducer.getFactory("ObjectFactory") as ObjectFactory;
 
         public IMediator _mediator;
+        private PlayerState _playerState;
         public int lives { get; set; }
         public string name { get; set; }
         public string id { get; set; }
@@ -52,6 +54,7 @@ namespace SignalRWebPack.Models
             this.y = y;
             explosionSizeMultiplier = 2;
             bombs = new List<Bomb>();
+            playerState = new IdleState();
             switch(name)
             {
                 case ("player1"):
@@ -68,6 +71,17 @@ namespace SignalRWebPack.Models
                 break;
             }
             memento = new Memento(this.lives, this.texture);
+        }
+
+        public PlayerState playerState
+        {
+            get { return _playerState; }
+            set { _playerState = value; }
+        }
+
+        public void ExecuteAction()
+        {
+            _playerState.Action(this);
         }
 
         public override List<string> GetTextures()
@@ -106,7 +120,7 @@ namespace SignalRWebPack.Models
             }
         }
 
-        //Specifically used for the visitor pattern
+        //Used exclusively for the visitor pattern
         public void SpawnBomb()
         {
             Bomb b = oFactory.GetObject("bomb") as Bomb;
@@ -185,6 +199,8 @@ namespace SignalRWebPack.Models
             this.lives = memento.Lives;
             this.texture = memento.Texture;
         }
+
+
 
         public class DefaultPowerupValues
         {

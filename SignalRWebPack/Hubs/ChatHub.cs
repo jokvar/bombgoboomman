@@ -15,30 +15,25 @@ namespace SignalRWebPack.Hubs
     {
         public async Task NewMessage(Message messageContainer)
         {
+            List<IExpression> expressions = new List<IExpression>();
+            expressions.Add(new CheckExpression());
+            expressions.Add(new CommandExpression());
+            expressions.Add(new MessageExpression());
 
-            CheckExpression typeCheck = new CheckExpression();
-            CommandExpression commandCheck = new CommandExpression();
-            MessageExpression messageCheck = new MessageExpression();
-
-            var response = typeCheck.InterpretMessage(messageContainer, Context.ConnectionId);
-            if (response.IsCommand)
+            Message response = messageContainer;
+            foreach (var exp in expressions)
             {
-                response = commandCheck.InterpretMessage(messageContainer, Context.ConnectionId);
-            }
-            else
-            {
-                response = messageCheck.InterpretMessage(messageContainer, Context.ConnectionId);
+                response = exp.InterpretMessage(response, Context.ConnectionId);
             }
 
             string sessionCode = SessionManager.Instance.ActiveSessionCode;
             Session session = SessionManager.Instance.GetSession(sessionCode);
+            //edge case: if anonymous tries to use /setname it says that he's changed his name
+            //but it doesn't actually work
             if (response.IsGlobal)
             {
-                foreach (string id in session.PlayerIDs)
-                {
-                    await Clients.Client(id).SendAsync("messageReceived", response.Username, response)
-                        .ConfigureAwait(false);
-                }
+                await Clients.All.SendAsync("messageReceived", response.Username, response)
+                    .ConfigureAwait(false);
             }
             else
             {

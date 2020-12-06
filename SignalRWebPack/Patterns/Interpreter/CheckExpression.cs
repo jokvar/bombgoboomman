@@ -15,15 +15,15 @@ namespace SignalRWebPack.Patterns.Interpreter
             if (message.Content.StartsWith("/"))
             {
                 message.IsCommand = true;
-                response = new Message() {Content = "This is a command", IsCommand = true};
+                //response = new Message() {Content = "This is a command", IsCommand = true};
             }
             else
             {
                 message.IsCommand = false;
-                response = new Message() { Content = "This is not a command", IsCommand = false};
+                //response = new Message() { Content = "This is not a command", IsCommand = false};
             }
 
-            return response;
+            return message;
         }
     }
 }

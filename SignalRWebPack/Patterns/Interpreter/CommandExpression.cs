@@ -35,6 +35,7 @@ namespace SignalRWebPack.Patterns.Interpreter
                             response = new Message()
                             {
                                 Content = "has created a new Session [" + sessionCode + "].", Class = "table-success",
+                                IsCommand = true,
                                 Username = username
                             };
                         }
@@ -47,6 +48,7 @@ namespace SignalRWebPack.Patterns.Interpreter
                             response = new Message()
                             {
                                 Content = "has connected to Session [" + sessionCode + "].", Class = "table-info",
+                                IsCommand = true,
                                 Username = username
                             };
                         }
@@ -68,7 +70,7 @@ namespace SignalRWebPack.Patterns.Interpreter
                             {
                                 Content = "The command " + message.Content + " is invalid.",
                                 Class = "table-warning",
-                                IsCommand = false, IsGlobal = false, Username = username
+                                IsCommand = true, IsGlobal = false, Username = username
                             };
                         }
                     }
@@ -88,7 +90,7 @@ namespace SignalRWebPack.Patterns.Interpreter
                                     {
                                         response = new Message()
                                         {
-                                            Content = "This name is already taken.", IsGlobal = false,
+                                            Content = "This name is already taken.", IsGlobal = false, IsCommand = true,
                                             Class = "table-warning",
                                             Username = username
                                         };
@@ -100,6 +102,7 @@ namespace SignalRWebPack.Patterns.Interpreter
                                 {
                                     Content = "<b>" + username + "</b> has changed their name to <b>" + parts[1] +
                                               "</b>.",
+                                    IsCommand = true,
                                     Class = "table-warning",
                                     Username = "System"
                                 };
@@ -115,14 +118,15 @@ namespace SignalRWebPack.Patterns.Interpreter
                         {
                             Content = "The command \"" + message.Content + "\" is invalid.",
                             Class = "table-warning",
-                            IsCommand = false, IsGlobal = false, Username = username
+                            IsCommand = true, IsGlobal = false, Username = username
                         };
                     }
 
                     return response;
                 }
             }
-            return new Message() {Content = "Oops, this shouldn't have happened.", IsCommand = false, Username = "System"};
+            //return new Message() {Content = "Oops, this shouldn't have happened.", IsCommand = false, Username = "System"};
+            return message;
         }
         
     }

@@ -32,7 +32,8 @@ namespace SignalRWebPack.Patterns.Interpreter
                 return response;
             }
 
-            return new Message() {Content = "Oops, this shouldn't have happened", IsCommand = true, Username = "System"};
+            //return new Message() {Content = "Oops, this shouldn't have happened", IsCommand = true, Username = "System"};
+            return message;
         }
     }
 }

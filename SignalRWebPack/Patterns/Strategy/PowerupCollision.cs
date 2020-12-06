@@ -52,8 +52,7 @@ namespace SignalRWebPack.Patterns.Strategy
             }
 
             var powerup = collisionTarget as Powerup;
-            player.x = powerup.x;
-            player.y = powerup.y;
+            player.ExecuteAction();
             ResolvePowerup(player, powerup, powerupInvoker);
 
             

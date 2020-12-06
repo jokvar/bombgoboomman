@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRWebPack.Patterns.State;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
@@ -33,8 +34,7 @@ namespace SignalRWebPack.Patterns.Strategy
             var bomb = collisionTarget as Bomb;
             if (bomb.hasExploded)
             {
-                player.x = bomb.x;
-                player.y = bomb.y;
+                player.ExecuteAction();
                 if (!player.invulnerable)
                 {
                     player.lives--;
@@ -45,6 +45,10 @@ namespace SignalRWebPack.Patterns.Strategy
                     player.invulnerableUntil = player.invulnerableSince.AddSeconds(player.invulnerabilityDuration);
                     player.invulnerable = true;
                 }
+            }
+            else
+            {
+                player.playerState = new IdleState();
             }
         }
     }

@@ -15,6 +15,7 @@ using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Decorator;
 using SignalRWebPack.Patterns.Visitor;
+using SignalRWebPack.Patterns.State;
 
 namespace SignalRWebPack.Logic
 {
@@ -220,23 +221,28 @@ namespace SignalRWebPack.Logic
             switch (playerAction.action)
             {
                 case ActionEnums.Up:
+                    players[requestIndex].playerState = new MoveUpState();
                     PlayerCheckAdjacentTiles(x, y - 1, requestIndex);
                     break;
 
                 case ActionEnums.Down:
+                    players[requestIndex].playerState = new MoveDownState();
                     PlayerCheckAdjacentTiles(x, y + 1,requestIndex);
                     break;
 
                 case ActionEnums.Right:
+                    players[requestIndex].playerState = new MoveRightState();
                     PlayerCheckAdjacentTiles(x + 1, y, requestIndex);
                     break;
 
                 case ActionEnums.Left:
+                    players[requestIndex].playerState = new MoveLeftState();
                     PlayerCheckAdjacentTiles(x - 1, y, requestIndex);
                     break;
 
                 case ActionEnums.PlaceBomb:
-                    players[requestIndex].PlaceBomb();
+                    players[requestIndex].playerState = new PlaceBombState();
+                    players[requestIndex].ExecuteAction();
                     break;
 
             }
