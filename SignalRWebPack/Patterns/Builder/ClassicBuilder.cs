@@ -67,6 +67,7 @@ namespace SignalRWebPack.Patterns.Builder
             _map.tiles[207] = new EmptyTile() { x = 12, y = 13, texture = "blank" };
             _map.tiles[208] = new EmptyTile() { x = 13, y = 13, texture = "blank" };
 
+            Random rand = new Random();
             for (int y = 0; y < 15; y++)
             {
                 for (int x = 0; x < 15; x++)
@@ -74,7 +75,6 @@ namespace SignalRWebPack.Patterns.Builder
                     int index = 15 * y + x;
                     if(_map.tiles[index] == null)
                     {
-                        var rand = new Random();
                         if(rand.Next(100) < 70)
                         {
                             Box b = tFactory.GetObject("box") as Box;

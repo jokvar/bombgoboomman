@@ -6,12 +6,13 @@ using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns;
 using SignalRWebPack.Patterns.Observer;
 using SignalRWebPack.Patterns.Command;
+using SignalRWebPack.Patterns.Iterator;
 using SignalRWebPack.Patterns.ChainOfResponsibility;
 using SignalRWebPack.Patterns.Mediator;
 
 namespace SignalRWebPack.Models
 {
-    public class Session : ISubject
+    public class Session : ISubject, IIterable
     {
         protected IMediator _mediator;
         public List<Player> Players { get; set; }
@@ -19,7 +20,8 @@ namespace SignalRWebPack.Models
         public Player Host { get; set; }
         public Player LastPlayerDamaged { get; set; }
         public Map Map { get; set; }
-        public List<Tuple<string, Message>> Messages { get; set; }
+        //public List<Tuple<string, Message>> Messages { get; set; }
+        private MessageIterator Messages;
         public bool GameLoopEnabled { get { return Players.Count == 4; } }
         public bool HasGameEnded = false;
         //-------Command (Invoker)--------------
@@ -53,8 +55,7 @@ namespace SignalRWebPack.Models
             MapBuilder b1 = new ClassicBuilder();
             director.Construct(b1);
             Map = b1.GetResult();
-            Messages = new List<Tuple<string, Message>>();
-            
+            Messages = new MessageIterator();
             var livesObserver = new LivesObserver();
             var livesObserverChainTwo = new LivesObserverChainTwo();
             var livesObserverChainThree = new LivesObserverChainThree();
@@ -149,33 +150,22 @@ namespace SignalRWebPack.Models
 
         public void AddMessage(string username, Message message)
         {
-            Messages.Add(new Tuple<string, Message>(username, message));
+            message.Username = username;
+            Messages.Add(message);
         }
 
-        public Tuple<string, Message> ReadOneMessage()
-        {      
-            if (Messages.Count == 0) //if empty
-            {
-                return null;
-            }
-            Tuple<string, Message> message = Messages[0];
-            Messages.RemoveAt(0);
-            return message;
+        public void Remove(Message message)
+        {
+            Messages.Remove(message);
         }
-
         public void SetMediator(IMediator mediator)
         {
             this._mediator = mediator;
         }
-        public List<Tuple<string, Message>> ReadAllMessages()
+
+        public MessageIterator MessageIterator()
         {
-            if (Messages.Count == 0) //if empty
-            {
-                return null;
-            }
-            List<Tuple<string, Message>> messages = new List<Tuple<string, Message>>(Messages);
-            Messages.Clear();
-            return messages;
+            return Messages.Iterator();
         }
     }
 }

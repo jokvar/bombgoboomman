@@ -14,6 +14,8 @@ using SignalRWebPack.Patterns.Strategy;
 using SignalRWebPack.Patterns.Builder;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Decorator;
+using SignalRWebPack.Patterns.TemplateMethod;
+using SignalRWebPack.Patterns.Iterator;
 using SignalRWebPack.Patterns.Visitor;
 using SignalRWebPack.Patterns.State;
 
@@ -97,7 +99,10 @@ namespace SignalRWebPack.Logic
                     }
                 }
             }
-            InputQueueManager.Instance.FlushInputQueue();
+            //deprecating InputQueueManager
+            //InputQueueManager.Instance.FlushInputQueue();
+            TemplateInputManager<PlayerAction>.Instance.FlushQueue();
+
             powerupInvoker = session.powerupInvoker;
             List<Message> messages = new List<Message>();
             gameMap = session.Map;
@@ -112,13 +117,7 @@ namespace SignalRWebPack.Logic
                 now = _now;
                 Task delay = Task.Delay(60); // 😎😎😎😎
                 //example action dequeing
-                Tuple<string, PlayerAction> tuple;
-                //while ((tuple = InputQueueManager.Instance.ReadOne()) != null) //deleted when read
-                //{
-                //    string playerId = tuple.Item1;
-                //    PlayerAction action = tuple.Item2;
-                //    ProcessAction(action, playerId);
-                //}
+                PlayerAction playerAction;
                 if (eventTimer <= now)
                 {
                     CallRandomEvent();
@@ -126,14 +125,12 @@ namespace SignalRWebPack.Logic
                 }
                 for (int i = 0; i < 10; i++)
                 {
-                    tuple = InputQueueManager.Instance.ReadOne();
-                    if (tuple == null)
+                    playerAction = TemplateInputManager<PlayerAction>.Instance.ReadOne();
+                    if (playerAction == null)
                     {
                         break;
                     }
-                    string playerId = tuple.Item1;
-                    PlayerAction action = tuple.Item2;
-                    ProcessAction(action, playerId);
+                    ProcessAction(playerAction, playerAction.PlayerId);
                 }
                 FormDrawingObjectLists();
                 Task sendData = StoreDrawData(session.PlayerIDs, gameMap, players, bombs, session.powerups, explosions, messages);
@@ -155,19 +152,15 @@ namespace SignalRWebPack.Logic
                         }
                     }
                 }
-                Tuple<string, Message> messageContainer;
-                //while ((messageContainer = session.ReadOneMessage()) != null) //deleted when read
-                //{
-                //    Broadcast(messageContainer);
-                //}
-                for (int i = 0; i < 10; i++)
+                for (MessageIterator i = session.MessageIterator(); i.HasNext;)
                 {
-                    messageContainer = session.ReadOneMessage();
-                    if (messageContainer == null)
+                    Message message = i.Next();
+                    if (message == null)
                     {
                         break;
                     }
-                    Broadcast(messageContainer);
+                    session.Remove(message);
+                    Broadcast(new Tuple<string, Message>(message.Username, message));
                 }
 
                 await sendData;

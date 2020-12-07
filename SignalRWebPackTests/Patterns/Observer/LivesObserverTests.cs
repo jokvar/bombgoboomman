@@ -32,7 +32,7 @@ namespace SignalRWebPackTests.Patterns.Observer
             testSession.Players.Add(pp);
             testSession.LastPlayerDamaged = p;
             testSession.Notify();
-            Tuple<string, Message> message = testSession.Messages[0];
+            Tuple<string, Message> message = testSession.ReadOneMessage();
             Message m = message.Item2;
             String s = m.Content;
             Assert.Equal("<b>test</b> has taken damage! Remaining lives: <b>3</b>", s);

@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using SignalRWebPack.Patterns.Singleton;
 using System;
+using SignalRWebPack.Patterns.TemplateMethod;
 using SignalRWebPack.Patterns.Interpreter;
 
 namespace SignalRWebPack.Hubs
@@ -63,6 +64,12 @@ namespace SignalRWebPack.Hubs
                 __session.AddMessage("Game", new Message() { Content = "<b>" + p.name + "</b> has cheated! ", Class = "table-danger" });
                 p.RestoreMemento();
             }
+        }
+        public async Task SendInput(PlayerAction input)
+        {
+            //deprecating inputQueueManager
+            //InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
+            TemplateInputManager<PlayerAction>.Instance.AddById(Context.ConnectionId, input, forceThreadSafe: false, logResult: false);
         }
     }
 }

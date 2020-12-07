@@ -24,7 +24,6 @@ namespace SignalRWebPack.Patterns.Command
                 PowerupCommand.Execute();
             }
         }
-
         public void Undo(int times)
         {
             for ( int i = 0; i < times; i++)
