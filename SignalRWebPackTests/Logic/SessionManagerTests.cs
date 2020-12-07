@@ -14,12 +14,12 @@ namespace SignalRWebPackTests.Logic
         {
         }
 
-        [Fact]
-        public void CanConstruct()
-        {
-            var instance = new SessionManager();
-            Assert.NotNull(instance);
-        }
+        //[Fact]
+        //public void CanConstruct()
+        //{
+        //    var instance = new SessionManager();
+        //    Assert.NotNull(instance);
+        //}
 
         [Fact]
         public void CanCallGetPlayerSession()
@@ -104,18 +104,18 @@ namespace SignalRWebPackTests.Logic
             Assert.Same(instance, SessionManager.Instance);
         }
 
-        [Fact]
-        public void CanGetAllSessionCodes()
-        {
-            SessionManager.Instance.FlushSessions();
-            List<string> codes = new List<string> { "T1", "T2", "T3" };
-            SessionManager.Instance.GetSession(codes[0]);
-            SessionManager.Instance.GetSession(codes[1]);
-            SessionManager.Instance.GetSession(codes[2]);
-            SessionManager.Instance.GetSession(codes[0]);
-            Assert.IsType<List<string>>(SessionManager.Instance.AllSessionCodes);
-            Assert.Equal(codes, SessionManager.Instance.AllSessionCodes);
-        }
+        //[Fact]
+        //public void CanGetAllSessionCodes()
+        //{
+        //    SessionManager.Instance.FlushSessions();
+        //    List<string> codes = new List<string> { "T1", "T2", "T3" };
+        //    SessionManager.Instance.GetSession(codes[0]);
+        //    SessionManager.Instance.GetSession(codes[1]);
+        //    SessionManager.Instance.GetSession(codes[2]);
+        //    SessionManager.Instance.GetSession(codes[0]);
+        //    Assert.IsType<List<string>>(SessionManager.Instance.AllSessionCodes);
+        //    Assert.Equal(codes, SessionManager.Instance.AllSessionCodes);
+        //}
 
         [Fact]
         public void CanSetAndGetActiveSessionCode()
@@ -125,11 +125,11 @@ namespace SignalRWebPackTests.Logic
             Assert.Equal(testValue, SessionManager.Instance.ActiveSessionCode);
         }
 
-        [Fact]
-        public void CanCallFlushSessions()
-        {
-            SessionManager.Instance.FlushSessions();
-            Assert.Empty(SessionManager.Instance.AllSessionCodes);
-        }
+        //[Fact]
+        //public void CanCallFlushSessions()
+        //{
+        //    SessionManager.Instance.FlushSessions();
+        //    Assert.Empty(SessionManager.Instance.AllSessionCodes);
+        //}
     }
 }

@@ -1,5 +1,6 @@
 ﻿using SignalRWebPack.Models;
 using SignalRWebPack.Patterns.Iterator;
+using SignalRWebPack.Patterns.Proxy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SignalRWebPack.Patterns.TemplateMethod
 {
-    public class TemplateSessionManager<T> : TemplateClass<Session> where T : Session
+    public class TemplateSessionManager<T> : TemplateClass<Session>, ISessionManager where T : Session
     {
         public static TemplateSessionManager<Session> Instance { get; } = new TemplateSessionManager<Session>();
         public int StackSize { get { return queue.GetCount(); } }
