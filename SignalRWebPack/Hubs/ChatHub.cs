@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using SignalRWebPack.Models;
 using SignalRWebPack.Logic;
@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SignalRWebPack.Patterns.Singleton;
 using System;
 using SignalRWebPack.Patterns.TemplateMethod;
+using SignalRWebPack.Patterns.Interpreter;
 
 namespace SignalRWebPack.Hubs
 {
@@ -15,92 +16,55 @@ namespace SignalRWebPack.Hubs
     {
         public async Task NewMessage(Message messageContainer)
         {
-            string username = "System";
-            if (messageContainer.Content == "/create")
+            List<IExpression> expressions = new List<IExpression>();
+            expressions.Add(new CheckExpression());
+            expressions.Add(new CommandExpression());
+            expressions.Add(new MessageExpression());
+
+            Message response = messageContainer;
+            foreach (var exp in expressions)
             {
-                await CreateSession("test");
-                string sessionCode = SessionManager.Instance.ActiveSessionCode;
-                Session session = SessionManager.Instance.GetSession(sessionCode);
-                username = session.Username(Context.ConnectionId);
-                Message response = new Message() { Content = "has created a new Session [" + sessionCode + "].", Class = "table-success" };
-                foreach (string id in session.PlayerIDs)
-                {
-                    await Clients.Client(id).SendAsync("messageReceived", username, response);
-                }
+                response = exp.InterpretMessage(response, Context.ConnectionId);
             }
-            else if (messageContainer.Content == "/join")
+
+            string sessionCode = SessionManager.Instance.ActiveSessionCode;
+            Session session = SessionManager.Instance.GetSession(sessionCode);
+            //edge case: if anonymous tries to use /setname it says that he's changed his name
+            //but it doesn't actually work
+            if (response.IsGlobal)
             {
-                JoinSession("test");
-                string sessionCode = SessionManager.Instance.ActiveSessionCode;
-                Session session = SessionManager.Instance.GetSession(sessionCode);
-                username = session.Username(Context.ConnectionId);
-                Message response = new Message() { Content = "has connected to Session [" + sessionCode + "].", Class = "table-info" };
-                foreach (string id in session.PlayerIDs)
-                {
-                    await Clients.Client(id).SendAsync("messageReceived", username, response).ConfigureAwait(false);
-                }
-            }
-            else if (messageContainer.Content.Split(' ')[0] == "/setname")
-            {
-                string[] newName = messageContainer.Content.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-                if (newName.Length == 2)
-                {
-                    string sessionCode = SessionManager.Instance.ActiveSessionCode;
-                    if (sessionCode != null)
-                    {
-                        Session session = SessionManager.Instance.GetSession(sessionCode);
-                        username = session.Username(Context.ConnectionId);
-                        session.SetUsername(Context.ConnectionId, newName[1]);
-                        Message response = new Message() { Content = "<b>" + username + "</b> has changed their name to <b>" + newName[1] + "</b>.", Class = "table-warning" };
-                        foreach (string id in session.PlayerIDs)
-                        {
-                            await Clients.Client(id).SendAsync("messageReceived", "System", response).ConfigureAwait(false);
-                        }
-                    }
-                }
-                
-            }
-            else if (messageContainer.Content == "/dump")
-            {
-                await Clients.All.SendAsync("messageReceived", username, new Message() { Content = "this is where diagnostic information would be dumped - if we HAD any", Class = "table-danger" });
+                await Clients.All.SendAsync("messageReceived", response.Username, response)
+                    .ConfigureAwait(false);
             }
             else
             {
-                string sessionCode = SessionManager.Instance.ActiveSessionCode;
-                if (sessionCode == null)
+                var name = session.Players.Where(p => p.name == response.Username).FirstOrDefault();
+                if (name == null)
                 {
-                    username = "anonymous";
+                    throw new Exception("This really do be a bruh moment.");
                 }
-                else
-                {
-                    username = SessionManager.Instance.GetSession(sessionCode).Username(Context.ConnectionId);
-                }            
-                Message response = new Message() { Content = messageContainer.Content, Class = "table-secondary" };
-                await Clients.All.SendAsync("messageReceived", username, response).ConfigureAwait(false);
-            }  
+                await Clients.Client(name.id).SendAsync("messageReceived", response.Username, response)
+                    .ConfigureAwait(false);
+            }
+            
+
         }
 
-        public async Task CreateSession(string mapName)
+        public async Task SendInput(PlayerAction input)
         {
-            Session session = SessionManager.Instance.GetSession(null);
-            session.RegisterPlayer(Context.ConnectionId, true);
+            InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
         }
 
-        public void JoinSession(string roomCode)
+        public async Task ReviveInput(PlayerAction input)
         {
-            //hardcode
-            roomCode = SessionManager.GenerateRoomCode();
-            //enmd hardcode
-            Session session = SessionManager.Instance.GetSession(roomCode);
-            if (session.RegisterPlayer(Context.ConnectionId)) //if 4 or more players ()
+            Session __session = SessionManager.Instance.GetPlayerSession(Context.ConnectionId);
+            if (!SessionManager.Instance.IsPlayerAlive(Context.ConnectionId))
             {
-                //the following method has literally no way of existing, current 
-                //workaround is setting a single active session in sessionmanager
-                //GameLogic.Instance.EnablePlaying(session);
-                SessionManager.Instance.ActiveSessionCode = roomCode;
+                Player p = __session.Players[__session.MatchId(Context.ConnectionId)];
+                __session.AddMessage("Game", new Message() { Content = "<b>" + p.name + "</b> has cheated! ", Class = "table-danger" });
+                p.RestoreMemento();
             }
         }
-
         public async Task SendInput(PlayerAction input)
         {
             //deprecating inputQueueManager

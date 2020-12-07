@@ -25,6 +25,7 @@
         Down,
         Left,
         Right,
-        PlaceBomb
+        PlaceBomb,
+        Revive
     }
 }
