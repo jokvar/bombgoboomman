@@ -40,8 +40,7 @@ namespace SignalRWebPack.Patterns.Strategy
             }
 
             var explosion = collisionTarget as ExplosionCell;
-            player.x = explosion.x;
-            player.y = explosion.y;
+            player.ExecuteAction();
             if (!player.invulnerable)
             {
                 player.lives--;

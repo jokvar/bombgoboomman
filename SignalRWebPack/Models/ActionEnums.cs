@@ -11,6 +11,7 @@ namespace SignalRWebPack.Models
         Down,
         Left,
         Right,
-        PlaceBomb
+        PlaceBomb,
+        Revive
     }
 }

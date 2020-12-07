@@ -38,8 +38,7 @@ namespace SignalRWebPack.Patterns.Strategy
                 throw new ArgumentNullException("This method cannot be called when 'player' is null");
             }
             var emptyTile = collisionTarget as EmptyTile;
-            player.x = emptyTile.x;
-            player.y = emptyTile.y;
+            player.ExecuteAction();
         }
     }
 }

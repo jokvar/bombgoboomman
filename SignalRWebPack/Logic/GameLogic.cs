@@ -16,6 +16,8 @@ using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Decorator;
 using SignalRWebPack.Patterns.TemplateMethod;
 using SignalRWebPack.Patterns.Iterator;
+using SignalRWebPack.Patterns.Visitor;
+using SignalRWebPack.Patterns.State;
 
 namespace SignalRWebPack.Logic
 {
@@ -107,6 +109,7 @@ namespace SignalRWebPack.Logic
             players = session.Players;
             powerups = session.powerups;
             DateTime now = DateTime.Now;
+            DateTime eventTimer = DateTime.Now.AddSeconds(10);
             while (!session.HasGameEnded)
             {
                 DateTime _now = DateTime.Now;
@@ -114,23 +117,19 @@ namespace SignalRWebPack.Logic
                 now = _now;
                 Task delay = Task.Delay(60); // 😎😎😎😎
                 //example action dequeing
-                //deprecating here
-                //Tuple<string, PlayerAction> tuple;
                 PlayerAction playerAction;
-                //
+                if (eventTimer <= now)
+                {
+                    CallRandomEvent();
+                    eventTimer = DateTime.Now.AddSeconds(10);
+                }
                 for (int i = 0; i < 10; i++)
                 {
-                    //tuple = InputQueueManager.Instance.ReadOne();
                     playerAction = TemplateInputManager<PlayerAction>.Instance.ReadOne();
-
-                    //if (tuple == null)
                     if (playerAction == null)
                     {
                         break;
                     }
-                    //string playerId = tuple.Item1;
-                    //PlayerAction action = tuple.Item2;
-                    //ProcessAction(action, playerId);
                     ProcessAction(playerAction, playerAction.PlayerId);
                 }
                 FormDrawingObjectLists();
@@ -163,11 +162,39 @@ namespace SignalRWebPack.Logic
                     session.Remove(message);
                     Broadcast(new Tuple<string, Message>(message.Username, message));
                 }
+
                 await sendData;
                 await delay;
             }
 
             throw new NotImplementedException("Reached end of game loop");
+        }
+
+        public void CallRandomEvent()
+        {
+            var rand = new Random();
+            int randIndex = rand.Next(0, 100);
+            PlayersStructure _players = new PlayersStructure();
+
+            foreach (var player in players)
+            {
+                _players.Attach(player);
+            }
+            if (randIndex < 33)
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>Game event started: everyone gets a powerup!</b>", Class = "table-warning" });
+                _players.Accept(new AllPowerupVisitor());
+            }
+            else if (randIndex < 66)
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>Game event started: everyone's health goes up by one!</b>", Class = "table-warning" });
+                _players.Accept(new HealthUpVisitor());
+            }
+            else if (randIndex < 100)
+            {
+                session.AddMessage("Game", new Message() { Content = "<b>Game event started: everyone drops a bomb!</b>", Class = "table-warning" });
+                _players.Accept(new BombDropVisitor());
+            }
         }
 
         public void ProcessAction(PlayerAction playerAction, string id)
@@ -187,23 +214,28 @@ namespace SignalRWebPack.Logic
             switch (playerAction.action)
             {
                 case ActionEnums.Up:
+                    players[requestIndex].playerState = new MoveUpState();
                     PlayerCheckAdjacentTiles(x, y - 1, requestIndex);
                     break;
 
                 case ActionEnums.Down:
+                    players[requestIndex].playerState = new MoveDownState();
                     PlayerCheckAdjacentTiles(x, y + 1,requestIndex);
                     break;
 
                 case ActionEnums.Right:
+                    players[requestIndex].playerState = new MoveRightState();
                     PlayerCheckAdjacentTiles(x + 1, y, requestIndex);
                     break;
 
                 case ActionEnums.Left:
+                    players[requestIndex].playerState = new MoveLeftState();
                     PlayerCheckAdjacentTiles(x - 1, y, requestIndex);
                     break;
 
                 case ActionEnums.PlaceBomb:
-                    players[requestIndex].PlaceBomb();
+                    players[requestIndex].playerState = new PlaceBombState();
+                    players[requestIndex].ExecuteAction();
                     break;
 
             }
@@ -324,9 +356,12 @@ namespace SignalRWebPack.Logic
                         {
                             //if (!explosions.Contains(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]))
                             //{
-                                explosions.Add(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]);
-                           // }
-                            
+                            //if (!explosions.Contains(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]))
+                            // }
+
+                            //{
+                            explosions.Add(players[i].bombs[j].GetExplosion().GetExplosionCells()[k]);
+                            // }
                         }
                     }
                     

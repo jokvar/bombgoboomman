@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SignalRWebPack.Patterns.State;
 
 namespace SignalRWebPack.Patterns.Strategy
 {
@@ -49,6 +50,7 @@ namespace SignalRWebPack.Patterns.Strategy
             {
                 throw new ArgumentNullException("This method cannot be called when 'player' is null");
             }
+            player.playerState = new IdleState();
         }
     }
 }

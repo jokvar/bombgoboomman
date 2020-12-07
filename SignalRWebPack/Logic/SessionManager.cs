@@ -49,6 +49,27 @@ namespace SignalRWebPack.Logic
             _activeSessionCode = null;
         }
 
+        public void CreateSession(string mapName, string connectionId)
+        {
+            Session session = Instance.GetSession(null);
+            session.RegisterPlayer(connectionId, true);
+        }
+
+        public void JoinSession(string roomCode, string connectionId)
+        {
+            //hardcode
+            roomCode = GenerateRoomCode();
+            //enmd hardcode
+            Session session = Instance.GetSession(roomCode);
+            if (session.RegisterPlayer(connectionId)) //if 4 or more players ()
+            {
+                //the following method has literally no way of existing, current 
+                //workaround is setting a single active session in sessionmanager
+                //GameLogic.Instance.EnablePlaying(session);
+                Instance.ActiveSessionCode = roomCode;
+            }
+        }
+
         public Session GetSession(string code)
         {
             lock (_sessionLock)
