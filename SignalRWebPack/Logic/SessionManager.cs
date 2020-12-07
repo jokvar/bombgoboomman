@@ -47,6 +47,24 @@ namespace SignalRWebPack.Logic
             return _Instance.IsPlayerAlive(id);
         }
 
+        public void CreateSession(string mapName, string connectionId)
+        {
+            Session session = Instance.GetSession(null);
+            session.RegisterPlayer(connectionId, true);
+        }
+
+        public void JoinSession(string roomCode, string connectionId)
+        {
+            //hardcode
+            roomCode = GenerateRoomCode();
+            //enmd hardcode
+            Session session = Instance.GetSession(roomCode);
+            if (session.RegisterPlayer(connectionId)) //if 4 or more players ()
+            {
+                Instance.ActiveSessionCode = roomCode;
+            }
+        }
+        
         public Session GetSession(string code, bool newSession = true)
         {
             Log($"Accessed {nameof(GetSession)}");

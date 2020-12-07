@@ -7,11 +7,14 @@ using SignalRWebPack.Patterns;
 using SignalRWebPack.Patterns.Observer;
 using SignalRWebPack.Patterns.Command;
 using SignalRWebPack.Patterns.Iterator;
+using SignalRWebPack.Patterns.ChainOfResponsibility;
+using SignalRWebPack.Patterns.Mediator;
 
 namespace SignalRWebPack.Models
 {
     public class Session : ISubject, IIterable
     {
+        protected IMediator _mediator;
         public List<Player> Players { get; set; }
         public List<Powerup> powerups { get; set; }
         public Player Host { get; set; }
@@ -37,7 +40,7 @@ namespace SignalRWebPack.Models
         public string roomCode { get; set; }
         public string id { get; set; }
 
-        private readonly List<IObserver> Observers = new List<IObserver>();
+        private readonly List<Handler> Observers = new List<Handler>();
         public Session()
         {
             powerups = new List<Powerup>();
@@ -54,6 +57,14 @@ namespace SignalRWebPack.Models
             Map = b1.GetResult();
             Messages = new MessageIterator();
             var livesObserver = new LivesObserver();
+            var livesObserverChainTwo = new LivesObserverChainTwo();
+            var livesObserverChainThree = new LivesObserverChainThree();
+            var livesObserverChainFour = new LivesObserverChainFour();
+
+            livesObserver.SetNext(livesObserverChainTwo);
+            livesObserverChainTwo.SetNext(livesObserverChainThree);
+            livesObserverChainThree.SetNext(livesObserverChainFour);
+
             Attach(livesObserver);
         }
 
@@ -99,6 +110,9 @@ namespace SignalRWebPack.Models
                 {
                     Host = player;
                 }
+                PowerupSpawner spawner = new PowerupSpawner();
+                PlayerMediator mediator = new PlayerMediator(player, this, spawner);
+                player.SetMediator(mediator);
                 Players.Add(player);
                 return Players.Count >= 4;
             }
@@ -123,9 +137,9 @@ namespace SignalRWebPack.Models
                 Players[index].name = username;
             }
         }
-        public void Attach(IObserver observer) => Observers.Add(observer);
+        public void Attach(Handler observer) => Observers.Add(observer);
 
-        public void Detach(IObserver observer) => this.Observers.Remove(observer);
+        public void Detach(Handler observer) => this.Observers.Remove(observer);
         public void Notify()
         {
             foreach (var observer in Observers)
@@ -143,6 +157,10 @@ namespace SignalRWebPack.Models
         public void Remove(Message message)
         {
             Messages.Remove(message);
+        }
+        public void SetMediator(IMediator mediator)
+        {
+            this._mediator = mediator;
         }
 
         public MessageIterator MessageIterator()
