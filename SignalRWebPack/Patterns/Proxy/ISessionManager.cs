@@ -14,5 +14,7 @@ namespace SignalRWebPack.Patterns.Proxy
         public string ActiveSessionCode { get; set; }
         public void FlushSessions();
         public Session GetSession(string code, bool newSession = true);
+        public void CreateSession(string mapName, string connectionId);
+        public void JoinSession(string roomCode, string connectionId);
     }
 }

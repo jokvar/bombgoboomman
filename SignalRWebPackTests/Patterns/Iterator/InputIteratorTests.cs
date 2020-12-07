@@ -15,9 +15,6 @@ namespace SignalRWebPackTests.Patterns.Iterator
         }
 
         [Fact]
-        //for(Iterator i=var.iterator(); i.hasNext(); ) {
-        //    Object obj = i.next();
-        //}
         public void TestIteration()
         {
             var InputIterator = new InputIterator();

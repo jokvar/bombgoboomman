@@ -16,11 +16,12 @@ require("./images/powerup_powerdown.png");
 require("./images/powerup_powerdownX3.png");
 require("./images/powerup_plus.png");
 require("./images/powerup_time.png");
+require("./images/title.png");
 require("bootstrap/dist/css/bootstrap.min.css");
 var ChatHub_1 = require("./chathub/ChatHub");
 var Render_1 = require("./ui/Render");
 var Input_1 = require("./ui/Input");
-var version = "v0.60";
+var version = "v1.0.0";
 window.onload = function () {
     var canvas = document.getElementById('game').getContext("2d");
     document.getElementById('version').textContent = version;

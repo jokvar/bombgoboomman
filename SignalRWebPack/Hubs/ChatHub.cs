@@ -50,11 +50,6 @@ namespace SignalRWebPack.Hubs
 
         }
 
-        public async Task SendInput(PlayerAction input)
-        {
-            InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
-        }
-
         public async Task ReviveInput(PlayerAction input)
         {
             Session __session = SessionManager.Instance.GetPlayerSession(Context.ConnectionId);
@@ -67,8 +62,6 @@ namespace SignalRWebPack.Hubs
         }
         public async Task SendInput(PlayerAction input)
         {
-            //deprecating inputQueueManager
-            //InputQueueManager.Instance.AddToInputQueue(Context.ConnectionId, input);
             TemplateInputManager<PlayerAction>.Instance.AddById(Context.ConnectionId, input, forceThreadSafe: false, logResult: false);
         }
     }

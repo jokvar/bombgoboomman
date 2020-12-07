@@ -167,6 +167,7 @@ namespace SignalRWebPack.Logic
                 await delay;
             }
 
+            Console.WriteLine("GAME FINISHED.");
             throw new NotImplementedException("Reached end of game loop");
         }
 

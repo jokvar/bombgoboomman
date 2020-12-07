@@ -16,7 +16,7 @@ namespace SignalRWebPackTests.Patterns.TemplateMethod
         }
 
         [Fact]
-        public void TestIteration()
+        public void Testmanager()
         {
             SessionManager.Instance.GetSession(null).RegisterPlayer(new Player("a", "down", 0, 0));
             SessionManager.Instance.GetSession(null).RegisterPlayer(new Player("a", "up", 0, 0));
