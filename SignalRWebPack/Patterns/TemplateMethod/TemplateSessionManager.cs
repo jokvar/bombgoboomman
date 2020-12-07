@@ -13,7 +13,11 @@ namespace SignalRWebPack.Patterns.TemplateMethod
     {
         public static TemplateSessionManager<Session> Instance { get; } = new TemplateSessionManager<Session>();
         public int StackSize { get { return queue.GetCount(); } }
-        public string ActiveSessionCode { get; set; }
+        public string ActiveSessionCode
+        {
+            get { lock (__lock) { return ActiveSessionCode;  } }
+            set { lock (__lock) { ActiveSessionCode = value; } }
+        }
 
         private readonly object __lock;
 

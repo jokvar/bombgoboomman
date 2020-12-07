@@ -99,6 +99,7 @@ namespace SignalRWebPack.Logic
                     }
                 }
             }
+            SessionManager.Instance.EnableLogging = true;
             //deprecating InputQueueManager
             //InputQueueManager.Instance.FlushInputQueue();
             TemplateInputManager<PlayerAction>.Instance.FlushQueue();
